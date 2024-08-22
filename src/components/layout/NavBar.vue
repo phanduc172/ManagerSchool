@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom shadow-lg">
     <div class="container-fluid">
       <button class="btn btn-outline-success" @click="$emit('toggleSidebar')">
         <i class="bi bi-list chevron_color"></i>
@@ -41,6 +41,7 @@ export default {
 .nav-link {
   padding: 0.5rem 1rem;
   color: #44B97C;
+  font-weight: 500;
 }
 .nav-link:hover {
   color: #176c40;

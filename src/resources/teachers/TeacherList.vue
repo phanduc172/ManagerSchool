@@ -4,7 +4,7 @@
       <div class="col-12 mb-3 mb-lg-5">
         <div class="overflow-hidden card table-nowrap table-card">
           <div
-            class="card-header d-flex justify-content-center align-items-center py-3"
+            class="card-header d-flex justify-content-center align-items-center py-3 header-bordered"
           >
             <h5 class="mb-0 text-center">Danh sách giáo viên</h5>
           </div>
@@ -23,97 +23,43 @@
                 </tr>
               </thead>
               <tbody>
-                <tr class="align-middle">
-                  <td class="text-center">1</td>
+                <tr
+                  v-for="(teacher, index) in teachers"
+                  :key="teacher.id"
+                  class="align-middle"
+                >
+                  <td class="text-center">{{ index + 1 }}</td>
                   <td>
                     <div class="d-flex align-items-center">
                       <img
-                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                        :src="teacher.avatar"
                         class="avatar sm rounded-pill me-3 flex-shrink-0"
                         alt="Giáo viên"
                       />
                       <div>
-                        <div class="h6 mb-0 truncate">Nguyễn Văn A</div>
+                        <div class="h6 mb-0 truncate">{{ teacher.name }}</div>
                       </div>
                     </div>
                   </td>
-                  <td>01/01/1980</td>
-                  <td>
-                    <span class="d-inline-block align-middle">0909123456</span>
-                  </td>
-                  <td class="truncate" style="max-width: 500px;">123 Đường ABC, Quận 1, TP.HCM</td>
-                  <td>Lớp 10A1</td>
-                  <td>Khoa Toán</td>
+                  <td class="text-center">{{ teacher.birthday }}</td>
                   <td class="text-center">
-                    <b-button-group>
-                      <b-button variant="success" size="sm">
-                        <b-icon icon="eye" class="small"></b-icon>
-                      </b-button>
-                      <b-button variant="warning" size="sm">
-                        <b-icon icon="pencil" class="small text-white"></b-icon>
-                      </b-button>
-                      <b-button variant="danger" size="sm">
-                        <b-icon icon="trash" class="small"></b-icon>
-                      </b-button>
-                    </b-button-group>
+                    <span class="d-inline-block align-middle">{{
+                      teacher.phone
+                    }}</span>
                   </td>
-                </tr>
-                <tr class="align-middle">
-                  <td class="text-center">1</td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar2.png"
-                        class="avatar sm rounded-pill me-3 flex-shrink-0"
-                        alt="Giáo viên"
-                      />
-                      <div>
-                        <div class="h6 mb-0 lh-1 truncate">Trần Thị B</div>
-                      </div>
-                    </div>
+                  <td class="truncate" style="max-width: 500px">
+                    {{ teacher.address }}
                   </td>
-                  <td>15/05/1985</td>
-                  <td>
-                    <span class="d-inline-block align-middle truncate">0918123456</span>
-                  </td>
-                  <td>456 Đường XYZ, Quận 3, TP.HCM</td>
-                  <td>Lớp 11B2</td>
-                  <td>Khoa Văn</td>
                   <td class="text-center">
-                    <b-button-group>
-                      <b-button variant="success" size="sm">
-                        <b-icon icon="eye" class="small"></b-icon>
-                      </b-button>
-                      <b-button variant="warning" size="sm">
-                        <b-icon icon="pencil" class="small text-white"></b-icon>
-                      </b-button>
-                      <b-button variant="danger" size="sm">
-                        <b-icon icon="trash" class="small"></b-icon>
-                      </b-button>
-                    </b-button-group>
+                    <span class="d-inline-block align-middle">{{
+                      teacher.class
+                    }}</span>
                   </td>
-                </tr>
-                <tr class="align-middle">
-                  <td class="text-center">1</td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <img
-                        src="https://bootdey.com/img/Content/avatar/avatar3.png"
-                        class="avatar sm rounded-pill me-3 flex-shrink-0"
-                        alt="Giáo viên"
-                      />
-                      <div>
-                        <div class="h6 mb-0 lh-1 truncate">Lê Văn C</div>
-                      </div>
-                    </div>
+                  <td class="text-center">
+                    <span class="d-inline-block align-middle">{{
+                      teacher.department
+                    }}</span>
                   </td>
-                  <td>22/09/1990</td>
-                  <td>
-                    <span class="d-inline-block align-middle">0922123456</span>
-                  </td>
-                  <td>789 Đường DEF, Quận 5, TP.HCM</td>
-                  <td>Lớp 12C3</td>
-                  <td>Khoa Hóa</td>
                   <td class="text-center">
                     <b-button-group>
                       <b-button variant="success" size="sm">
@@ -137,12 +83,41 @@
   </div>
 </template>
 
+
   
-  <script>
-export default {};
+<script>
+import { mapActions, mapGetters } from "vuex";
+export default {
+  data() {
+    return {
+      entries: [],
+    };
+  },
+  computed: {
+    ...mapGetters("teacher", ["teachers"]),
+  },
+  methods: {
+    ...mapActions("teacher", ["ListTeachers", "UpdateTeacher"]),
+    async getListteachers() {
+      const response = await this.ListTeachers(this.$route.query);
+      if (response?.status == 200) {
+        this.entries = response?.data?.data ?? [];
+      } else {
+        this.entries = this.teachers;
+      }
+    },
+    async updateTeacher() {
+      this.UpdateTeacher({ id: "123", body: {} });
+    },
+  },
+  created() {
+    this.updateTeacher()
+    this.getListteachers();
+  },
+};
 </script>
   
-  <style scoped>
+<style scoped>
 body {
   margin-top: 20px;
   background: #eee;
@@ -170,6 +145,21 @@ table th {
 }
 table td {
   line-height: 2;
+}
+.custom-select {
+  padding: 2px 4px;
+  border-radius: 5px;
+  border-color: #a7a7a7;
+}
+.header-bordered {
+  border: 2px solid #44b97c;
+  padding: 15px;
+}
+.header-bordered h5 {
+  font-size: 1.5rem;
+  color: var(--vt-c-green);
+  font-weight: bold;
+  text-transform: uppercase;
 }
 </style>
   

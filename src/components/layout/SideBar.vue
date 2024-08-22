@@ -2,24 +2,23 @@
   <div :class="['sidebar', { 'collapsed': collapsed }]">
     <div class="sidebar-heading">Quản lý Trường học</div>
     <div class="list-group">
-      <a class="list-group-item list-group-item-action" href="profile">Hồ sơ cá nhân</a>
+      <a class="list-group-item list-group-item-action" href="/profile"><font-awesome-icon :icon="['fas', 'user']" class="me-2"/>Hồ sơ cá nhân</a>
       <a 
         class="list-group-item list-group-item-action" 
         href="manage" 
         @click.prevent="toggleManage"
         :class="{ 'active': isManageOpen }"
       >
-        Quản lý
+      <i class='bx bx-list-ul me-2'></i>Quản lý
         <i :class="['bi', isManageOpen ? 'bi-chevron-up' : 'bi-chevron-down']" class="float-end"></i>
       </a>
-      
       <div v-if="isManageOpen" class="manage-links">
         <a class="list-group-item list-group-item-action" href="/manager/teachers">Giáo viên</a>
         <a class="list-group-item list-group-item-action" href="/manager/students">Học sinh</a>
         <a class="list-group-item list-group-item-action" href="/manager/classes">Lớp học</a>
         <a class="list-group-item list-group-item-action" href="/manager/subjects">Môn học</a>
       </div>
-      <a class="list-group-item list-group-item-action" href="settings">Cài đặt</a>
+      <a class="list-group-item list-group-item-action" href="settings"><i class='bx bxs-cog me-2' ></i>Cài đặt</a>
     </div>
   </div>
 </template>
@@ -74,6 +73,7 @@ export default {
 .sidebar .list-group-item {
   padding: 1rem;
   color: #44B97C;
+  font-weight: 500;
 }
 .sidebar .list-group-item:hover {
   background-color: #f1f1f1;

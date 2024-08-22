@@ -22,6 +22,11 @@ const router = new VueRouter({
       component: () => import('../resources/auth/Register.vue')
     },
     {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('../resources/Dashboard.vue')
+    },
+    {
       path: '/manager/teachers',
       name: 'teachers',
       component: () => import('../resources/teachers/ManagerTeacher.vue')
@@ -32,10 +37,11 @@ const router = new VueRouter({
       component: () => import('../resources/students/ManagerStudent.vue')
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('../resources/Dashboard.vue')
-    }
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../resources/profile/UserProfile.vue')
+    },
+
   ]
 })
 
