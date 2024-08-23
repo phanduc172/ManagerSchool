@@ -1,5 +1,7 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom shadow-lg">
+  <nav
+    class="navbar navbar-expand-lg navbar-light bg-light border-bottom shadow-sm"
+  >
     <div class="container-fluid">
       <button class="btn btn-outline-success" @click="$emit('toggleSidebar')">
         <i class="bi bi-list chevron_color"></i>
@@ -12,10 +14,14 @@
         </ul>
         <ul class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link btn btn-outline-primary" href="/login">Đăng nhập</a>
+            <a class="nav-link btn btn-outline-primary" href="/login"
+              >Đăng nhập</a
+            >
           </li>
           <li class="nav-item ms-2">
-            <a class="nav-link btn btn-primary text-white" href="/register">Đăng ký</a>
+            <a class="nav-link btn btn-primary text-white" href="/register"
+              >Đăng ký</a
+            >
           </li>
         </ul>
       </div>
@@ -24,23 +30,22 @@
 </template>
 
 <script>
-export default {
-};
+export default {};
 </script>
 
 <style scoped>
 .chevron_color {
-  color:#44B97C;
+  color: #44b97c;
 }
 .chevron_color:hover {
-  color:#fff;
+  color: #fff;
 }
 .navbar {
   width: 100%;
 }
 .nav-link {
   padding: 0.5rem 1rem;
-  color: #44B97C;
+  color: #44b97c;
   font-weight: 500;
 }
 .nav-link:hover {
@@ -48,19 +53,19 @@ export default {
 }
 
 .btn-outline-primary {
-  border: 1px solid #44B97C;
-  color: #44B97C;
+  border: 1px solid #44b97c;
+  color: #44b97c;
   background-color: transparent;
 }
 
 .btn-outline-primary:hover {
-  background-color: #44B97C;
+  background-color: #44b97c;
   color: #fff;
-  border-color: #44B97C;
+  border-color: #44b97c;
 }
 
 .btn-primary {
-  background-color: #44B97C;
+  background-color: #44b97c;
   border: none;
   color: #fff;
 }
@@ -74,5 +79,4 @@ export default {
   background-color: var(--vt-c-green);
   border-color: var(--vt-c-green);
 }
-
 </style>

@@ -44,7 +44,7 @@ const getters = {
 const actions = {
   async ListTeachers(_, query = {}) {
     const response = await axios({
-      url: api.Listeachers,
+      url: api.ListTeachers,
       method: "GET",
       params: query,
     });
@@ -61,7 +61,7 @@ const actions = {
   async UpdateTeacher(_, { id, body }) {
     const response = await axios({
       url: api.params("UpdateTeacher", {id}),
-      method: "PATCH",
+      method: "PUT",
       data: body,
     });
     return response;
@@ -76,7 +76,7 @@ const actions = {
 };
 
 const mutations = {
-  Updateteachers(state, entries) {
+  UpdateTeachers(state, entries) {
     state.entries = entries;
   },
 };

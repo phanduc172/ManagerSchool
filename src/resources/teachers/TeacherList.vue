@@ -1,12 +1,18 @@
 <template>
   <div class="container mt-3">
+    <div class="d-flex justify-content-between mb-3">
+      <div class="input-group w-50 shadow-sm">
+        <input type="text" class="form-control" placeholder="Tìm kiếm giáo viên...">
+      </div>  
+      <button class="btn btn-outline-success border-2 shadow-sm">Thêm</button>
+    </div>
     <div class="row">
       <div class="col-12 mb-3 mb-lg-5">
         <div class="overflow-hidden card table-nowrap table-card">
           <div
             class="card-header d-flex justify-content-center align-items-center py-3 header-bordered"
           >
-            <h5 class="mb-0 text-center">Danh sách giáo viên</h5>
+          <h5 class="mb-0 text-center">Danh sách giáo viên</h5>
           </div>
           <div class="table-responsive">
             <table class="table mb-0">
@@ -19,7 +25,7 @@
                   <th>Địa chỉ</th>
                   <th>Lớp học</th>
                   <th>Phòng ban</th>
-                  <th>Hành động</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -37,7 +43,7 @@
                         alt="Giáo viên"
                       />
                       <div>
-                        <div class="h6 mb-0 truncate">{{ teacher.name }}</div>
+                      <div class="h6 mb-0 truncate">{{ teacher.name }}</div>
                       </div>
                     </div>
                   </td>
@@ -83,8 +89,6 @@
   </div>
 </template>
 
-
-  
 <script>
 import { mapActions, mapGetters } from "vuex";
 export default {
@@ -98,7 +102,7 @@ export default {
   },
   methods: {
     ...mapActions("teacher", ["ListTeachers", "UpdateTeacher"]),
-    async getListteachers() {
+    async getListTeachers() {
       const response = await this.ListTeachers(this.$route.query);
       if (response?.status == 200) {
         this.entries = response?.data?.data ?? [];
@@ -107,12 +111,13 @@ export default {
       }
     },
     async updateTeacher() {
-      this.UpdateTeacher({ id: "123", body: {} });
+      this.UpdateTeacher({ id: "", body: {} });
     },
+    
   },
   created() {
-    this.updateTeacher()
-    this.getListteachers();
+    this.getListTeachers();
+    this.updateTeacher();
   },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-card id="cardLogin" class="scale-in-bl">
-      <b-form @submit="onSubmit" @reset="onReset" v-if="show" id="formLogin">
+      <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show" id="formLogin">
         <svg
           viewBox="0 0 200 200"
           xmlns="http://www.w3.org/2000/svg"
@@ -39,23 +39,29 @@
         <b-form-group id="input-group-1" label-for="email">
           <b-form-input
             id="email"
-            class="input"
+            class="input mb-1"
             v-model="form.email"
             type="email"
             placeholder="Email"
-            required
+            @focus="clearError('email')"
           ></b-form-input>
+          <div class="text-danger mb-2" v-if="errors.email"> * 
+            {{ errors.email }}
+          </div>
         </b-form-group>
 
         <b-form-group id="input-group-2" label-for="input-2">
           <b-form-input
             id="password"
-            class="input"
+            class="input mb-1"
             v-model="form.password"
             placeholder="Mật khẩu"
             type="password"
-            required
+            @focus="clearError('password')"
           ></b-form-input>
+          <div class="text-danger mb-2" v-if="errors.password"> *
+            {{ errors.password }}
+          </div>
         </b-form-group>
 
         <div class="d-flex justify-content-between flex-wrap">
@@ -70,9 +76,9 @@
         </div>
 
         <div class="d-flex justify-content-center mt-3">
-          <a href="#">
+          <button type="submit" class="">
             <font-awesome-icon icon="arrow-right" class="arrow-btn" />
-          </a>
+          </button>
         </div>
 
         <div class="d-flex justify-content-center flex-wrap mt-4 register">
@@ -87,6 +93,10 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+import { showSuccessMessage, showErrorMessage } from '@/common/utils/notifications';
+import { validateLoginForm } from '@/common/utils/validate';
+
 export default {
   data() {
     return {
@@ -96,12 +106,27 @@ export default {
         checked: [],
       },
       show: true,
+      errors: "",
     };
   },
   methods: {
-    onSubmit(event) {
-      event.preventDefault();
-      alert(JSON.stringify(this.form));
+    ...mapActions('auth',["handleLogin"]),  
+    async onSubmit() {
+      try {
+        this.errors = validateLoginForm(this.form);
+        if(Object.keys(this.errors).length > 0 ) {
+          return;
+        }
+
+        await this.handleLogin({
+          account: this.form.email,
+          password: this.form.password,
+        });
+        this.$router.push('/dashboard');
+        showSuccessMessage();
+      } catch (error) {
+        showErrorMessage();
+      }
     },
     onReset(event) {
       event.preventDefault();
@@ -109,10 +134,14 @@ export default {
       this.form.password = "";
       this.form.checked = [];
       this.show = false;
+      this.errors = {};
       this.$nextTick(() => {
         this.show = true;
       });
     },
+    clearError(field) {
+      this.$set(this.errors, field, '');
+    }
   },
 };
 </script>
@@ -202,6 +231,7 @@ body {
       box-shadow: none;
     }
   }
+  
   .register {
     span {
       color: $lightBlack;

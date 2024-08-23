@@ -35,17 +35,15 @@
                         class="avatar sm rounded-pill me-3 flex-shrink-0"
                         :alt="student.name"
                       />
-                      <div>
-                        <div class="h6 mb-0 lh-1">{{ student.name }}</div>
-                      </div>
+                      <div class="h6 mb-0 truncate">{{ student.name }}</div>
                     </div>
                   </td>
                   <td>{{ student.gender }}</td>
                   <td>{{ student.birthdate }}</td>
                   <td>{{ student.phone }}</td>
-                  <td>{{ student.address }}</td>
+                  <td class="truncate" style="max-width: 500px;">{{ student.address }}</td>
                   <td>{{ student.class }}</td>
-                  <td>{{ student.homeroomTeacher }}</td>
+                  <td class="truncate">{{ student.homeroomTeacher }}</td>
                   <td class="text-center">
                     <b-button-group>
                       <b-button variant="success" size="sm">
@@ -70,67 +68,29 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
 export default {
   data() {
     return {
-      students: [
-        {
-          id: 1,
-          name: "Mark Voldov",
-          gender: "Male",
-          birthdate: "21 Tháng 9, 1990",
-          phone: "(555) 123-4567",
-          address: "1234 Elm Street, Springfield",
-          class: "Lớp A",
-          homeroomTeacher: "Cô Johnson",
-          avatar: "https://bootdey.com/img/Content/avatar/avatar1.png",
-        },
-        {
-          id: 2,
-          name: "Topias Kantola",
-          gender: "Male",
-          birthdate: "15 Tháng 5, 1995",
-          phone: "(555) 987-6543",
-          address: "5678 Maple Avenue, Lincoln",
-          class: "Lớp B",
-          homeroomTeacher: "Thầy Smith",
-          avatar: "https://bootdey.com/img/Content/avatar/avatar2.png",
-        },
-        {
-          id: 3,
-          name: "Anaiah Whitten",
-          gender: "Male",
-          birthdate: "12 Tháng 6, 2000",
-          phone: "(555) 234-5678",
-          address: "9101 Oak Street, Maplewood",
-          class: "Lớp C",
-          homeroomTeacher: "Cô Davis",
-          avatar: "https://bootdey.com/img/Content/avatar/avatar3.png",
-        },
-        {
-          id: 4,
-          name: "Wyatt Morris",
-          gender: "Female",
-          birthdate: "04 Tháng 6, 1992",
-          phone: "(555) 345-6789",
-          address: "1112 Birch Road, Oakdale",
-          class: "Lớp D",
-          homeroomTeacher: "Thầy Brown",
-          avatar: "https://bootdey.com/img/Content/avatar/avatar4.png",
-        },
-        {
-          id: 5,
-          name: "Eliana Stout",
-          gender: "Female",
-          birthdate: "01 Tháng 6, 1994",
-          phone: "(555) 456-7890",
-          address: "1314 Pine Lane, Brookside",
-          class: "Lớp E",
-          homeroomTeacher: "Cô Wilson",
-          avatar: "https://bootdey.com/img/Content/avatar/avatar5.png",
-        },
-      ],
+      entries: [],
     };
+  },
+  computed: {
+    ...mapGetters("student",["students"]),
+  },
+  methods: {
+    ...mapActions("student",['ListStudents']),
+    async getListStudent() {
+      const response = await this.ListStudents(this.$router.query);
+      if(response?.status == 200) {
+        this.entries = response?.data?.data ?? [];
+      } else {
+        this.entries = this.students;
+      }
+    }
+  },
+  created() {
+    this.getListStudent();
   },
 };
 </script>

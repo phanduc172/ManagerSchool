@@ -6,12 +6,22 @@
 					<div class="card">
 						<div class="card-body">
 							<div class="d-flex flex-column align-items-center text-center">
-								<img src="https://bootdey.com/img/Content/avatar/avatar6.png" alt="Admin" class="rounded-circle p-1 bg-primary" width="110">
+								<label for="upload-image" class="position-relative">
+									<img 
+									src="https://naidecor.vn/wp-content/uploads/2019/12/lat-go-chup-anh-trang-tri-decor-11.jpg" 
+									alt="Admin" 
+									class="rounded-circle p-1 border border-secondary border-2" 
+									width="110" 
+									style="cursor: pointer;">
+									<input class="d-none"
+									type="file" 
+									id="upload-image" 
+									accept="image/*" 
+									onchange="previewImage(event)">
+								</label>
 								<div class="mt-3">
 									<h4>Phan Đức</h4>
-									<p class="text-secondary mb-1">Full Stack Developer</p>
-									<button class="btn btn-primary">Follow</button>
-									<button class="btn btn-outline-primary">Message</button>
+									<p class="text-secondary mb-1">Front-End Developer</p>
 								</div>
 							</div>
 							<hr class="my-4">
@@ -56,7 +66,7 @@
 									<h6 class="mb-0">Họ tên</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="Phan Đức">
+									<input type="text" class="form-control" name="name" value="Phan Đức">
 								</div>
 							</div>
                             <div class="row mb-3">
@@ -76,7 +86,7 @@
 									<h6 class="mb-0">Ngày sinh</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="date" class="form-control" value="">
+									<input type="date" :max="maxDate" class="form-control" value="">
 								</div>
 							</div>
 							<div class="row mb-3">
@@ -108,41 +118,15 @@
 									<h6 class="mb-0">Vai trò</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="Học sinh">
+									<input type="text" class="form-control" value="Học sinh" disabled>
 								</div>
 							</div>
 							<div class="row">
 								<div class="col-sm-3"></div>
 								<div class="col-sm-9 text-secondary">
-									<input type="button" class="btn btn-primary px-4" value="Cập nhật">
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="card">
-								<div class="card-body">
-									<h5 class="d-flex align-items-center mb-3">Project Status</h5>
-									<p>Web Design</p>
-									<div class="progress mb-3" style="height: 5px">
-										<div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-									</div>
-									<p>Website Markup</p>
-									<div class="progress mb-3" style="height: 5px">
-										<div class="progress-bar bg-danger" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-									</div>
-									<p>One Page</p>
-									<div class="progress mb-3" style="height: 5px">
-										<div class="progress-bar bg-success" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-									</div>
-									<p>Mobile Template</p>
-									<div class="progress mb-3" style="height: 5px">
-										<div class="progress-bar bg-warning" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-									</div>
-									<p>Backend API</p>
-									<div class="progress" style="height: 5px">
-										<div class="progress-bar bg-info" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+									<div class="d-flex justify-content-center">
+										<input type="button" class="btn btn-outline-secondary px-4 me-3" value="Làm mới">
+										<input type="button" class="btn btn-primary px-4" value="Cập nhật">
 									</div>
 								</div>
 							</div>
@@ -155,8 +139,19 @@
 </template>
 
 <script>
+import { getMaxDate } from '../../common/utils/validate';
 export default {
+	data() {
+		return {
+			maxDate: getMaxDate(),
+		}
+	},
+	methods: {
 
+	},
+	created() {
+		this.maxDate = getMaxDate();
+	}
 }
 </script>
 

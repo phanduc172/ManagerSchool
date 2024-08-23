@@ -15,6 +15,7 @@
       <div v-if="isManageOpen" class="manage-links">
         <a class="list-group-item list-group-item-action" href="/manager/teachers">Giáo viên</a>
         <a class="list-group-item list-group-item-action" href="/manager/students">Học sinh</a>
+        <a class="list-group-item list-group-item-action" href="/manager/users">Người dùng</a>
         <a class="list-group-item list-group-item-action" href="/manager/classes">Lớp học</a>
         <a class="list-group-item list-group-item-action" href="/manager/subjects">Môn học</a>
       </div>

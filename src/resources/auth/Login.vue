@@ -2,7 +2,7 @@
   <b-container id="mainContainer" align-v="center">
     <b-row align-v="center" align-h="center">
       <b-col md="5">
-        <login-form />
+        <login-form @submit="onSubmitLogin" ref="loginform"/>
       </b-col>
       <b-col md="5">
         <b-img
@@ -17,13 +17,20 @@
 </template>
 
 <script>
-import LoginForm from '../../components/auth/LoginForm.vue';
-
+import { mapActions } from 'vuex';
+import LoginForm from '@/components/auth/LoginForm.vue';
 
 export default {
   components: {
-    LoginForm
+    LoginForm,
   },
+  methods: {
+    ...mapActions("auth",['handleLogin']),
+    async onSubmitLogin({ email, password }) {
+      await this.handleLogin({ email, password });
+
+    },
+  }
 };
 </script>
 

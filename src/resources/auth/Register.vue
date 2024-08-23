@@ -6,7 +6,7 @@
       </b-col>
       <b-col md="5">
         <b-img
-          :src="require('@/assets/images/business.png')"
+          :src="require('@/assets/images/business-like.png')"
           fluid
           class="businessImg scale-in-bottom"
           center
