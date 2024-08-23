@@ -20,7 +20,7 @@
 									onchange="previewImage(event)">
 								</label>
 								<div class="mt-3">
-									<h4>Phan Đức</h4>
+									<h4>{{ profile.name }}</h4>
 									<p class="text-secondary mb-1">Front-End Developer</p>
 								</div>
 							</div>
@@ -66,7 +66,7 @@
 									<h6 class="mb-0">Họ tên</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" name="name" value="Phan Đức">
+									<input type="text" class="form-control" name="name" :value="profile.name">
 								</div>
 							</div>
                             <div class="row mb-3">
@@ -94,7 +94,7 @@
 									<h6 class="mb-0">Email</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="ph.duc172@gmail.com">
+									<input type="text" class="form-control" :value="profile.email">
 								</div>
 							</div>
 							<div class="row mb-3">
@@ -139,12 +139,16 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { getMaxDate } from '../../common/utils/validate';
 export default {
 	data() {
 		return {
 			maxDate: getMaxDate(),
 		}
+	},
+	computed: {
+		...mapGetters("auth",['profile'])
 	},
 	methods: {
 

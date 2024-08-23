@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-card id="cardLogin" class="scale-in-bl">
-      <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show" id="formLogin">
+      <b-form @submit.prevent="onSubmit" v-if="show" id="formLogin">
         <svg
           viewBox="0 0 200 200"
           xmlns="http://www.w3.org/2000/svg"
@@ -39,9 +39,9 @@
         <b-form-group id="input-group-1" label-for="email">
           <b-form-input
             id="email"
-            class="input mb-1"
+            class="input mb-2"
             v-model="form.email"
-            type="email"
+            type="text"
             placeholder="Email"
             @focus="clearError('email')"
           ></b-form-input>
@@ -53,7 +53,7 @@
         <b-form-group id="input-group-2" label-for="input-2">
           <b-form-input
             id="password"
-            class="input mb-1"
+            class="input mb-2"
             v-model="form.password"
             placeholder="Mật khẩu"
             type="password"
@@ -76,7 +76,7 @@
         </div>
 
         <div class="d-flex justify-content-center mt-3">
-          <button type="submit" class="">
+          <button type="submit" class="p-0 border-0 bg-transparent">
             <font-awesome-icon icon="arrow-right" class="arrow-btn" />
           </button>
         </div>
@@ -106,7 +106,10 @@ export default {
         checked: [],
       },
       show: true,
-      errors: "",
+      errors: {
+        email: '',
+        password: '',
+      },
     };
   },
   methods: {
@@ -128,20 +131,9 @@ export default {
         showErrorMessage();
       }
     },
-    onReset(event) {
-      event.preventDefault();
-      this.form.email = "";
-      this.form.password = "";
-      this.form.checked = [];
-      this.show = false;
-      this.errors = {};
-      this.$nextTick(() => {
-        this.show = true;
-      });
-    },
     clearError(field) {
       this.$set(this.errors, field, '');
-    }
+    },
   },
 };
 </script>

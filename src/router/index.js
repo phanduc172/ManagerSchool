@@ -10,8 +10,8 @@ const router = new VueRouter({
     { path: "*", redirect: "/" },
     {
       path: "/",
-      name: "",
-      component: () => import("../resources/Dashboard.vue"),
+      name: "home",
+      component: () => import("../App.vue"),
     },
     {
       path: "/login",
@@ -52,22 +52,37 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  let token =
-    store.getters["auth/profile"]?.token || sessionStorage.getItem("token");
+  // Lấy token từ Vuex store hoặc sessionStorage
+  let token = store.getters["auth/profile"]?.token || sessionStorage.getItem("token");
+
+  // Nếu không có token (người dùng chưa đăng nhập)
   if (!token) {
-    if (to.name != "login") {
-      return next("/login");
-    } else {
+    // Nếu trang truy cập là trang login hoặc register, cho phép tiếp tục
+    if (to.name === "login" || to.name === "register") {
       return next();
     }
+
+    // Nếu trang truy cập không phải là login hoặc register, cho phép truy cập trang dashboard
+    if (to.name === "dashboard") {
+      return next();
+    }
+
+    // Chuyển hướng đến trang login cho các trang khác
+    return next("/login");
   } else {
-    if (to.name == "login" || !to.name) {
+    // Nếu người dùng đã đăng nhập
+    if (to.name === "login" || to.name === "register") {
+      // Nếu truy cập vào trang login hoặc register, chuyển hướng đến trang dashboard
       return next("/dashboard");
     }
-    await store.dispatch("auth/GetProfile");
 
+    // Nếu là trang khác, kiểm tra và lấy profile từ Vuex store
+    await store.dispatch("auth/getProfile");
     return next();
   }
 });
+
+
+
 
 export default router;

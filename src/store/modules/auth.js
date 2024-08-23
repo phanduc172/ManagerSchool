@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../core/axios";
 import api from "../../api";
 const state = {
   profile: {
@@ -28,7 +28,7 @@ const actions = {
         email: "phanduc@gmail.com",
         password: "123",
         name: "Phan Đức",
-        token: "token",
+        token: "gmslgnslkdgnksngsndgsdbjsbj3jt350sjgb",
       };
       sessionStorage.setItem("token", userData.token);
       commit("setProfile", userData);
@@ -37,12 +37,20 @@ const actions = {
       throw new Error("Tài khoản hoặc mật khẩu không đúng");
     }
   },
-  async GetProfile({ commit }) {
+  
+  async handleLogout({ commit }) {
+    sessionStorage.removeItem("profile");
+    sessionStorage.removeItem("token");
+    commit('setProfile', null)
+    this.router.push("/dashboard")
+  },
+
+  async getProfile({ commit }) {
     // const response = await axios({
     //   url: api.GetProfile,
     //   method: "GET",
     // });
-    const response = {}
+    const response = {};
     if (response?.code == 200) {
       commit("setProfile", response.data?.data);
     } else {
