@@ -1,10 +1,14 @@
 <template>
   <div class="container mt-3">
-    <div class="d-flex justify-content-between mb-3">
-      <div class="input-group w-50 shadow-sm">
-        <input type="text" class="form-control" placeholder="Tìm kiếm giáo viên...">
-      </div>  
-      <button class="btn btn-outline-success border-2 shadow-sm">Thêm</button>
+    <div class="d-flex justify-content-between my-3">
+      <input
+        type="text"
+        v-model="searchQuery"
+        placeholder="Tìm kiếm giáo viên..."
+      />
+      <b-button href="/manager/teachers/create" variant="success">
+        Thêm mới
+      </b-button>
     </div>
     <div class="row">
       <div class="col-12 mb-3 mb-lg-5">
@@ -30,11 +34,11 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="(teacher, index) in teachers"
-                  :key="teacher.id"
+                  v-for="(teacher, index) in paginatedTeachers"
+                  :key="index"
                   class="align-middle"
                 >
-                  <td class="text-center">{{ index + 1 }}</td>
+                  <td class="text-center">{{ (currentPage -1) * perPage + index + 1 }}</td>
                   <td>
                     <div class="d-flex align-items-center">
                       <img
@@ -68,20 +72,28 @@
                   </td>
                   <td class="text-center">
                     <b-button-group>
-                      <b-button variant="success" size="sm">
-                        <b-icon icon="eye" class="small"></b-icon>
+                      <b-button variant="transtration" size="md">
+                        <b-icon icon="eye" class="text-secondary"></b-icon>
                       </b-button>
-                      <b-button variant="warning" size="sm">
-                        <b-icon icon="pencil" class="small text-white"></b-icon>
+                      <b-button variant="transtration" size="md">
+                        <i class="bx bxs-edit-alt fs-4 text-info"></i>
                       </b-button>
-                      <b-button variant="danger" size="sm">
-                        <b-icon icon="trash" class="small"></b-icon>
+                      <b-button variant="transtration" size="md">
+                        <i class="bx bxs-trash fs-4 text-danger"></i>
                       </b-button>
                     </b-button-group>
                   </td>
                 </tr>
+                <tr v-if="filteredTeachers.length === 0">
+                  <td colspan="9" class="text-center">Không có dữ liệu</td>
+                </tr>
               </tbody>
             </table>
+            <pagination
+              :total="totalTeachers"
+              :per-page="perPage"
+              :current-page.sync="currentPage"
+            />
           </div>
         </div>
       </div>
@@ -91,14 +103,41 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import Pagination from '../../components/layout/Pagination.vue';
 export default {
   data() {
     return {
       entries: [],
+      searchQuery: "",
+      currentPage: 1,
+      perPage: 10,
     };
+  },
+  components: {
+    Pagination,
   },
   computed: {
     ...mapGetters("teacher", ["teachers"]),
+    filteredTeachers() {
+      if (!this.searchQuery) {
+        return this.teachers;
+      }
+      const query = this.searchQuery.toLowerCase();
+      return this.teachers.filter((teacher) => {
+        return (
+          teacher.name.toLowerCase().includes(query) ||
+          teacher.phone.toLowerCase().includes(query)
+        );
+      });
+    },  
+    totalTeachers() {
+      return this.filteredTeachers.length;
+    },
+    paginatedTeachers() {
+      const start = (this.currentPage - 1) * this.perPage;
+      const end = start + this.perPage;
+      return this.filteredTeachers.slice(start, end);
+    }
   },
   methods: {
     ...mapActions("teacher", ["ListTeachers", "UpdateTeacher"]),
@@ -165,6 +204,32 @@ table td {
   color: var(--vt-c-green);
   font-weight: bold;
   text-transform: uppercase;
+}
+input[type="text"] {
+  width: 50%;
+  border-radius: 0.375rem;
+  border: 1px solid #ced4da;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #123252;
+  outline: none;
+  box-shadow: var(--bs-box-shadow-lg) !important;
+}
+
+.b-button {
+  border-radius: 0.375rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.b-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 </style>
   

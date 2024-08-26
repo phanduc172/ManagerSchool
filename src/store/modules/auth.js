@@ -25,6 +25,7 @@ const actions = {
     const user = account === "phanduc@gmail.com" && password === "123";
     if (user) {
       const userData = {
+        avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNL_ZnOTpXSvhf1UaK7beHey2BX42U6solRA&s",
         email: "phanduc@gmail.com",
         password: "123",
         name: "Phan Đức",
@@ -42,7 +43,7 @@ const actions = {
     sessionStorage.removeItem("profile");
     sessionStorage.removeItem("token");
     commit('setProfile', null)
-    this.router.push("/dashboard")
+    this.router.push("/login")
   },
 
   async getProfile({ commit }) {
@@ -55,6 +56,7 @@ const actions = {
       commit("setProfile", response.data?.data);
     } else {
       commit("setProfile", {
+        avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNL_ZnOTpXSvhf1UaK7beHey2BX42U6solRA&s",
         email: "phanduc@gmail.com",
         password: "123",
         name: "Phan Đức",

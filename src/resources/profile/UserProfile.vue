@@ -8,10 +8,10 @@
 							<div class="d-flex flex-column align-items-center text-center">
 								<label for="upload-image" class="position-relative">
 									<img 
-									src="https://naidecor.vn/wp-content/uploads/2019/12/lat-go-chup-anh-trang-tri-decor-11.jpg" 
+									:src="`${profile.avatar}`" 
 									alt="Admin" 
 									class="rounded-circle p-1 border border-secondary border-2" 
-									width="110" 
+									width="150" 
 									style="cursor: pointer;">
 									<input class="d-none"
 									type="file" 

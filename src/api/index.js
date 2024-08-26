@@ -14,6 +14,11 @@ const api = {
   UpdateStudent: "/api/students/{id}",
   DeleteStudent: "/api/students/{id}",
 
+  ListClass: "/api/classes",
+  CreateClass: "/api/classes",
+  UpdateClass: "/api/classes/{id}",
+  DeleteClass: "/api/classes/{id}",
+
 
   params(endpoint, params) {
     let url = this[endpoint];

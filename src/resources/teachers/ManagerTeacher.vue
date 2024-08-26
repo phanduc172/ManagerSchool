@@ -3,15 +3,14 @@
 </template>
 
 <script>
-import TeacherList from './TeacherList.vue'
+import TeacherList from "./TeacherList.vue";
 
 export default {
-    components: {
-        TeacherList,
-    }
-}
+  components: {
+    TeacherList,
+  },
+};
 </script>
 
 <style>
-
 </style>

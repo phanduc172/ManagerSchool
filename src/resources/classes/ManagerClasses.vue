@@ -1,9 +1,9 @@
 <template>
   <student-list></student-list>
 </template>
-  
-  <script>
-import StudentList from "./StudentList.vue";
+    
+    <script>
+import StudentList from "./ClassesList.vue";
 
 export default {
   components: {
@@ -11,3 +11,4 @@ export default {
   },
 };
 </script>
+  

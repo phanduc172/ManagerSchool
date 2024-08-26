@@ -39,7 +39,7 @@
         <b-form-group id="input-group-1" label-for="email">
           <b-form-input
             id="email"
-            class="input mb-2"
+            class="input mb-3"
             v-model="form.email"
             type="text"
             placeholder="Email"
@@ -127,6 +127,9 @@ export default {
         });
         this.$router.push('/dashboard');
         showSuccessMessage();
+        setTimeout(() => {
+          window.location.reload();
+        },3000); 
       } catch (error) {
         showErrorMessage();
       }

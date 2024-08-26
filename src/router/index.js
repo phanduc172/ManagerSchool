@@ -11,8 +11,9 @@ const router = new VueRouter({
     {
       path: "/",
       name: "home",
-      component: () => import("../App.vue"),
     },
+
+    // Auth Router
     {
       path: "/login",
       name: "login",
@@ -24,24 +25,63 @@ const router = new VueRouter({
       component: () => import("../resources/auth/Register.vue"),
     },
     {
+      path: "/changepassword",
+      name: "changepassword",
+      // component: () => import("../resources/auth/Register.vue"),
+    },
+
+    {
       path: "/dashboard",
       name: "dashboard",
       component: () => import("../resources/Dashboard.vue"),
     },
+
+    // Router Teacher
     {
       path: "/manager/teachers",
       name: "teachers",
       component: () => import("../resources/teachers/ManagerTeacher.vue"),
     },
     {
+      path: "/manager/teachers/create",
+      name: "teachersCreate",
+      component: () => import("../resources/teachers/TeacherForm.vue"),
+    },
+
+    // Router Student
+    {
       path: "/manager/students",
       name: "students",
       component: () => import("../resources/students/ManagerStudent.vue"),
     },
     {
+      path: "/manager/students/create",
+      name: "studentCreate",
+      component: () => import('../resources/students/StudentForm.vue'),
+    },
+
+    // Router User
+    {
       path: "/manager/users",
       name: "users",
       component: () => import("../resources/users/ManagerUser.vue"),
+    },
+    
+    // Router Class
+    {
+      path: "/manager/classes",
+      name: "classes",
+      component: () => import("../resources/classes/ManagerClasses.vue"),
+    },
+    {
+      path: "/manager/classes/create",
+      name: "classesCreate",
+      component: () => import("../resources/classes/ClassesForm.vue"),
+    },
+    {
+      path: "/manager/subjects",
+      name: "subjects",
+      // component: () => import("../resources/users/ManagerUser.vue"),
     },
     {
       path: "/profile",
@@ -62,8 +102,8 @@ router.beforeEach(async (to, from, next) => {
       return next();
     }
 
-    // Nếu trang truy cập không phải là login hoặc register, cho phép truy cập trang dashboard
-    if (to.name === "dashboard") {
+    // Nếu trang truy cập không phải là login hoặc register, cho phép truy cập trang / là trang home
+    if (to.path === "/") {
       return next();
     }
 

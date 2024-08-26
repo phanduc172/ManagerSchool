@@ -3,7 +3,7 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 
-import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
+import { BootstrapVue, BootstrapVueIcons,FormGroupPlugin  } from 'bootstrap-vue'
 
 import './assets/main.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -20,6 +20,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 
 Vue.use(BootstrapVue)
+Vue.use(FormGroupPlugin)
 Vue.use(BootstrapVueIcons)
 
 new Vue({

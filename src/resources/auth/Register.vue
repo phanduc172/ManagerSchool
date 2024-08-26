@@ -1,17 +1,17 @@
 <template>
   <b-container id="mainContainer" align-v="center">
     <b-row align-v="center" align-h="center">
-      <b-col md="5">
+      <b-col md="6" class="mt-5">
         <register-form />
       </b-col>
-      <b-col md="5">
+      <!-- <b-col md="5">
         <b-img
           :src="require('@/assets/images/business-like.png')"
           fluid
           class="businessImg scale-in-bottom"
           center
         />
-      </b-col>
+      </b-col> -->
     </b-row>
   </b-container>
 </template>
