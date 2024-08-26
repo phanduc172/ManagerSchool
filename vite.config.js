@@ -8,13 +8,13 @@ export default defineConfig({
   plugins: [
     vue2(),
     legacy({
-      targets: ['defaults', 'not IE 11', 'last 2 versions'], // Điều chỉnh mục tiêu để bao gồm các trình duyệt hỗ trợ mới hơn
+      targets: ['defaults', 'not IE 11', 'last 2 versions'],
       additionalLegacyPolyfills: ['regenerator-runtime/runtime']
     }),
     babel({
       babelHelpers: 'bundled',
       presets: ['@babel/preset-env'],
-      plugins: ['@babel/plugin-transform-async-to-generator'] // Chuyển đổi async generators
+      plugins: ['@babel/plugin-transform-async-to-generator']
     })
   ],
   resolve: {
@@ -41,13 +41,12 @@ export default defineConfig({
         chunkFileNames: 'assets/[name].js',
         assetFileNames: 'assets/[name].[ext]',
         manualChunks: {
-          vendor: ['vue', 'vuex', 'vue-router'], // Tách các thư viện chính ra
-          lodash: ['lodash'], // Thêm lodash vào chunk riêng nếu cần thiết
-          // Bạn có thể thêm các chunks khác nếu cần thiết
+          vendor: ['vue', 'vuex', 'vue-router'],
+          lodash: ['lodash'], 
         }
       }
     },
-    chunkSizeWarningLimit: 2000 // Tăng giới hạn cảnh báo kích thước chunk lên 2000 KiB
+    chunkSizeWarningLimit: 2000
   },
   server: {
     port: 3000,

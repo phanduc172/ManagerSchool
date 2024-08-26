@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom shadow-sm bg-white">
+  <nav class="navbar navbar-expand navbar-light bg-light border-bottom shadow-sm bg-white">
     <div class="container-fluid">
       <button class="btn btn-outline-success" @click="$emit('toggleSidebar')">
         <i class="bi bi-list chevron_color"></i>
