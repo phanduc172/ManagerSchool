@@ -1,4 +1,5 @@
-import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/src/sweetalert2.js';
+
 
 export const showDeleteConfirmation = async () => {
   const result = await Swal.fire({
