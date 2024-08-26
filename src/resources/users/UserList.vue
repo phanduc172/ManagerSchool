@@ -8,7 +8,7 @@
           placeholder="Tìm kiếm người dùng..."
         />
       </div>
-      <button class="btn btn-outline-success border-2 shadow-sm">Thêm</button>
+      <button class="btn btn-success border-2 shadow-sm">Thêm</button>
     </div>
     <div class="row">
       <div class="col-12 mb-3 mb-lg-5">

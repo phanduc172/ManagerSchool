@@ -1,7 +1,7 @@
 <template>
   <div class="row p-3 m-3">
     <div
-      class="col-md-8 offset-md-2 col-lg-6 offset-lg-3 shadow-sm p-3 border rounded shadow-lg"
+      class="col-md-8 offset-md-2 col-lg-6 offset-lg-3 p-3 border rounded shadow-lg bg-white"
     >
       <h4 class="d-block text-center fw-bold text-success">Thêm học sinh</h4>
       <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
@@ -40,7 +40,9 @@
         </b-form-group>
 
         <b-form-group class="mb-2">
-          <label for="gender">Giới tính<span class="text-danger">*</span></label>
+          <label for="gender"
+            >Giới tính<span class="text-danger">*</span></label
+          >
           <b-form-select
             id="gender"
             v-model="form.gender"
@@ -133,21 +135,20 @@ import { getMaxDate, validateFormStudent } from "../../common/utils/validate";
 export default {
   data() {
     return {
-      selected: null,
       form: {
         id: "",
         name: "",
-        gender: "",
+        gender: null,
         phone: "",
         address: "",
         classes: "",
         checked: [],
       },
       optionsGender: [
-        { value: null, text: "Chọn giới tính...", disabled: true },
-        { value: 0, text: "Nam" },
-        { value: 1, text: "Nữ" },
-        { value: 2, text: "Khác" },
+        { value: null, text: "Chọn giới tính", disabled: true },
+        { value: "male", text: "Nam" },
+        { value: "female", text: "Nữ" },
+        { value: "other", text: "Khác" },
       ],
       errors: {
         id: "",

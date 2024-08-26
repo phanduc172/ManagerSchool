@@ -34,13 +34,13 @@
                 <tr
                   v-for="(classes, index) in paginatedClasses"
                   :key="index"
-                  class="align-middle"
+                  class="align-middle text-center"
                 >
                   <td class="text-center">
                     {{ (currentPage - 1) * perPage + index + 1 }}
                   </td> 
                   <td class="h6">{{ classes.nameClass }}</td>
-                  <td>{{ classes.nameTeacher }}</td>
+                  <td class="text-start">{{ classes.nameTeacher }}</td>
                   <td>{{ classes.totalClass }}</td>
                   <td class="text-center">
                     <b-button-group>
@@ -62,7 +62,7 @@
               </tbody>
             </table>
             <pagination
-              :total="totalStudents"
+              :total="totalClasses"
               :per-page="perPage"
               :current-page.sync="currentPage"
             />
@@ -82,7 +82,7 @@ export default {
     return {
       searchQuery: "",
       currentPage: 1,
-      perPage: 10,
+      perPage: 5,
     };
   },
   computed: {
@@ -94,8 +94,8 @@ export default {
       const query = this.searchQuery.toLowerCase();
       return this.classes.filter((student) => {
         return (
-          student.name.toLowerCase().includes(query) ||
-          student.phone.toLowerCase().includes(query)
+          student.nameClass.toLowerCase().includes(query) ||
+          student.nameTeacher.toLowerCase().includes(query)
         );
       });
     },

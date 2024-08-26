@@ -9,40 +9,40 @@ const state = {
       totalClass: 10,
     },
     {
-      id: 1,
-      nameClass: "Lớp 1A",
-      nameTeacher: "Phan Đức",
-      totalClass: 10,
+      id: 2,
+      nameClass: "Lớp 1B",
+      nameTeacher: "Nguyễn Minh",
+      totalClass: 15,
     },
     {
-      id: 1,
-      nameClass: "Lớp 1A",
-      nameTeacher: "Phan Đức",
-      totalClass: 10,
+      id: 3,
+      nameClass: "Lớp 2A",
+      nameTeacher: "Trần Anh",
+      totalClass: 12,
     },
     {
-      id: 1,
-      nameClass: "Lớp 1A",
-      nameTeacher: "Phan Đức",
-      totalClass: 10,
+      id: 4,
+      nameClass: "Lớp 2B",
+      nameTeacher: "Lê Văn",
+      totalClass: 18,
     },
     {
-      id: 1,
-      nameClass: "Lớp 1A",
-      nameTeacher: "Phan Đức",
-      totalClass: 10,
+      id: 5,
+      nameClass: "Lớp 3A",
+      nameTeacher: "Võ Thị",
+      totalClass: 20,
     },
     {
-      id: 1,
-      nameClass: "Lớp 1A",
-      nameTeacher: "Phan Đức",
-      totalClass: 10,
+      id: 6,
+      nameClass: "Lớp 3B",
+      nameTeacher: "Hoàng Thái",
+      totalClass: 22,
     },
     {
-      id: 1,
-      nameClass: "Lớp 1A",
-      nameTeacher: "Phan Đức",
-      totalClass: 10,
+      id: 7,
+      nameClass: "Lớp 4A",
+      nameTeacher: "Ngô Quang",
+      totalClass: 25,
     },
   ],
 };
@@ -72,7 +72,7 @@ const actions = {
   },
   async UpdateClass(_, { id, body }) {
     const response = await axios({
-      url: api.params("UpdateClass", {id}),
+      url: api.params("UpdateClass", { id }),
       method: "PUT",
       data: body,
     });
@@ -80,7 +80,7 @@ const actions = {
   },
   async DeleteClass(_, id) {
     const response = await axios({
-      url: api.params("DeleteClass", {id}),
+      url: api.params("DeleteClass", { id }),
       method: "DELETE",
     });
     return response;
@@ -88,7 +88,7 @@ const actions = {
 };
 
 const mutations = {
-    UpdateClass(state, entries) {
+  UpdateClass(state, entries) {
     state.entries = entries;
   },
 };

@@ -86,3 +86,21 @@ export function validateFormStudent(form) {
 
   return errors;
 }
+
+export function validateFormClass(form) {
+  const errors = {};
+
+  if (!form.classId) {
+    errors.classId = "Mã lớp không được để trống";
+  }
+
+  if (!form.className) {
+    errors.className = "Tên lớp không được để trống";
+  }
+
+  if (!form.teacher) {
+    errors.teacher = "Vui lòng chọn giáo viên";
+  }
+
+  return errors;
+}

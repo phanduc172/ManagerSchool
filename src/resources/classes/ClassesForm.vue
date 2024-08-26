@@ -1,33 +1,54 @@
 <template>
-  <div class="row justify-content-center mt-4">
-    <div class="col-md-8 col-lg-6 p-4 border rounded bg-light shadow-sm">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-8 col-lg-6 p-4 border rounded shadow-lg bg-white">
       <h4 class="text-center text-success mb-4">Thêm lớp học</h4>
       <form @submit.prevent="onSubmit" @reset="onReset">
         <div class="form-group mb-3">
-          <label for="classId" class="form-label">Mã lớp</label>
+          <label for="classId" class="form-label"
+            >Mã lớp <span class="text-danger">*</span></label
+          >
           <input
             type="text"
             class="form-control"
             id="classId"
             v-model="form.classId"
             placeholder="Nhập mã lớp"
+            @focus="clearError('classId')"
           />
+          <div class="text-danger mb-2" v-if="errors.classId">
+            *
+            {{ errors.classId }}
+          </div>
         </div>
         <div class="form-group mb-3">
-          <label for="className" class="form-label">Tên lớp</label>
+          <label for="className" class="form-label"
+            >Tên lớp <span class="text-danger">*</span></label
+          >
           <input
             type="text"
             class="form-control"
             id="className"
             v-model="form.className"
             placeholder="Nhập tên lớp"
+            @focus="clearError('className')"
           />
+          <div class="text-danger mb-2" v-if="errors.className">
+            *
+            {{ errors.className }}
+          </div>
         </div>
 
         <div class="form-group mb-3">
-          <label for="teacher" class="form-label">Giáo viên chủ nhiệm</label>
-          <select id="teacher" class="form-control">
-            <option selected disabled>Chọn giáo viên...</option>
+          <label for="teacher" class="form-label">
+            Giáo viên chủ nhiệm <span class="text-danger">*</span>
+          </label>
+          <select
+            id="teacher"
+            class="form-control"
+            v-model="form.teacher"
+            @change="clearError('teacher')"
+          >
+            <option value="" disabled>Chọn giáo viên...</option>
             <option
               v-for="teacher in teacherOptions"
               :key="teacher"
@@ -36,23 +57,15 @@
               {{ teacher }}
             </option>
           </select>
+          <div class="text-danger mb-2" v-if="errors.teacher">
+            * {{ errors.teacher }}
+          </div>
         </div>
-
-        <div class="form-group mb-4">
-          <label for="totalStudents" class="form-label">Tổng số học sinh</label>
-          <input
-            type="number"
-            class="form-control"
-            id="totalStudents"
-            min="0"
-            v-model="form.totalStudents"
-            placeholder="Nhập tổng số học sinh"
-          />
-        </div>
-
-        <div class="form-group d-flex justify-content-end">
-          <button type="reset" class="btn btn-secondary me-2">Làm mới</button>
-          <button type="submit" class="btn btn-success">Thêm lớp</button>
+        <div class="form-group d-flex justify-content-start">
+          <button type="submit" class="btn btn-success me-2">Thêm lớp</button>
+          <button type="reset" class="btn btn-outline-secondary">
+            Làm mới
+          </button>
         </div>
       </form>
     </div>
@@ -60,27 +73,39 @@
 </template>
 
 <script>
+import { validateFormClass } from "../../common/utils/validate";
 export default {
   data() {
     return {
       form: {
         classId: "",
         className: "",
-        teacher: null, 
-        totalStudents: "",
+        teacher: "",
+      },
+      errors: {
+        classId: "",
+        className: "",
+        teacher: null,
       },
       teacherOptions: ["Nguyễn Văn A", "Trần Thị B", "Phạm Văn C"],
     };
   },
   methods: {
     onSubmit() {
+      this.errors = validateFormClass(this.form);
+      if (Object.keys(this.errors).length > 0) {
+        return;
+      }
       alert(JSON.stringify(this.form));
+      this.onReset();
     },
     onReset() {
-      this.form.classId = "";
-      this.form.className = "";
-      this.form.teacher = null; // Reset this to null
-      this.form.totalStudents = "";
+      form.classId = "";
+      form.className = "";
+      form.teacher = null;
+    },
+    clearError(field) {
+      this.$set(this.errors, field, "");
     },
   },
 };

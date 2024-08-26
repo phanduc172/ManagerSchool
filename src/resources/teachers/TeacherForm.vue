@@ -1,9 +1,10 @@
 <template>
   <div class="row p-3 m-3">
     <div
-      class="col-md-8 col-lg-6 offset-lg-3 offset-md-2 shadow-sm p-3 border rounded shadow-lg"
+      class="col-md-8 col-lg-6 offset-lg-3 offset-md-2 p-3 border rounded shadow-lg bg-white"
     >
       <h4 class="d-block text-center fw-bold text-success">Thêm giáo viên</h4>
+      <hr>
       <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
         <b-form-group class="mb-2">
           <label for="id"

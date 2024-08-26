@@ -29,6 +29,11 @@ const router = new VueRouter({
       name: "changepassword",
       // component: () => import("../resources/auth/Register.vue"),
     },
+    {
+      path: "/recoverpassword",
+      name: "recoverpassword",
+      component: () => import("../components/auth/FormRecover.vue"),
+    },
 
     {
       path: "/dashboard",
@@ -78,11 +83,18 @@ const router = new VueRouter({
       name: "classesCreate",
       component: () => import("../resources/classes/ClassesForm.vue"),
     },
+    // Router Subject
     {
       path: "/manager/subjects",
       name: "subjects",
-      // component: () => import("../resources/users/ManagerUser.vue"),
+      component: () => import("../resources/subject/ManagerSubject.vue"),
     },
+    {
+      path: "/manager/subjects/create",
+      name: "subjectsCreate",
+      component: () => import("../resources/subject/SubjectForm.vue"),
+    },
+    //
     {
       path: "/profile",
       name: "profile",
@@ -98,7 +110,7 @@ router.beforeEach(async (to, from, next) => {
   // Nếu không có token (người dùng chưa đăng nhập)
   if (!token) {
     // Nếu trang truy cập là trang login hoặc register, cho phép tiếp tục
-    if (to.name === "login" || to.name === "register") {
+    if (to.name === "login" || to.name === "register" || to.name === "recoverpassword") {
       return next();
     }
 

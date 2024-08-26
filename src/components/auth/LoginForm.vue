@@ -69,7 +69,7 @@
             ><span class="ms-2">Ghi nhớ mật khẩu</span></b-form-checkbox
           >
           <div>
-            <router-link to="/recover" class="forgotPassword"
+            <router-link to="/recoverpassword" class="forgotPassword"
               >Quên mật khẩu?</router-link
             >
           </div>
