@@ -1,8 +1,9 @@
 const api = {
   UserLogin: "/v1/user/login",
-  GetProfile: "/v1/user/me",
+  UserRegiser: "/v1/user/create",
 
-  ListAllUsers: "/v1/admin/all",
+  GetProfile: "/v1/user/me",
+  ListAllAccount: "/v1/admin/all",
 
   ListTeachers: "/api/teachers",
   CreateTeacher: "/api/teachers",

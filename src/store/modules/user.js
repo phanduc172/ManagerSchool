@@ -30,15 +30,25 @@ const getters = {
 };
 
 const actions = {
-  async ListAllUsers(_, query = {}) {
+  async GetProfile(_, query = {}) {
     const response = await axios({
-      url: api.ListAllUsers,
+      url: api.GetProfile,
+      method: "GET",
+      params: query,
+    });
+    return response;
+  },
+  
+  async ListAllAccount(_, query = {}) {
+    const response = await axios({
+      url: api.ListAllAccount,
       method: "GET",
       params: query,
     });
     return response;
   },
 };
+
 
 const mutations = {
 

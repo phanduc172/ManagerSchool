@@ -28,7 +28,6 @@ export default {
     ...mapActions("auth",['handleLogin']),
     async onSubmitLogin({ email, password }) {
       await this.handleLogin({ email, password });
-
     },
   }
 };

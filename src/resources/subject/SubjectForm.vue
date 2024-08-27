@@ -1,25 +1,25 @@
 <template>
     <div class="row justify-content-center mt-5">
       <div class="col-md-8 col-lg-6 p-4 border rounded shadow-lg bg-white">
-        <h4 class="text-center text-success mb-4">Thêm lớp học</h4>
+        <h4 class="text-center text-success mb-4">Thêm môn học</h4>
         <form @submit.prevent="onSubmit" @reset="onReset">
           <div class="form-group mb-3">
-            <label for="classId" class="form-label">Mã lớp <span class="text-danger">*</span></label>
+            <label for="subjectId" class="form-label">Mã môn học <span class="text-danger">*</span></label>
             <input
               type="text"
               class="form-control"
-              id="classId"
-              v-model="form.classId"
+              id="subjectId"
+              v-model="form.subjectId"
               placeholder="Nhập mã lớp"
             />
           </div>
           <div class="form-group mb-3">
-            <label for="className" class="form-label">Tên lớp <span class="text-danger">*</span></label>
+            <label for="subjectName" class="form-label">Tên môn học <span class="text-danger">*</span></label>
             <input
               type="text"
               class="form-control"
-              id="className"
-              v-model="form.className"
+              id="subjectName"
+              v-model="form.subjectName"
               placeholder="Nhập tên lớp"
             />
           </div>
@@ -51,10 +51,9 @@
     data() {
       return {
         form: {
-          classId: "",
-          className: "",
+          subjectId: "",
+          subjectName: "",
           teacher: null,
-          totalStudents: "",
         },
         teacherOptions: ["Nguyễn Văn A", "Trần Thị B", "Phạm Văn C"],
       };
@@ -64,10 +63,9 @@
         alert(JSON.stringify(this.form));
       },
       onReset() {
-        this.form.classId = "";
-        this.form.className = "";
+        this.form.subjectId = "";
+        this.form.subjectName = "";
         this.form.teacher = null;
-        this.form.totalStudents = "";
       },
     },
   };

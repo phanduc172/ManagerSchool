@@ -12,7 +12,7 @@
 									alt="Admin" 
 									class="rounded-circle p-1 border border-secondary border-2" 
 									width="150" 
-									style="cursor: pointer;">
+									style="cursor: pointer; width: 200px; height: 200px;">
 									<input class="d-none"
 									type="file" 
 									id="upload-image" 
@@ -31,12 +31,12 @@
 				<div class="col-lg-8">
 					<div class="card">
 						<div class="card-body ">
-							<div class="row mb-3">
+							<div class="row mb-3 d-none">
 								<div class="col-sm-3">
 									<h6 class="mb-0 ">Mã sinh viên</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="20T1020019">
+									<input type="text" class="form-control" :value="profile.Id">
 								</div>
 							</div>
 							<div class="row mb-3">
@@ -64,7 +64,7 @@
 									<h6 class="mb-0">Ngày sinh</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="date" :max="maxDate" class="form-control" value="">
+									<input type="date" :max="maxDate" class="form-control" :value="profile.date_of_birth">
 								</div>
 							</div>
 							<div class="row mb-3">
@@ -80,7 +80,7 @@
 									<h6 class="mb-0">Số điện thoại</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="0912151596">
+									<input type="text" class="form-control" :value="profile.phone">
 								</div>
 							</div>
 							<div class="row mb-3">
@@ -88,7 +88,7 @@
 									<h6 class="mb-0">Địa chỉ</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="Bùi Thị Xuân, phường Phường Đúc, Thành phố Huế">
+									<input type="text" class="form-control" :value="profile.address">
 								</div>
 							</div>
 							<div class="row mb-3">
@@ -96,7 +96,7 @@
 									<h6 class="mb-0">Vai trò</h6>
 								</div>
 								<div class="col-sm-9 text-secondary">
-									<input type="text" class="form-control" value="Học sinh" disabled>
+									<input type="text" class="form-control" :value="profile.role_type" disabled>
 								</div>
 							</div>
 							<div class="row">

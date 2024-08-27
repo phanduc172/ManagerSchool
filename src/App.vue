@@ -56,6 +56,7 @@ export default {
 
 <style>
 #app {
+  min-width: 375px;
   min-height: 100vh;
   display: flex;
   overflow: hidden;

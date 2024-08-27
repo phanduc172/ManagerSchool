@@ -1,7 +1,12 @@
 <template>
   <div>
     <b-card id="cardLogin" class="scale-in-bl">
-      <b-form @submit="onSubmit" @reset="onReset" v-if="show" id="formLogin">
+      <b-form
+        @submit.prevent="onSubmit"
+        @reset="onReset"
+        v-if="show"
+        id="formLogin"
+      >
         <svg
           viewBox="0 0 200 200"
           xmlns="http://www.w3.org/2000/svg"
@@ -14,7 +19,7 @@
           />
         </svg>
         <h1 class="text-center mb-3">Đăng ký</h1>
-        <h2 class="text-center mb-4">Đăng ký với:</h2>
+        <!-- <h2 class="text-center mb-4">Đăng ký với:</h2>
         <div class="d-flex justify-content-center mb-4">
           <b-img
             :src="require('@/assets/images/google.png')"
@@ -34,16 +39,20 @@
         </div>
         <span class="text-center mb-4 other-account"
           >Hoặc tạo tài khoản riêng của bạn</span
-        >
-        <b-form-group id="input-group-1" label-for="name">
+        > -->
+        <b-form-group id="input-group-1" label-for="usename">
           <b-form-input
-            id="name"
+            id="usename"
             class="input"
-            v-model="form.name"
+            v-model="form.usename"
             type="text"
             placeholder="Họ và tên"
-            required
+            @focus="clearError('usename')"
           ></b-form-input>
+          <div class="text-danger mb-2" v-if="errors.usename">
+            *
+            {{ errors.usename }}
+          </div>
         </b-form-group>
 
         <b-form-group id="input-group-2" label-for="email">
@@ -53,8 +62,12 @@
             v-model="form.email"
             type="email"
             placeholder="Email"
-            required
+            @focus="clearError('email')"
           ></b-form-input>
+          <div class="text-danger mb-2" v-if="errors.email">
+            *
+            {{ errors.email }}
+          </div>
         </b-form-group>
 
         <b-form-group id="input-group-3" label-for="password">
@@ -64,21 +77,26 @@
             v-model="form.password"
             placeholder="Mật khẩu"
             type="password"
-            required
+            @focus="clearError('password')"
           ></b-form-input>
+          <div class="text-danger mb-2" v-if="errors.password">
+            *
+            {{ errors.password }}
+          </div>
         </b-form-group>
 
         <div class="d-flex justify-content-start flex-wrap">
           <b-form-checkbox value="remember" class="remember">
-            <span class="ms-2">Tôi đã đọc và đồng ý với các điều khoản sử dụng</span>
-          </b-form-checkbox
-        >
+            <span class="ms-2"
+              >Tôi đã đọc và đồng ý với các điều khoản sử dụng</span
+            >
+          </b-form-checkbox>
         </div>
 
         <div class="d-flex justify-content-center mt-3">
-          <a href="#">
+          <button type="submit" class="p-0 border-0 bg-transparent">
             <font-awesome-icon icon="arrow-right" class="arrow-btn" />
-          </a>
+          </button>
         </div>
 
         <div class="d-flex justify-content-center flex-wrap mt-4 register">
@@ -93,31 +111,60 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
+import {
+  showErrorMessage,
+  showSuccessMessage,
+} from "../../common/utils/notifications";
+import { validateRegisterForm } from "../../common/utils/validate";
 export default {
   data() {
     return {
       form: {
+        username: "",
         email: "",
-        name: "",
+        password: "",
+        role_type: "",
+      },
+      errors: {
+        username: "",
+        email: "",
         password: "",
       },
       show: true,
     };
   },
   methods: {
-    onSubmit(event) {
-      event.preventDefault();
-      alert(JSON.stringify(this.form));
+    ...mapActions("auth", ["handleRegister"]),
+
+    async onSubmit() {
+      this.errors = validateRegisterForm(this.form);
+      if (Object.keys(this.errors).length > 0) {
+        return;
+      }
+      await this.handleRegister({
+        username: this.form.username,
+        email: this.form.email,
+        password: this.form.password,
+        role_type: "student",
+        avatar: "avatar.jpg",
+      });
+      await showSuccessMessage();
+      this.$router.push("/login");
+      window.location.reload();
     },
     onReset(event) {
       event.preventDefault();
+      this.form.username = "";
       this.form.email = "";
-      this.form.name = "";
       this.form.password = "";
       this.show = false;
       this.$nextTick(() => {
         this.show = true;
       });
+    },
+    clearError(field) {
+      this.$set(this.errors, field, "");
     },
   },
 };
