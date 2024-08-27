@@ -1,4 +1,4 @@
-import Swal from 'sweetalert2'; // Importing directly from sweetalert2 for consistency
+import * as Swal from 'sweetalert2';
 
 export const showDeleteConfirmation = async () => {
   const result = await Swal.fire({

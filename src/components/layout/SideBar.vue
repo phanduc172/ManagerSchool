@@ -53,6 +53,7 @@ export default {
 .sidebar {
   width: 250px;
   background-color: #f8f9fa;
+  background-color: #f8f9fa;
   transition: transform 0.3s, width 0.3s;
   height: 100vh;
   position: fixed;
@@ -64,11 +65,12 @@ export default {
   width: 0;
 }
 .sidebar .sidebar-heading {
-  padding: 1rem;
-    background-color: #e9ecef;
+  padding: 14px 18px;
+    /* background-color: #e9ecef; */
+    background-color: #fff;
     border-bottom: 2px solid #2a9d8f;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    letter-spacing: 1px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
     font-size: 1.1rem;
     text-align: center;
