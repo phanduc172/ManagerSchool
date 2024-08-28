@@ -20,10 +20,10 @@ const api = {
   UpdateClass: "/api/classes/{id}",
   DeleteClass: "/api/classes/{id}",
 
-  ListSubjects: "/api/classes",
-  CreateSubject: "/api/classes",
-  UpdateSubject: "/api/classes/{id}",
-  DeleteSubject: "/api/classes/{id}",
+  ListSubjects: "/v1/subject/all",
+  CreateSubject: "/v1/admin/subject/add",
+  UpdateSubject: "/v1/admin/subject/{id}",
+  DeleteSubject: "/v1/admin/subject/{id}",
 
 
   params(endpoint, params) {

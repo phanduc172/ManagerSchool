@@ -55,22 +55,24 @@ const actions = {
     });
     return response;
   },
-  async CreateSubject(_, { id, body }) {
+  async CreaterSubject(_, body) {
     const response = await axios({
-      url: api.params("CreateSubject", { id }),
+      url: api.CreateSubject,
       method: "POST",
       data: body,
     });
-    return response;
+    return response.data;
   },
+
   async UpdateSubject(_, { id, body }) {
     const response = await axios({
       url: api.params("UpdateSubject", { id }),
-      method: "PUT",
+      method: "PATCH",
       data: body,
     });
     return response;
   },
+
   async DeleteSubject(_, id) {
     const response = await axios({
       url: api.params("DeleteSubject", { id }),

@@ -88,11 +88,21 @@ const router = new VueRouter({
       path: "/manager/subjects",
       name: "subjects",
       component: () => import("../resources/subject/ManagerSubject.vue"),
-    },
+      props: (route) => ({
+        page: parseInt(route.query.page) || 1,
+        limit: parseInt(route.query.limit) || 10,
+      }),
+    },    
     {
       path: "/manager/subjects/create",
       name: "subjectsCreate",
       component: () => import("../resources/subject/SubjectForm.vue"),
+    },
+    {
+      path: '/manager/subjects/edit/:id',
+      name: "subjectsEdit",
+      component: () => import("../resources/subject/SubjectForm.vue"),
+      props: true,
     },
     //
     {

@@ -24,29 +24,37 @@
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th>STT</th>
-                  <th>Tên lớp</th>
-                  <th>Giáo viên chủ nhiệm</th>
+                  <th>Mã môn học</th>
+                  <th>Tên môn học</th>
+                  <th>Số tín chỉ</th>
+                  <th>Học kỳ</th>
+                  <th>Năm học</th>
+                  <th>Khoa</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  v-for="(subjects, index) in paginatedSubjects"
-                  :key="index"
+                  v-for="(subject, index) in paginatedSubjects"
+                  :key="subject.id"
                   class="align-middle text-center"
                 >
                   <td class="text-center">
                     {{ (currentPage - 1) * perPage + index + 1 }}
                   </td>
-                  <td class="h6">{{ subjects.subjectName }}</td>
-                  <td class="text-start">{{ subjects.subjectTeacher }}</td>
+                  <td class="h6">{{ subject.subject_code }}</td>
+                  <td class="text-start">{{ subject.subject_name }}</td>
+                  <td class="text-center">{{ subject.credits }}</td>
+                  <td class="text-center">{{ subject.term_id }}</td>
+                  <td class="text-center">{{ subject.academic_year }}</td>
+                  <td class="text-center">{{ subject.department }}</td>
                   <td class="text-center">
                     <b-button-group>
                       <b-button variant="transtration" size="md">
                         <b-icon icon="eye" class="text-secondary"></b-icon>
                       </b-button>
                       <b-button variant="transtration" size="md">
-                        <i class="bx bxs-edit-alt fs-4 text-info"></i>
+                        <a href="/manager/subjects/create"><i class="bx bxs-edit-alt fs-4 text-info"></i></a>
                       </b-button>
                       <b-button variant="transtration" size="md">
                         <i class="bx bxs-trash fs-4 text-danger"></i>
@@ -55,50 +63,61 @@
                   </td>
                 </tr>
                 <tr v-if="paginatedSubjects.length === 0">
-                  <td colspan="9" class="text-center">Không có dữ liệu</td>
+                  <td colspan="8" class="text-center">Không có dữ liệu</td>
                 </tr>
               </tbody>
             </table>
-            <pagination
-              :total="totalSubjects"
-              :per-page="perPage"
-              :current-page.sync="currentPage"
-            />
           </div>
         </div>
       </div>
     </div>
+    <Pagination
+      :total="totalSubjects"
+      :limit="perPage"
+      :currentPage="currentPage"
+      @page-changed="handlePageChange"
+    />
   </div>
 </template>
-    
-    <script>
-import { mapActions, mapGetters } from "vuex";
+
+<script>
 import Pagination from "../../components/layout/Pagination.vue";
+import { mapActions } from "vuex";
+
 export default {
   components: { Pagination },
+  props: {
+    page: {
+      type: Number,
+      default: 1,
+    },
+    limit: {
+      type: Number,
+      default: 10,
+    },
+  },
   data() {
     return {
+      entries: [], // Dữ liệu môn học
       searchQuery: "",
-      currentPage: 1,
-      perPage: 5,
+      currentPage: this.page,
+      perPage: this.limit,
+      totalSubjects: 0,
+      loading: false, // Trạng thái đang tải dữ liệu
     };
   },
   computed: {
-    ...mapGetters("subject", ["subjects"]),
     filteredSubjects() {
       if (!this.searchQuery) {
-        return this.subjects;
+        return this.entries;
       }
       const query = this.searchQuery.toLowerCase();
-      return this.subjects.filter((subject) => {
+      return this.entries.filter((entry) => {
         return (
-          subject.subjectName.toLowerCase().includes(query) ||
-          subject.subjectTeacher.toLowerCase().includes(query)
+          entry.subject_name.toLowerCase().includes(query) ||
+          entry.subject_code.toLowerCase().includes(query)
         );
       });
-    },
-    totalSubjects() {
-      return this.filteredSubjects.length;
     },
     paginatedSubjects() {
       const start = (this.currentPage - 1) * this.perPage;
@@ -108,18 +127,42 @@ export default {
   },
   methods: {
     ...mapActions("subject", ["ListSubjects"]),
-    async getListSubjects() {
-      await this.ListSubjects();
+    async fetchSubjects(page = this.currentPage) {
+      this.loading = true; // Bắt đầu tải dữ liệu
+      try {
+        const response = await this.ListSubjects({ page, limit: this.perPage });
+        if (response?.status === 200) {
+          this.entries = response.data.data;
+          this.totalSubjects = response.data.total;
+        }
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      } finally {
+        this.loading = false; // Kết thúc tải dữ liệu
+      }
+    },
+    handlePageChange(page) {
+      this.currentPage = page;
+      this.$router.push({ name: "subjects", query: { page, limit: this.perPage } });
+    },
+  },
+  watch: {
+    page(newPage) {
+      this.currentPage = newPage;
+      this.fetchSubjects(newPage);
+    },
+    limit(newLimit) {
+      this.perPage = newLimit;
+      this.fetchSubjects(this.currentPage);
     },
   },
   created() {
-    this.getListSubjects();
+    this.fetchSubjects();
   },
 };
 </script>
-    
-    
-    <style scoped>
+
+<style scoped>
 body {
   margin-top: 20px;
   background: #eee;
@@ -185,4 +228,3 @@ input[type="text"]:focus {
   border: none !important;
 }
 </style>
-    

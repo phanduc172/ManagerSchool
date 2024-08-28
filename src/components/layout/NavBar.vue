@@ -11,7 +11,7 @@
           </li>
         </ul>
         <ul v-if="profile" class="navbar-nav ms-auto">
-          <b-dropdown :text="profile.name || 'User'" variant="transparent text-success fw-bold">
+          <b-dropdown :text="profile.name" variant="transparent text-success fw-bold">
             <b-dropdown-item href="changepassword" >Đổi mật khẩu</b-dropdown-item>
             <b-dropdown-item @click="logout">Đăng xuất</b-dropdown-item>
           </b-dropdown>
