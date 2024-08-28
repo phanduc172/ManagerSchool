@@ -133,7 +133,7 @@ export default {
         await showSuccessMessage();
         setTimeout(() => {
           window.location.href = "/dashboard";
-        },3000)
+        }, 3000);
       } catch (error) {
         showErrorMessage();
       }

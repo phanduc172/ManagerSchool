@@ -22,16 +22,18 @@ const api = {
 
   ListSubjects: "/v1/subject/all",
   CreateSubject: "/v1/admin/subject/add",
+  SubjectDetails: "/v1/subject/details/{id}",
   UpdateSubject: "/v1/admin/subject/{id}",
   DeleteSubject: "/v1/admin/subject/{id}",
 
-
   params(endpoint, params) {
     let url = this[endpoint];
-    console.log(this)
     if (url) {
       for (const key in params) {
-        url =  url.replace(`{${key}}`, params[key]);
+        if (params.hasOwnProperty(key)) {
+          const regex = new RegExp(`\\{${key}\\}`, 'g');
+          url = url.replace(regex, encodeURIComponent(params[key]));
+        }
       }
     }
     return url;

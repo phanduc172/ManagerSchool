@@ -10,7 +10,7 @@
             <a class="nav-link" href="/dashboard">Bảng điều khiển</a>
           </li>
         </ul>
-        <ul v-if="profile" class="navbar-nav ms-auto">
+        <ul v-if="!profile.token" class="navbar-nav ms-auto">
           <b-dropdown :text="profile.name" variant="transparent text-success fw-bold">
             <b-dropdown-item href="changepassword" >Đổi mật khẩu</b-dropdown-item>
             <b-dropdown-item @click="logout">Đăng xuất</b-dropdown-item>

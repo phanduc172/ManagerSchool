@@ -50,19 +50,26 @@
                   <td class="text-center">{{ subject.department }}</td>
                   <td class="text-center">
                     <b-button-group>
-                      <b-button variant="transtration" size="md">
-                        <b-icon icon="eye" class="text-secondary"></b-icon>
+                      <b-button
+                        variant="transtration"
+                        size="md"
+                        :to="`/manager/subjects/edit/${subject.id}`"
+                      >
+                        <i class="bx bxs-edit-alt fs-4 text-info"></i>
                       </b-button>
-                      <b-button variant="transtration" size="md">
-                        <a href="/manager/subjects/create"><i class="bx bxs-edit-alt fs-4 text-info"></i></a>
-                      </b-button>
-                      <b-button variant="transtration" size="md">
+                      <b-button
+                        variant="transtration"
+                        size="md"
+                        @click="confirmDelete(subject.id)"
+                      >
                         <i class="bx bxs-trash fs-4 text-danger"></i>
                       </b-button>
                     </b-button-group>
                   </td>
                 </tr>
-                <tr v-if="paginatedSubjects.length === 0">
+                <tr
+                  v-if="paginatedSubjects?.length === 0 || !paginatedSubjects"
+                >
                   <td colspan="8" class="text-center">Không có dữ liệu</td>
                 </tr>
               </tbody>
@@ -81,6 +88,11 @@
 </template>
 
 <script>
+import {
+  showDeleteConfirmation,
+  showErrorMessage,
+  showSuccessMessage,
+} from "../../common/utils/notifications";
 import Pagination from "../../components/layout/Pagination.vue";
 import { mapActions } from "vuex";
 
@@ -98,12 +110,12 @@ export default {
   },
   data() {
     return {
-      entries: [], // Dữ liệu môn học
+      entries: [],
       searchQuery: "",
       currentPage: this.page,
       perPage: this.limit,
       totalSubjects: 0,
-      loading: false, // Trạng thái đang tải dữ liệu
+      loading: false,
     };
   },
   computed: {
@@ -122,13 +134,13 @@ export default {
     paginatedSubjects() {
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
-      return this.filteredSubjects.slice(start, end);
+      return this.filteredSubjects?.slice(start, end);
     },
   },
   methods: {
-    ...mapActions("subject", ["ListSubjects"]),
+    ...mapActions("subject", ["ListSubjects", "DeleteSubject"]),
     async fetchSubjects(page = this.currentPage) {
-      this.loading = true; // Bắt đầu tải dữ liệu
+      this.loading = true;
       try {
         const response = await this.ListSubjects({ page, limit: this.perPage });
         if (response?.status === 200) {
@@ -138,12 +150,27 @@ export default {
       } catch (error) {
         console.error("Error fetching subjects:", error);
       } finally {
-        this.loading = false; // Kết thúc tải dữ liệu
+        this.loading = false;
+      }
+    },
+    async confirmDelete(id) {
+      const isConfirmed = await showDeleteConfirmation();
+      console.log(isConfirmed);
+      if (isConfirmed) {
+        const response = await this.DeleteSubject(id);
+        if (response?.status === 200) {
+          showSuccessMessage();
+          this.fetchSubjects();
+        }
+        showErrorMessage();
       }
     },
     handlePageChange(page) {
       this.currentPage = page;
-      this.$router.push({ name: "subjects", query: { page, limit: this.perPage } });
+      this.$router.push({
+        name: "subjects",
+        query: { page, limit: this.perPage },
+      });
     },
   },
   watch: {

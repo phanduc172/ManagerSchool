@@ -1,6 +1,6 @@
 <template>
   <b-pagination
-    v-if="totalPages > 1"
+    v-if="total > 0"
     v-model="currentPage"
     :total-rows="total"
     :per-page="limit"
