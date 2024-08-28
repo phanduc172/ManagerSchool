@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom shadow-sm bg-white">
+  <nav class="navbar navbar-expand navbar-light bg-light border-bottom shadow-sm bg-white">
     <div class="container-fluid">
       <button class="btn btn-outline-success" @click="$emit('toggleSidebar')">
         <i class="bi bi-list chevron_color"></i>
@@ -10,8 +10,8 @@
             <a class="nav-link" href="/dashboard">Bảng điều khiển</a>
           </li>
         </ul>
-        <ul v-if="profile && profile.token" class="navbar-nav ms-auto">
-          <b-dropdown :text="profile.name || 'User'" variant="transparent text-success fw-bold">
+        <ul v-if="!profile.token" class="navbar-nav ms-auto">
+          <b-dropdown :text="profile.name" variant="transparent text-success fw-bold">
             <b-dropdown-item href="changepassword" >Đổi mật khẩu</b-dropdown-item>
             <b-dropdown-item @click="logout">Đăng xuất</b-dropdown-item>
           </b-dropdown>

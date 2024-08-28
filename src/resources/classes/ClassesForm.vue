@@ -39,16 +39,16 @@
         </div>
 
         <div class="form-group mb-3">
-          <label for="teacher" class="form-label">
-            Giáo viên chủ nhiệm <span class="text-danger">*</span>
-          </label>
+          <label for="teacher" class="form-label"
+            >Giáo viên chủ nhiệm <span class="text-danger">*</span></label
+          >
           <select
             id="teacher"
             class="form-control"
             v-model="form.teacher"
             @change="clearError('teacher')"
           >
-            <option value="" disabled>Chọn giáo viên...</option>
+            <option selected disabled>Chọn giáo viên...</option>
             <option
               v-for="teacher in teacherOptions"
               :key="teacher"
@@ -58,8 +58,22 @@
             </option>
           </select>
           <div class="text-danger mb-2" v-if="errors.teacher">
-            * {{ errors.teacher }}
+            *
+            {{ errors.teacher }}
           </div>
+        </div>
+
+        <div class="form-group mb-4 d-none">
+          <label for="totalStudents" class="form-label">Tổng số học sinh</label>
+          <input
+            type="number"
+            class="form-control"
+            id="totalStudents"
+            min="0"
+            v-model="form.totalStudents"
+            placeholder="Nhập tổng số học sinh"
+            @focus="clearError('totalStudents')"
+          />
         </div>
         <div class="form-group d-flex justify-content-start">
           <button type="submit" class="btn btn-success me-2">Thêm lớp</button>
@@ -80,29 +94,44 @@ export default {
       form: {
         classId: "",
         className: "",
-        teacher: "",
+        teacher: null,
+        totalStudents: "",
       },
       errors: {
         classId: "",
         className: "",
         teacher: null,
+        totalStudents: "",
       },
       teacherOptions: ["Nguyễn Văn A", "Trần Thị B", "Phạm Văn C"],
     };
   },
   methods: {
     onSubmit() {
+      // Gọi hàm validate và cập nhật errors
       this.errors = validateFormClass(this.form);
+
+      // Kiểm tra nếu có lỗi
       if (Object.keys(this.errors).length > 0) {
+        console.log("Form contains errors:", this.errors);
         return;
       }
+
+      // Hiển thị alert khi không có lỗi
       alert(JSON.stringify(this.form));
-      this.onReset();
     },
     onReset() {
-      form.classId = "";
-      form.className = "";
-      form.teacher = null;
+      this.form.classId = "";
+      this.form.className = "";
+      this.form.teacher = null;
+      this.form.totalStudents = "";
+
+      this.errors = {
+        classId: "",
+        className: "",
+        teacher: null,
+        totalStudents: "",
+      };
     },
     clearError(field) {
       this.$set(this.errors, field, "");

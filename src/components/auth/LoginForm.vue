@@ -16,7 +16,7 @@
 
         <h1 class="text-center mb-3">Đăng nhập</h1>
         <h2 class="text-center mb-4">Chào mừng bạn trở lại!</h2>
-        <div class="d-flex justify-content-center mb-4">
+        <!-- <div class="d-flex justify-content-center mb-4">
           <b-img
             :src="require('@/assets/images/google.png')"
             fluid
@@ -35,7 +35,7 @@
         </div>
         <span class="text-center mb-4 other-account"
           >Hoặc đăng nhập bằng tài khoản của bạn</span
-        >
+        > -->
         <b-form-group id="input-group-1" label-for="email">
           <b-form-input
             id="email"
@@ -45,7 +45,8 @@
             placeholder="Email"
             @focus="clearError('email')"
           ></b-form-input>
-          <div class="text-danger mb-2" v-if="errors.email"> * 
+          <div class="text-danger mb-2" v-if="errors.email">
+            *
             {{ errors.email }}
           </div>
         </b-form-group>
@@ -59,7 +60,8 @@
             type="password"
             @focus="clearError('password')"
           ></b-form-input>
-          <div class="text-danger mb-2" v-if="errors.password"> *
+          <div class="text-danger mb-2" v-if="errors.password">
+            *
             {{ errors.password }}
           </div>
         </b-form-group>
@@ -93,9 +95,12 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import { showSuccessMessage, showErrorMessage } from '@/common/utils/notifications';
-import { validateLoginForm } from '@/common/utils/validate';
+import { mapActions } from "vuex";
+import {
+  showSuccessMessage,
+  showErrorMessage,
+} from "@/common/utils/notifications";
+import { validateLoginForm } from "@/common/utils/validate";
 
 export default {
   data() {
@@ -107,17 +112,17 @@ export default {
       },
       show: true,
       errors: {
-        email: '',
-        password: '',
+        email: "",
+        password: "",
       },
     };
   },
   methods: {
-    ...mapActions('auth',["handleLogin"]),  
+    ...mapActions("auth", ["handleLogin"]),
     async onSubmit() {
       try {
         this.errors = validateLoginForm(this.form);
-        if(Object.keys(this.errors).length > 0 ) {
+        if (Object.keys(this.errors).length > 0) {
           return;
         }
 
@@ -125,17 +130,16 @@ export default {
           account: this.form.email,
           password: this.form.password,
         });
-        this.$router.push('/dashboard');
-        showSuccessMessage();
+        await showSuccessMessage();
         setTimeout(() => {
-          window.location.reload();
-        },3000); 
+          window.location.href = "/dashboard";
+        }, 3000);
       } catch (error) {
         showErrorMessage();
       }
     },
     clearError(field) {
-      this.$set(this.errors, field, '');
+      this.$set(this.errors, field, "");
     },
   },
 };
@@ -226,7 +230,7 @@ body {
       box-shadow: none;
     }
   }
-  
+
   .register {
     span {
       color: $lightBlack;

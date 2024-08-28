@@ -24,13 +24,20 @@
                 <tr class="text-center">
                   <th class="text-center">STT</th>
                   <th>Họ tên</th>
+                  <th>Ngày sinh</th>
                   <th>Email</th>
+                  <th>Số điện thoại</th>
+                  <th>Địa chỉ</th>
+                  <th>Phòng ban</th>
+                  <th>Ngày nhập học</th>
+                  <th>Ngày bắt đầu</th>
+                  <th>Vai trò</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  v-for="(user, index) in users"
+                  v-for="(user, index) in entries"
                   :key="user.id"
                   class="align-middle"
                 >
@@ -47,7 +54,14 @@
                       </div>
                     </div>
                   </td>
+                  <td class="text-center">{{ user.date_of_birth }}</td>
                   <td class="text-center">{{ user.email }}</td>
+                  <td class="text-center">{{ user.phone }}</td>
+                  <td class="text-center">{{ user.address }}</td>
+                  <td class="text-center">{{ user.department }}</td>
+                  <td class="text-center">{{ user.enrollment_date }}</td>
+                  <td class="text-center">{{ user.hire_date }}</td>
+                  <td class="text-center">{{ user.role_type }}</td>
                   <td class="text-center">
                     <b-button-group>
                       <b-button variant="transtration" size="md">
@@ -73,6 +87,7 @@
   
   <script>
 import { mapActions, mapGetters } from "vuex";
+import { formatDate } from "@/common/utils/validate";
 export default {
   data() {
     return {
@@ -83,18 +98,36 @@ export default {
     ...mapGetters("user", ["users"]),
   },
   methods: {
-    ...mapActions("user", ["ListAllUsers"]),
-    async getListAllUsers() {
-      const response = await this.ListAllUsers(this.$route.query);
+    ...mapActions("user", ["ListAllAccount", "GetProfile"]),
+    async getProfile() {
+      const response = await this.GetProfile(this.$route.query);
       if (response?.status == 200) {
         this.entries = response?.data?.data ?? [];
       } else {
         this.entries = this.users;
       }
     },
+    async getListAllAccount() {
+      const response = await this.ListAllAccount(this.$route.query);
+      if (response?.status == 200) {
+        this.entries =
+          response.data?.data.map((entry) => {
+            return {
+              ...entry,
+              date_of_birth: formatDate(entry.date_of_birth),
+              enrollment_date: formatDate(entry.enrollment_date),
+              hire_date: formatDate(entry.hire_date),
+              created_at: formatDate(entry.created_at),
+              updated_at: formatDate(entry.updated_at),
+            };
+          }) ?? [];
+      } else {
+        this.entries = this.users;
+      }
+    },
   },
   created() {
-    this.getListAllUsers();
+    this.getListAllAccount();
   },
 };
 </script>

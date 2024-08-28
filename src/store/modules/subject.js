@@ -1,41 +1,15 @@
 import axios from "@/core/axios";
 import api from "../../api";
+import {
+  showDeleteConfirmation,
+  showSuccessMessage,
+} from "../../common/utils/notifications";
 const state = {
   entries: [
     {
       id: 1,
       subjectName: "Toán học",
       subjectTeacher: "Phan Đức",
-    },
-    {
-      id: 2,
-      subjectName: "Vật lý",
-      subjectTeacher: "Nguyễn Minh",
-    },
-    {
-      id: 3,
-      subjectName: "Hóa học",
-      subjectTeacher: "Trần Anh",
-    },
-    {
-      id: 4,
-      subjectName: "Sinh học",
-      subjectTeacher: "Lê Văn",
-    },
-    {
-      id: 5,
-      subjectName: "Ngữ văn",
-      subjectTeacher: "Võ Thị",
-    },
-    {
-      id: 6,
-      subjectName: "Lịch sử",
-      subjectTeacher: "Hoàng Thái",
-    },
-    {
-      id: 7,
-      subjectName: "Địa lý",
-      subjectTeacher: "Ngô Quang",
     },
   ],
 };
@@ -55,22 +29,42 @@ const actions = {
     });
     return response;
   },
-  async CreateSubject(_, { id, body }) {
+  async getSubjectById({ commit }, id) {
     const response = await axios({
-      url: api.params("CreateSubject", { id }),
-      method: "POST",
-      data: body,
+      url: api.params("SubjectDetails", { id }),
+      method: "GET",
     });
-    return response;
+    return response.data;
   },
-  async UpdateSubject(_, { id, body }) {
+  async CreaterSubject(_, data) {
+    const response = await axios({
+      url: api.CreateSubject,
+      method: "POST",
+      data: data,
+    });
+    return response.data;
+  },
+
+  async UpdateSubject(_, { id, data }) {
     const response = await axios({
       url: api.params("UpdateSubject", { id }),
-      method: "PUT",
-      data: body,
+      method: "PATCH",
+      data: data,
     });
-    return response;
+    console.log(response);
+    return response.data;
   },
+  // async UpdateSubject(_, data) {
+  //   const response = await axios({
+  //     url: api.params("UpdateSubject", {id: data.id }),
+  //     method: "PATCH",
+  //     data: data,
+  //   });
+  //   console.log(response.data,"Update thanh cong");
+
+  //   return response.data;
+  // },
+
   async DeleteSubject(_, id) {
     const response = await axios({
       url: api.params("DeleteSubject", { id }),

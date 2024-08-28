@@ -1,8 +1,9 @@
 const api = {
   UserLogin: "/v1/user/login",
-  GetProfile: "/v1/user/me",
+  UserRegiser: "/v1/user/create",
 
-  ListAllUsers: "/v1/admin/all",
+  GetProfile: "/v1/user/me",
+  ListAllAccount: "/v1/admin/all",
 
   ListTeachers: "/api/teachers",
   CreateTeacher: "/api/teachers",
@@ -19,18 +20,20 @@ const api = {
   UpdateClass: "/api/classes/{id}",
   DeleteClass: "/api/classes/{id}",
 
-  ListSubjects: "/api/classes",
-  CreateSubject: "/api/classes",
-  UpdateSubject: "/api/classes/{id}",
-  DeleteSubject: "/api/classes/{id}",
-
+  ListSubjects: "/v1/subject/all",
+  CreateSubject: "/v1/admin/subject/add",
+  SubjectDetails: "/v1/subject/details/{id}",
+  UpdateSubject: "/v1/admin/subject/{id}",
+  DeleteSubject: "/v1/admin/subject/{id}",
 
   params(endpoint, params) {
     let url = this[endpoint];
-    console.log(this)
     if (url) {
       for (const key in params) {
-        url =  url.replace(`{${key}}`, params[key]);
+        if (params.hasOwnProperty(key)) {
+          const regex = new RegExp(`\\{${key}\\}`, 'g');
+          url = url.replace(regex, encodeURIComponent(params[key]));
+        }
       }
     }
     return url;

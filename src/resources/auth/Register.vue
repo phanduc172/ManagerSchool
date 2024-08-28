@@ -2,7 +2,7 @@
   <b-container id="mainContainer" align-v="center">
     <b-row align-v="center" align-h="center">
       <b-col md="6" class="mt-5">
-        <register-form />
+        <register-form @submit="onSubmitRegister" ref="registerform"/>
       </b-col>
       <!-- <b-col md="5">
         <b-img
@@ -17,14 +17,23 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import RegisterForm from '../../components/auth/RegisterForm.vue';
+import { showSuccessMessage } from '../../common/utils/notifications';
 
 
 export default {
   components: {
     RegisterForm
   },
-};
+  methods: {
+      ...mapActions("auth",['handleRegister']),
+      async onSubmitRegister({ username, email, password, role_type }) {
+          await this.handleRegister({ username, email, password, role_type });
+          showSuccessMessage();
+      },
+    }
+  };
 </script>
 
 <style lang="scss">

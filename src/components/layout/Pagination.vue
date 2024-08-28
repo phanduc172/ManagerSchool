@@ -1,47 +1,48 @@
 <template>
-  <div class="pagination-container">
-    <b-pagination
-      v-model="currentPage"
-      :total-rows="total"
-      :per-page="perPage"
-      @change="onPageChange"
-      aria-controls="pagination"
-      align="center"
-    ></b-pagination>
-  </div>
+  <b-pagination
+    v-if="total > 0"
+    v-model="currentPage"
+    :total-rows="total"
+    :per-page="limit"
+    aria-controls="pagination-element"
+    @change="onPageChange"
+    class="justify-content-center my-4"
+  />
 </template>
-  
-  <script>
-import { BPagination } from "bootstrap-vue";
 
+<script>
 export default {
-  components: {
-    BPagination,
-  },
+  name: "Paginations",
   props: {
     total: {
       type: Number,
       required: true,
     },
-    perPage: {
+    limit: {
       type: Number,
       required: true,
     },
     currentPage: {
       type: Number,
-      required: true,
+      default: 1,
+    },
+  },
+  computed: {
+    totalPages() {
+      return Math.ceil(this.total / this.limit);
     },
   },
   methods: {
     onPageChange(page) {
-      this.$emit("update:currentPage", page);
+      this.$emit("page-changed", page);
     },
   },
 };
 </script>
-  
+
 <style scoped>
-.pagination-container {
-  margin-top: 1rem;
+.my-4 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 </style>

@@ -21,19 +21,43 @@ const mutations = {
 };
 
 const actions = {
+
+  async handleRegister({ commit }, { username, email, password, role_type, avatar}) {
+    try {
+      const response = await axios({
+        url: api.UserRegiser,
+        method: "POST",
+        data: {
+          name: username,
+          email: email,
+          password: password,
+          role_type: role_type,
+          avatar: avatar,
+        },
+      });
+      if (response.status === 200) {
+        console.log('Đăng ký thành công!');
+      } else {
+        console.error('Lỗi đăng ký:', response.data);
+      }
+    } catch (error) {
+      console.error('Lỗi kết nối:', error);
+    }
+  },
+  
   async handleLogin({ commit }, { account, password }) {
-    const user = account === "phanduc@gmail.com" && password === "123";
-    if (user) {
-      const userData = {
-        avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNL_ZnOTpXSvhf1UaK7beHey2BX42U6solRA&s",
-        email: "phanduc@gmail.com",
-        password: "123",
-        name: "Phan Đức",
-        token: "gmslgnslkdgnksngsndgsdbjsbj3jt350sjgb",
-      };
-      sessionStorage.setItem("token", userData.token);
-      commit("setProfile", userData);
-      return userData;
+    const response = await axios({
+      url: api.UserLogin,
+      method: "POST",
+      data: {
+        email: account,
+        password,
+      },
+    });
+    if (response.data.status === 200) {
+      // await commit("getProfile") 
+      sessionStorage.setItem("token", response.data.data.access_token);
+      return {};
     } else {
       throw new Error("Tài khoản hoặc mật khẩu không đúng");
     }
@@ -43,25 +67,20 @@ const actions = {
     sessionStorage.removeItem("profile");
     sessionStorage.removeItem("token");
     commit('setProfile', null)
-    this.router.push("/login")
+    // this.router.push("/login")
   },
 
   async getProfile({ commit }) {
-    // const response = await axios({
-    //   url: api.GetProfile,
-    //   method: "GET",
-    // });
-    const response = {};
-    if (response?.code == 200) {
+    const response = await axios({
+      url: api.GetProfile,
+      method: "GET",
+    });
+    
+    if (response?.data?.status === 200) {
       commit("setProfile", response.data?.data);
     } else {
-      commit("setProfile", {
-        avatar: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNL_ZnOTpXSvhf1UaK7beHey2BX42U6solRA&s",
-        email: "phanduc@gmail.com",
-        password: "123",
-        name: "Phan Đức",
-        token: "token",
-      });
+      sessionStorage.removeItem("token")
+      window.location.href = "/"
     }
   },
 };

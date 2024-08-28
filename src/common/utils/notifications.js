@@ -1,5 +1,4 @@
-import Swal from 'sweetalert2/src/sweetalert2.js';
-
+import * as Swal from 'sweetalert2';
 
 export const showDeleteConfirmation = async () => {
   const result = await Swal.fire({
@@ -18,13 +17,15 @@ export const showDeleteConfirmation = async () => {
 export const showSuccessMessage = () => {
   Swal.fire({
     title: "Thành công!",
-    icon: "success"
+    icon: "success",
+    confirmButtonText: "Đóng"
   });
 };
 
 export const showErrorMessage = () => {
   Swal.fire({
     title: "Thất bại!",
-    icon: "warning"
+    icon: "error",
+    confirmButtonText: "Đóng"
   });
 };
