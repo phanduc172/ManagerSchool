@@ -4,9 +4,9 @@
       <input
         type="text"
         v-model="searchQuery"
-        placeholder="Tìm kiếm môn học..."
+        placeholder="Tìm kiếm ngành học"
       />
-      <b-button href="/manager/subjects/create" variant="success fw-bold">
+      <b-button href="/manager/major/create" variant="success fw-bold">
         <i class="bx bx-plus"></i>
         Thêm mới
       </b-button>
@@ -24,69 +24,50 @@
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th>STT</th>
-                  <th>Mã môn học</th>
-                  <th>Tên môn học</th>
-                  <th>Số tín chỉ</th>
-                  <th>Học kỳ</th>
-                  <th>Năm học</th>
-                  <th>Khoa</th>
+                  <th>Mã ngành học</th>
+                  <th>Tên ngành học</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  v-for="(subject, index) in paginatedSubjects"
-                  :key="subject.id"
+                  v-for="(major, index) in filteredMajor"
+                  :key="major.id"
                   class="align-middle text-center"
                 >
                   <td class="text-center">
-                    {{ (currentPage - 1) * perPage + index + 1 }}
+                    {{ index + 1 }}
                   </td>
-                  <td class="h6">{{ subject.subject_code }}</td>
-                  <td class="text-start">{{ subject.subject_name }}</td>
-                  <td class="text-center">{{ subject.credits }}</td>
-                  <td class="text-center">{{ subject.term_id }}</td>
-                  <td class="text-center">{{ subject.academic_year }}</td>
-                  <td class="text-center">{{ subject.department }}</td>
+                  <td class="h6">{{ major.major_id }}</td>
+                  <td class="text-start">{{ major.major_name }}</td>
                   <td class="text-center">
                     <b-button-group>
                       <b-button
                         variant="transtration"
                         size="md"
-                        :to="`/manager/subjects/edit/${subject.id}`"
+                        :to="`/manager/major/edit/${major.Id}`"
                       >
                         <i class="bx bxs-edit-alt fs-4 text-info"></i>
                       </b-button>
                       <b-button
                         variant="transtration"
                         size="md"
-                        @click="confirmDelete(subject.id)"
+                        @click="confirmDelete(major.Id)"
                       >
                         <i class="bx bxs-trash fs-4 text-danger"></i>
                       </b-button>
                     </b-button-group>
                   </td>
                 </tr>
-                <tr
-                  v-if="paginatedSubjects?.length === 0 || !paginatedSubjects"
-                >
-                  <td colspan="8" class="text-center">Không có dữ liệu</td>
-                </tr>
               </tbody>
             </table>
           </div>
-          <Pagination
-            :total="totalSubjects"
-            :limit="perPage"
-            :currentPage="currentPage"
-            @page-changed="handlePageChange"
-          />
         </div>
       </div>
     </div>
   </div>
 </template>
-
+  
 <script>
 import {
   showDeleteConfirmation,
@@ -98,99 +79,54 @@ import { mapActions } from "vuex";
 
 export default {
   components: { Pagination },
-  props: {
-    page: {
-      type: Number,
-      default: 1,
-    },
-    limit: {
-      type: Number,
-      default: 10,
-    },
-  },
+
   data() {
     return {
       entries: [],
       searchQuery: "",
-      currentPage: this.page,
-      perPage: this.limit,
-      totalSubjects: 0,
       loading: false,
     };
   },
   computed: {
-    filteredSubjects() {
+    filteredMajor() {
       if (!this.searchQuery) {
         return this.entries;
       }
       const query = this.searchQuery.toLowerCase();
       return this.entries.filter((entry) => {
-        return (
-          entry.subject_name.toLowerCase().includes(query) ||
-          entry.subject_code.toLowerCase().includes(query)
-        );
+        return entry.major_name.toLowerCase().includes(query);
       });
-    },
-    paginatedSubjects() {
-      const start = (this.currentPage - 1) * this.perPage;
-      const end = start + this.perPage;
-      return this.filteredSubjects?.slice(start, end);
     },
   },
   methods: {
-    ...mapActions("subject", ["ListSubjects", "DeleteSubject"]),
-    async fetchSubjects(page = this.currentPage) {
-      this.loading = true;
-      try {
-        const response = await this.ListSubjects({ page, limit: this.perPage });
-        if (response?.status === 200) {
-          this.entries = response.data.data;
-          this.totalSubjects = response.data.total;
-        }
-      } catch (error) {
-        console.error("Error fetching subjects:", error);
-      } finally {
-        this.loading = false;
+    ...mapActions("major", ["ListMajors", "DeleteMajor"]),
+    async getALlMajor() {
+      const response = await this.ListMajors();
+      if (response?.status === 200) {
+        this.entries = response.data.data;
+        this.totalMajor = response.data.total;
       }
     },
     async confirmDelete(id) {
       const isConfirmed = await showDeleteConfirmation();
       if (isConfirmed) {
-        const response = await this.DeleteSubject(id);
+        const response = await this.DeleteMajor(id);
         if (response?.status === 200) {
           showSuccessMessage();
-          this.fetchSubjects();
+          this.getALlMajor();
         } else {
           showErrorMessage();
         }
       }
     },
-
-    handlePageChange(page) {
-      this.currentPage = page;
-      this.$router.push({
-        name: "subjects",
-        query: { page, limit: this.perPage },
-      });
-    },
-  },
-  watch: {
-    page(newPage) {
-      this.currentPage = newPage;
-      this.fetchSubjects(newPage);
-    },
-    limit(newLimit) {
-      this.perPage = newLimit;
-      this.fetchSubjects(this.currentPage);
-    },
   },
   created() {
-    this.fetchSubjects();
+    this.getALlMajor();
   },
 };
 </script>
-
-<style scoped>
+  
+  <style scoped>
 body {
   margin-top: 20px;
   background: #eee;
@@ -256,3 +192,4 @@ input[type="text"]:focus {
   border: none !important;
 }
 </style>
+  

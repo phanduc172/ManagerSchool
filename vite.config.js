@@ -11,11 +11,11 @@ export default defineConfig({
       targets: ['defaults', 'not IE 11', 'last 2 versions'],
       additionalLegacyPolyfills: ['regenerator-runtime/runtime']
     }),
-    babel({
-      babelHelpers: 'bundled',
-      presets: ['@babel/preset-env'],
-      plugins: ['@babel/plugin-transform-async-to-generator']
-    })
+    // babel({
+    //   babelHelpers: 'bundled',
+    //   presets: ['@babel/preset-env'],
+    //   plugins: ['@babel/plugin-transform-async-to-generator']
+    // })
   ],
   resolve: {
     alias: {
@@ -34,7 +34,7 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: true, // Tự động mở trình duyệt
+    sourcemap: false, // Tự động mở trình duyệt
     // sourcemap: process.env.NODE_ENV === 'production', 
     rollupOptions: {
       output: {

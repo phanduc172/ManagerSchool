@@ -6,6 +6,7 @@ import student from "./modules/student";
 import user from "./modules/user";
 import classes from "./modules/classes";
 import subject from "./modules/subject";
+import major from "./modules/major";
 
 Vue.use(Vuex);
 
@@ -17,6 +18,7 @@ const store = new Vuex.Store({
     user,
     classes,
     subject,
+    major,
   },
 });
 

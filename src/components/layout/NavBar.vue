@@ -1,5 +1,7 @@
 <template>
-  <nav class="navbar navbar-expand navbar-light bg-light border-bottom shadow-sm bg-white">
+  <nav
+    class="navbar navbar-expand navbar-light bg-light border-bottom shadow-sm bg-white"
+  >
     <div class="container-fluid">
       <button class="btn btn-outline-success" @click="$emit('toggleSidebar')">
         <i class="bi bi-list chevron_color"></i>
@@ -11,17 +13,26 @@
           </li>
         </ul>
         <ul v-if="!profile.token" class="navbar-nav ms-auto">
-          <b-dropdown :text="profile.name" variant="transparent text-success fw-bold">
-            <b-dropdown-item href="changepassword" >Đổi mật khẩu</b-dropdown-item>
+          <b-dropdown
+            :text="profile.name"
+            variant="transparent text-success fw-bold"
+          >
+            <b-dropdown-item href="changepassword"
+              >Đổi mật khẩu</b-dropdown-item
+            >
             <b-dropdown-item @click="logout">Đăng xuất</b-dropdown-item>
           </b-dropdown>
         </ul>
         <ul v-else class="navbar-nav ms-auto">
           <li class="nav-item">
-            <a class="nav-link btn btn-outline-primary" href="/login">Đăng nhập</a>
+            <a class="nav-link btn btn-outline-primary" href="/login"
+              >Đăng nhập</a
+            >
           </li>
           <li class="nav-item ms-2">
-            <a class="nav-link btn btn-primary text-white" href="/register">Đăng ký</a>
+            <a class="nav-link btn btn-primary text-white" href="/register"
+              >Đăng ký</a
+            >
           </li>
         </ul>
       </div>
@@ -30,20 +41,19 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   computed: {
-    ...mapGetters('auth', ['profile']),
+    ...mapGetters("auth", ["profile"]),
   },
   methods: {
-    ...mapActions('auth', ['handleLogout']),
+    ...mapActions("auth", ["handleLogout"]),
     async logout() {
       await this.handleLogout();
-      this.$router.push('/login');
-    }
+      this.$router.push("/login");
+    },
   },
-
 };
 </script>
 
@@ -94,4 +104,5 @@ export default {
   background-color: var(--vt-c-green);
   border-color: var(--vt-c-green);
 }
+
 </style>

@@ -29,3 +29,13 @@ export const showErrorMessage = () => {
     confirmButtonText: "Đóng"
   });
 };
+
+export const showSuccessUpdate = () => {
+  Swal.fire({
+    position: "top-end",
+    icon: "success",
+    title: "Cập nhật thành công!",
+    showConfirmButton: false,
+    timer: 1500
+  });
+};

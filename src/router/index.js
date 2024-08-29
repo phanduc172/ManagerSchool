@@ -104,6 +104,24 @@ const router = new VueRouter({
       component: () => import("../resources/subject/SubjectForm.vue"),
       props: true,
     },
+    //Router Major
+    {
+      path: "/manager/major",
+      name: "major",
+      component: () => import("../resources/major/ManagerMajor.vue"),
+    },
+    {
+      path: "/manager/major/create",
+      name: "majorCreate",
+      component: () => import("../resources/major/MajorForm.vue"),
+    },
+    {
+      path: '/manager/major/edit/:id',
+      name: "majorEdit",
+      component: () => import("../resources/major/MajorForm.vue"),
+      props: true,
+    },
+
     //
     {
       path: "/profile",

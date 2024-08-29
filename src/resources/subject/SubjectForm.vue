@@ -161,7 +161,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { showSuccessMessage } from "../../common/utils/notifications";
+import { showSuccessMessage, showSuccessUpdate } from "../../common/utils/notifications";
 import { validateFormSubject } from "@/common/utils/validate";
 
 export default {

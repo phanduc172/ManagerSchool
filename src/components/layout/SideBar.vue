@@ -19,6 +19,7 @@
         <a class="list-group-item list-group-item-action" href="/manager/users">Người dùng</a>
         <a class="list-group-item list-group-item-action" href="/manager/classes">Lớp học</a>
         <a class="list-group-item list-group-item-action" href="/manager/subjects">Môn học</a>
+        <a class="list-group-item list-group-item-action" href="/manager/major">Ngành học</a>
       </div>
       <a class="list-group-item list-group-item-action" href="settings">
         <i class='bx bxs-cog me-2 fs-5' ></i>

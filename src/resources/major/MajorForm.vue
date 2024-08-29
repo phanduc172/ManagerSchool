@@ -1,0 +1,144 @@
+<template>
+  <div class="row mt-2">
+    <div class="col-md-2 col-lg-3 ms-3 mb-3 d-none d-md-block">
+      <b-button href="/manager/major" variant="outline-secondary">
+        <i class="bx bx-arrow-back"></i>
+        Quay lại
+      </b-button>
+    </div>
+    <div class="col-md-8 col-lg-6 p-4 border rounded shadow-lg bg-white">
+      <h4 class="text-center text-success mb-3">
+        {{ isEdit ? "Cập nhật ngành học" : "Thêm ngành học" }}
+      </h4>
+      <form @submit.prevent="onSubmit" @reset="onReset">
+        <div class="form-group mb-3">
+          <label for="majorId" class="form-label">
+            Mã ngành học <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="majorId"
+            v-model="form.majorId"
+            :placeholder="
+              isEdit ? 'Mã ngành học không thể thay đổi' : 'Nhập mã ngành học'
+            "
+            :readonly="isEdit"
+            @focus="clearError('majorId')"
+          />
+          <div class="text-danger mb-2" v-if="errors.majorId">
+            * {{ errors.majorId }}
+          </div>
+        </div>
+        <div class="form-group mb-3">
+          <label for="majorName" class="form-label">
+            Tên ngành học <span class="text-danger">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="majorName"
+            v-model="form.majorName"
+            placeholder="Nhập tên môn học"
+            @focus="clearError('majorName')"
+          />
+          <div class="text-danger mb-2" v-if="errors.majorName">
+            * {{ errors.majorName }}
+          </div>
+        </div>
+        <div class="form-group d-flex justify-content-start">
+          <button type="submit" class="btn btn-success me-2">
+            {{ isEdit ? "Cập nhật ngành học" : "Thêm ngành học" }}
+          </button>
+          <button type="reset" class="btn btn-outline-secondary">
+            Làm mới
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+  
+  <script>
+import { mapActions } from "vuex";
+import { showSuccessMessage } from "../../common/utils/notifications";
+import { validateFormMajor } from "@/common/utils/validate";
+
+export default {
+  data() {
+    return {
+      form: {
+        majorId: "",
+        majorName: "",
+      },
+      errors: {
+        majorId: "",
+        majorName: "",
+      },
+      isEdit: false,
+    };
+  },
+  methods: {
+    ...mapActions("major", ["CreateMajor", "getMajorById", "UpdateMajor"]),
+    async getDetailMajor() {
+      const id = this.$route.params.id;
+      const response = await this.getMajorById(id);
+      this.setFormForEdit(response.data);
+      console.log(response);
+    },
+    async onSubmit() {
+      this.errors = validateFormMajor(this.form);
+      if (Object.keys(this.errors).length > 0) {
+        return;
+      }
+      const data = {
+        major_id: this.form.majorId,
+        major_name: this.form.majorName,
+      };
+      if (this.isEdit) {
+        await this.UpdateMajor({ data, id: this.$route.params.id });
+        showSuccessMessage("Cập nhật ngành học thành công!");
+      } else {
+        await this.CreateMajor(data);
+        showSuccessMessage("Thêm ngành học thành công!");
+      }
+      this.onReset();
+      setTimeout(() => {
+        window.location.href = "/manager/major";
+      }, 1000);
+    },
+    onReset() {
+      this.form.majorId = "";
+      this.form.majorName = "";
+      this.errors = {
+        majorId: "",
+        majorName: "",
+      };
+    },
+    setFormForEdit(major) {
+      this.form.majorId = major.major_id;
+      this.form.majorName = major.major_name;
+      this.isEdit = true;
+    },
+    clearError(field) {
+      this.$set(this.errors, field, "");
+    },
+  },
+
+  created() {
+    if (this.$route.params.id) {
+      this.isEdit = true;
+      this.getDetailMajor();
+    }
+  },
+};
+</script>
+  
+<style scoped>
+label {
+  font-weight: bold;
+}
+</style>
+
+
+  

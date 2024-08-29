@@ -157,3 +157,17 @@ export function validateFormSubject(form) {
 
   return errors;
 }
+
+export function validateFormMajor(form) {
+  const errors = {};
+
+  if (!form.majorId) {
+    errors.majorId = "Mã ngành học không được để trống";
+  }
+
+  if (!form.majorName) {
+    errors.majorName = "Tên ngành học không được để trống";
+  }
+
+  return errors;
+}
