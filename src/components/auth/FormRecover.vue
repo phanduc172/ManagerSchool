@@ -1,7 +1,12 @@
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
     <b-card id="cardLogin" class="scale-in-bl w-50">
-      <b-form @submit="onSubmit" @reset="onReset" v-if="show" id="formLogin">
+      <b-form
+        @submit.prevent="onSubmit"
+        @reset="onReset"
+        v-if="show"
+        id="formLogin"
+      >
         <svg
           viewBox="0 0 200 200"
           xmlns="http://www.w3.org/2000/svg"
@@ -29,9 +34,9 @@
         </b-form-group>
 
         <div class="d-flex justify-content-center mt-3">
-          <a href="#">
+          <button type="submit">
             <font-awesome-icon icon="arrow-right" class="arrow-btn" />
-          </a>
+          </button>
         </div>
 
         <div class="d-flex justify-content-center flex-wrap mt-4 register">
@@ -44,6 +49,7 @@
 </template>
   
   <script>
+import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -56,14 +62,16 @@ export default {
     };
   },
   methods: {
-    onSubmit(event) {
-      event.preventDefault();
-      alert(JSON.stringify(this.form));
+    ...mapActions("auth", ["handleRecoverPassword"]),
+    async onSubmit() {
+      alert("Submit");
+      await this.handleRecoverPassword({
+        email: email
+      });
+      console.log("aaaa");
     },
-    onReset(event) {
-      event.preventDefault();
+    onReset() {
       this.form.email = "";
-      this.form.name = "";
       this.form.checked = [];
       this.show = false;
       this.$nextTick(() => {

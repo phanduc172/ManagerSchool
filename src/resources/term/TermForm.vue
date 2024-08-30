@@ -1,16 +1,16 @@
 <template>
   <div class="row mt-2">
     <div class="col-md-2 col-lg-3 ms-3 mb-3 d-none d-md-block">
-      <b-button href="/manager/subjects" variant="outline-secondary">
+      <b-button href="/manager/term" variant="outline-secondary">
         <i class="bx bx-arrow-back"></i>
         Quay lại
       </b-button>
     </div>
-    <div class="col-md-8 col-lg-6 p-4 border rounded shadow-lg bg-white" v-if= loading>
+    <div class="col-md-8 col-lg-6 p-4 border rounded shadow-lg bg-white">
       <h4 class="text-center text-success mb-3">
         {{ isEdit ? "Cập nhật môn học" : "Thêm môn học" }}
       </h4>
-      <form @submit.prevent="onSubmit" @reset="onReset" >
+      <form @submit.prevent="onSubmit" @reset="onReset">
         <div class="form-group mb-3">
           <label for="subjectCode" class="form-label">
             Mã môn học <span class="text-danger">*</span>
@@ -70,27 +70,22 @@
           </div>
         </div>
         <div class="form-group mb-3">
-          <label for="termSemester" class="form-label">
+          <label for="term_semester" class="form-label">
             Học kỳ <span class="text-danger">*</span>
           </label>
           <select
-            id="termSemester"
+            id="term"
             class="form-control"
-            v-model="form.termSemester"
-            @change="onTermSemesterChange"
+            v-model="form.term"
+            @change="clearError('term')"
           >
             <option value="" disabled selected>Chọn học kỳ...</option>
-            <option
-              v-for="term in termOptions"
-              :key="term.id"
-              :value="term.term_semester"
-            >
-              {{ term.term_semester }}
+            <option v-for="term in termOptions" :key="term" :value="term">
+              {{ term }}
             </option>
           </select>
-
-          <div class="text-danger mb-2" v-if="errors.termSemester">
-            * {{ errors.termSemester }}
+          <div class="text-danger mb-2" v-if="errors.term">
+            * {{ errors.term }}
           </div>
         </div>
         <div class="form-group mb-3">
@@ -165,7 +160,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 import {
   showSuccessMessage,
   showSuccessUpdate,
@@ -178,8 +173,8 @@ export default {
       form: {
         subjectCode: "",
         subjectName: "",
-        credits: "",
-        termSemester: "",
+        credits: null,
+        term: "",
         academicYearStart: "",
         academicYearEnd: "",
         department: "",
@@ -187,13 +182,12 @@ export default {
       errors: {
         subjectCode: "",
         subjectName: "",
-        credits: "",
-        termSemester: "",
+        credits: null,
+        term: "",
         academicYearStart: "",
         academicYearEnd: "",
         department: "",
       },
-      loading:false,
       creditOptions: [1, 2, 3, 4, 5],
       yearOptions: Array.from({ length: 20 }, (_, i) => 2023 + i),
       departmentOptions: [
@@ -201,39 +195,21 @@ export default {
         "Khoa Lý luận - chính trị",
         "Khoa Toán",
       ],
-      termOptions: [],
+      termOptions: ["Học kỳ I", "Học kỳ II"],
       isEdit: false,
     };
   },
-  computed: {
-    ...mapGetters("term", ["terms"]),
-  },
   methods: {
-    ...mapActions("term", ["ListTerms"]),
     ...mapActions("subject", [
       "CreaterSubject",
       "UpdateSubject",
       "getSubjectById",
     ]),
-
-    async getAllTerms() {
-      try {
-        const terms = await this.ListTerms();
-        this.termOptions = terms.data.data;
-        console.log(this.termOptions, "options");
-      } catch (error) {
-        console.error("Failed to fetch terms:", error);
-      }
-    },
     async fetchDetailSubject() {
-      this.loading = false
-      if(this.$route.params.id){
-        this.isEdit =true
-        const response = await this.getSubjectById(this.$route.params.id);
-        this.setFormForEdit(response.data);
-      } 
-      this.loading = true
-
+      const id = this.$route.params.id;
+      const response = await this.getSubjectById(id);
+      this.setFormForEdit(response.data);
+      console.log(response);
     },
     async onSubmit() {
       try {
@@ -241,39 +217,26 @@ export default {
         if (Object.keys(this.errors).length > 0) {
           return;
         }
-
-        const term = this.termOptions.find(
-          (t) => t.term_semester == this.form.termSemester
-        );
-        if (!term) {
-          throw new Error("Học kỳ không tồn tại trong hệ thống!");
-        }
-console.log( this.form)
         const data = {
           subject_code: this.form.subjectCode,
           subject_name: this.form.subjectName,
           credits: parseInt(this.form.credits),
-          is_mandatory: false,
-          term_semester: parseInt(term.term_semester),
-          term_from_year: this.form.academicYearStart,
-          term_to_year: this.form.academicYearEnd,
-
-          // academic_year: `${this.form.academicYearStart}-${this.form.academicYearEnd}`,
+          is_mandatory: this.form.isMandatory,
+          term: this.form.term,
+          academic_year: `${this.form.academicYearStart}-${this.form.academicYearEnd}`,
           department: this.form.department,
         };
-
-        console.log("Form data:", this.form);
-        console.log("Processed data:", data);
-
         if (this.isEdit) {
           await this.UpdateSubject({ data, id: this.$route.params.id });
           showSuccessMessage("Cập nhật môn học thành công!");
+          // await this.UpdateSubject({ data, id: this.$route.params.id });
+          // showSuccessMessage("Cập nhật môn học thành công!");
         } else {
           await this.CreaterSubject(data);
           showSuccessMessage("Thêm môn học thành công!");
         }
-        this.$router.push({ name:'subjects'})
-        // this.onReset();     // De lam gi
+        this.onReset();
+        window.location.href = "/manager/subjects";
       } catch (error) {
         alert(
           `Có lỗi xảy ra: ${
@@ -282,61 +245,48 @@ console.log( this.form)
         );
       }
     },
+    onReset() {
+      this.form.subjectCode = "";
+      this.form.subjectName = "";
+      this.form.credits = null;
+      this.form.term = "";
+      this.form.academicYearStart = "";
+      this.form.academicYearEnd = "";
+      this.form.department = "";
 
- async   onReset() {
-      this.fetchDetailSubject();
-
-      // this.errors = {
-      //   subjectCode: "",
-      //   subjectName: "",
-      //   credits: null,
-      //   termSemester: "",
-      //   academicYearStart: "",
-      //   academicYearEnd: "",
-      //   department: "",
-      // };
+      this.errors = {
+        subjectCode: "",
+        subjectName: "",
+        credits: null,
+        term: "",
+        academicYearStart: "",
+        academicYearEnd: "",
+        department: "",
+      };
     },
     setFormForEdit(subject) {
-      let subjectTerm  = this.termOptions.find(({id}) => subject.term_id== id)   /// Lay phan tu co Id
-      this.form.termSemester = subjectTerm.term_semester
       this.form.subjectCode = subject.subject_code;
       this.form.subjectName = subject.subject_name;
       this.form.credits = subject.credits;
       this.form.isMandatory = subject.is_mandatory;
-      // this.form.termSemester = subject.term_id;
-      // const [academicYearStart, academicYearEnd] =
-      //   subject.academic_year.split("-");
-      this.form.academicYearStart = subjectTerm.term_from_year;
-      this.form.academicYearEnd = subjectTerm.term_to_year;    //
+      this.form.term = subject.term_id;
+      const [academicYearStart, academicYearEnd] =
+        subject.academic_year.split("-");
+      this.form.academicYearStart = academicYearStart;
+      this.form.academicYearEnd = academicYearEnd;
       this.form.department = subject.department;
       this.isEdit = true;
     },
     clearError(field) {
       this.$set(this.errors, field, "");
     },
-    onTermSemesterChange() {
-      const selectedTerm = this.termOptions.find(
-        (term) =>
-          parseInt(term.term_semester) === parseInt(this.form.termSemester)
-      );
-      if (selectedTerm) {
-        this.form.academicYearStart = selectedTerm.term_from_year;
-        this.form.academicYearEnd = selectedTerm.term_to_year;
-        console.log(this.form.academicYearStart);
-      } else {
-        this.form.academicYearStart = "";
-        this.form.academicYearEnd = "";
-      }
-    },
   },
-  watch: {
-    "form.termSemester": "onTermSemesterChange",
-  },
- async created() {
-   await this.getAllTerms();
 
-     await this.fetchDetailSubject();
-    
+  created() {
+    if (this.$route.params.id) {
+      this.isEdit = true;
+      this.fetchDetailSubject();
+    }
   },
 };
 </script>

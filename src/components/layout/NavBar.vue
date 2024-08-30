@@ -104,5 +104,4 @@ export default {
   background-color: var(--vt-c-green);
   border-color: var(--vt-c-green);
 }
-
 </style>

@@ -21,30 +21,28 @@ const mutations = {
 };
 
 const actions = {
-
-  async handleRegister({ commit }, { username, email, password, role_type, avatar}) {
-    try {
-      const response = await axios({
-        url: api.UserRegiser,
-        method: "POST",
-        data: {
-          name: username,
-          email: email,
-          password: password,
-          role_type: role_type,
-          avatar: avatar,
-        },
-      });
-      if (response.status === 200) {
-        console.log('Đăng ký thành công!');
-      } else {
-        console.error('Lỗi đăng ký:', response.data);
-      }
-    } catch (error) {
-      console.error('Lỗi kết nối:', error);
+  async handleRegister(
+    { commit },
+    { username, email, password, role_type, avatar }
+  ) {
+    const response = await axios({
+      url: api.UserRegiser,
+      method: "POST",
+      data: {
+        name: username,
+        email: email,
+        password: password,
+        role_type: role_type,
+        avatar: avatar,
+      },
+    });
+    if (response.status === 200) {
+      console.log("Đăng ký thành công!");
+    } else {
+      console.error("Lỗi đăng ký:", response.data);
     }
   },
-  
+
   async handleLogin({ commit }, { account, password }) {
     const response = await axios({
       url: api.UserLogin,
@@ -55,19 +53,32 @@ const actions = {
       },
     });
     if (response.data.status === 200) {
-      // await commit("getProfile") 
+      // await commit("getProfile")
       sessionStorage.setItem("token", response.data.data.access_token);
       return {};
     } else {
       throw new Error("Tài khoản hoặc mật khẩu không đúng");
     }
   },
-  
+
   async handleLogout({ commit }) {
     sessionStorage.removeItem("profile");
     sessionStorage.removeItem("token");
-    commit('setProfile', null)
+    commit("setProfile", null);
+    commit("setToken", null);
     // this.router.push("/login")
+  },
+
+  async handleRecoverPassword(_, {email}) {
+    const response = await axios({
+      url: api.RecoverPassword,
+      method: "POST",
+      data: {
+        email: email,
+      },
+    });
+    console.log(response)
+;    return response.data;
   },
 
   async getProfile({ commit }) {
@@ -75,12 +86,12 @@ const actions = {
       url: api.GetProfile,
       method: "GET",
     });
-    
+
     if (response?.data?.status === 200) {
       commit("setProfile", response.data?.data);
     } else {
-      sessionStorage.removeItem("token")
-      window.location.href = "/"
+      sessionStorage.removeItem("token");
+      window.location.href = "/";
     }
   },
 };

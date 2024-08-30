@@ -1,9 +1,8 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:3000/",
-  // baseURL: "http://192.168.1.10:8080/",
-  timeout: 10000,
+  baseURL: "http://192.168.1.3:3000",
+  timeout: 5000,
   headers: {
     Authorization: sessionStorage.getItem("token"),
   }

@@ -12,7 +12,7 @@
                     alt="Admin"
                     class="rounded-circle p-1 border border-secondary border-2"
                     width="150"
-                    style="cursor: pointer; width: 200px; height: 200px"
+                    style="cursor: pointer; width: 200px; height: 200px; object-fit: cover;"
                   />
                   <input
                     class="d-none"
@@ -31,7 +31,7 @@
               <div class="text-center mt-4">
                 <b-button
                   type="button"
-                  variant="primary"
+                  variant="success"
                   @click="openUpdateModal"
                   >Cập nhật thông tin</b-button
                 >
@@ -156,7 +156,7 @@
     >
       <form>
         <div class="row mb-3">
-          <label for="name" class="col-sm-3 col-form-label">Họ tên</label>
+          <label for="name" class="col-sm-3 col-form-label">Họ tên <span class="text-danger">*</span></label>
           <div class="col-sm-9">
             <input
               type="text"
@@ -168,7 +168,7 @@
         </div>
 
         <div class="row mb-3">
-          <label for="gender" class="col-sm-3 col-form-label">Giới tính</label>
+          <label for="gender" class="col-sm-3 col-form-label">Giới tính </label>
           <div class="col-sm-9">
             <select class="form-select" id="gender" v-model="profile.gender">
               <option value="undefined" disabled>Chọn giới tính</option>
@@ -195,7 +195,7 @@
         </div>
 
         <div class="row mb-3">
-          <label for="email" class="col-sm-3 col-form-label">Email</label>
+          <label for="email" class="col-sm-3 col-form-label">Email <span class="text-danger">*</span></label>
           <div class="col-sm-9">
             <input
               type="email"
@@ -208,7 +208,7 @@
 
         <div class="row mb-3">
           <label for="phone" class="col-sm-3 col-form-label"
-            >Số điện thoại</label
+            >Số điện thoại <span class="text-danger">*</span></label
           >
           <div class="col-sm-9">
             <input
@@ -221,7 +221,7 @@
         </div>
 
         <div class="row mb-3">
-          <label for="address" class="col-sm-3 col-form-label">Địa chỉ</label>
+          <label for="address" class="col-sm-3 col-form-label">Địa chỉ </label>
           <div class="col-sm-9">
             <input
               type="text"
@@ -251,12 +251,12 @@
         <img
           :src="uploadedImage"
           alt="Image Preview"
-          class="img-fluid rounded"
+          class="img-fluid rounded uploadAvt"
         />
       </div>
       <template v-slot:modal-footer>
-        <b-button variant="secondary" @click="cancelImage">Hủy</b-button>
-        <b-button variant="primary" @click="handleFileUpload"
+        <b-button variant="outline-secondary" @click="cancelImage">Hủy</b-button>
+        <b-button variant="success" @click="handleFileUpload"
           >Cập nhật ảnh</b-button
         >
       </template>
@@ -288,16 +288,17 @@ export default {
   },
   methods: {
     ...mapActions("user", ["UploadImage", "UpdateProfile"]),
-    ...mapActions("auth",["getProfile"]),
+    ...mapActions("auth", ["getProfile"]),
     openUpdateModal() {
       this.$bvModal.show("update-profile-modal");
     },
     async updateUserProfile() {
+      const formattedDate = new Date(this.profile.date_of_birth).toISOString();
       const userData = {
         name: this.profile.name,
         email: this.profile.email,
         gender: this.profile.gender,
-        date_of_birth: this.profile.date_of_birth,
+        date_of_birth: formattedDate,
         phone: this.profile.phone,
         address: this.profile.address,
       };
@@ -432,5 +433,11 @@ body {
 
 .custom-modal .btn {
   border-radius: 0.25rem;
+}
+
+.uploadAvt {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
 }
 </style>

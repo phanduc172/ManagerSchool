@@ -18,7 +18,7 @@
             transform="translate(100 100)"
           />
         </svg>
-        <h1 class="text-center mb-3">Đăng ký</h1>
+        <h1 class="text-center mb-4">Đăng ký</h1>
         <!-- <h2 class="text-center mb-4">Đăng ký với:</h2>
         <div class="d-flex justify-content-center mb-4">
           <b-img
@@ -40,7 +40,7 @@
         <span class="text-center mb-4 other-account"
           >Hoặc tạo tài khoản riêng của bạn</span
         > -->
-        <b-form-group id="input-group-1" label-for="usename">
+        <b-form-group id="input-group-1" label-for="usename" class="mb-2">
           <b-form-input
             id="usename"
             class="input"
@@ -55,7 +55,7 @@
           </div>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label-for="email">
+        <b-form-group id="input-group-2" label-for="email" class="mb-2">
           <b-form-input
             id="email"
             class="input"
@@ -70,7 +70,7 @@
           </div>
         </b-form-group>
 
-        <b-form-group id="input-group-3" label-for="password">
+        <b-form-group id="input-group-3" label-for="password" class="mb-2">
           <b-form-input
             id="password"
             class="input"
@@ -84,15 +84,6 @@
             {{ errors.password }}
           </div>
         </b-form-group>
-
-        <div class="d-flex justify-content-start flex-wrap">
-          <b-form-checkbox value="remember" class="remember">
-            <span class="ms-2"
-              >Tôi đã đọc và đồng ý với các điều khoản sử dụng</span
-            >
-          </b-form-checkbox>
-        </div>
-
         <div class="d-flex justify-content-center mt-3">
           <button type="submit" class="p-0 border-0 bg-transparent">
             <font-awesome-icon icon="arrow-right" class="arrow-btn" />

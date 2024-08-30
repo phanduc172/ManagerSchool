@@ -8,7 +8,6 @@
         class="list-group-item list-group-item-action" 
         href="manage" 
         @click.prevent="toggleManage"
-        :class="{ 'active': isManageOpen }"
       >
       <i class='bx bx-list-ul me-2 fs-5'></i>Quản lý
         <i :class="['bi', isManageOpen ? 'bi-chevron-up' : 'bi-chevron-down']" class="float-end"></i>
@@ -17,9 +16,10 @@
         <a class="list-group-item list-group-item-action" href="/manager/teachers">Giáo viên</a>
         <a class="list-group-item list-group-item-action" href="/manager/students">Học sinh</a>
         <a class="list-group-item list-group-item-action" href="/manager/users">Người dùng</a>
-        <a class="list-group-item list-group-item-action" href="/manager/classes">Lớp học</a>
+        <!-- <a class="list-group-item list-group-item-action" href="/manager/classes">Lớp học</a> -->
         <a class="list-group-item list-group-item-action" href="/manager/subjects">Môn học</a>
         <a class="list-group-item list-group-item-action" href="/manager/major">Ngành học</a>
+        <a class="list-group-item list-group-item-action" href="/manager/term">Học kì</a>
       </div>
       <a class="list-group-item list-group-item-action" href="settings">
         <i class='bx bxs-cog me-2 fs-5' ></i>
@@ -33,7 +33,7 @@
 export default {
   data() {
     return {
-      isManageOpen: false,
+      isManageOpen: true,
     }
   },
   props: {

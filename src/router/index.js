@@ -121,6 +121,23 @@ const router = new VueRouter({
       component: () => import("../resources/major/MajorForm.vue"),
       props: true,
     },
+    //Router Term
+    {
+      path: "/manager/term",
+      name: "term",
+      component: () => import("../resources/term/ManagerTerm.vue"),
+    },
+    {
+      path: "/manager/term/create",
+      name: "termCreate",
+      component: () => import("../resources/term/TermForm.vue"),
+    },
+    {
+      path: '/manager/term/edit/:id',
+      name: "termEdit",
+      component: () => import("../resources/term/TermForm.vue"),
+      props: true,
+    },
 
     //
     {
@@ -143,7 +160,7 @@ router.beforeEach(async (to, from, next) => {
     }
 
     // Nếu trang truy cập không phải là login hoặc register, cho phép truy cập trang / là trang home
-    if (to.path === "/") {
+    if (to.name === "dashboard") {
       return next();
     }
 

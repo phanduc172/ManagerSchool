@@ -12,6 +12,45 @@ function validatePhoneNumber(phone) {
   return phoneRegex.test(phone);
 }
 
+function validateDate(dateString) {
+  const date = new Date(dateString);
+  return !isNaN(date.getTime());
+}
+
+export function validateFormProfile(form) {
+  const errors = {};
+
+  if (!form.id) {
+    errors.id = "Mã sinh viên không được để trống";
+  }
+
+  if (!form.name) {
+    errors.name = "Họ tên không được để trống";
+  }
+
+  if (!form.gender) {
+    errors.gender = "Vui lòng chọn giới tính";
+  }
+
+  if (!form.birthdate) {
+    errors.birthdate = "Vui lòng chọn ngày sinh";
+  } else if (!validateDate(form.birthdate)) {
+    errors.birthdate = "Ngày sinh không hợp lệ";
+  }
+
+  if (!form.phone) {
+    errors.phone = "Số điện thoại không được để trống";
+  } else if (!validatePhoneNumber(form.phone)) {
+    errors.phone = "Số điện thoại không hợp lệ";
+  }
+
+  if (!form.address) {
+    errors.address = "Địa chỉ không được để trống";
+  }
+
+  return errors;
+}
+
 export function validateLoginForm(form) {
   const errors = {};
 
@@ -142,14 +181,13 @@ export function validateFormSubject(form) {
   if (!form.credits) {
     errors.credits = "Số tín chỉ không được để trống";
   }
-  if (!form.term) {
-    errors.term = "Học kỳ không được để trống";
+  if (!form.termSemester) {
+    errors.termSemester = "Học kỳ không được để trống";
   }
-  if (!form.academicYearStart) {
-    errors.academicYearStart = "Năm bắt đầu và kết thúc không được đển trống";
-  }
-  if (!form.academicYearEnd) {
-    errors.academicYearEnd = "Năm kết thúc và kết thúc không được đển trống";
+  if (!form.academicYearStart || !form.academicYearEnd) {
+    errors.academicYearStart = "Năm bắt đầu và kết thúc không được để trống";
+  } else if(!form.academicYearStart > !form.academicYearEnd) {
+    errors.academicYearStart = "Năm bắt đầu phải nhỏ hơn năm kết thúc"
   }
   if (!form.department) {
     errors.department = "Khoa không được để trống";

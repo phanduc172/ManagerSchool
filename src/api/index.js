@@ -1,6 +1,7 @@
 const api = {
   UserLogin: "/v1/user/login",
   UserRegiser: "/v1/user/create",
+  RecoverPassword: "/v1/user/find-email",
 
   GetProfile: "/v1/user/me",
   UpdateProfile: "/v1/user/me/update",
@@ -34,6 +35,12 @@ const api = {
   MajorDetails: "/v1/major/details/{id}",
   UpdateMajor: "/v1/admin/major/{id}",
   DeleteMajor: "/v1/admin/major/{id}",
+  
+  ListTerm: "/v1/term/all",
+  CreateTerm: "v1/admin/term/add",
+  MajorDetails: "/v1/term/details/{id}",
+  UpdateMajor: "/v1/admin/term/{id}",
+  DeleteMajor: "/v1/admin/term/{id}",
 
   params(endpoint, params) {
     let url = this[endpoint];

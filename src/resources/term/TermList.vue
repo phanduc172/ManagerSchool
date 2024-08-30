@@ -4,9 +4,9 @@
       <input
         type="text"
         v-model="searchQuery"
-        placeholder="Tìm kiếm môn học..."
+        placeholder="Tìm kiếm học kì..."
       />
-      <b-button href="/manager/subjects/create" variant="success fw-bold">
+      <b-button href="/manager/term/create" variant="success fw-bold">
         <i class="bx bx-plus"></i>
         Thêm mới
       </b-button>
@@ -17,68 +17,56 @@
           <div
             class="card-header d-flex justify-content-center align-items-center py-3 header-bordered"
           >
-            <h5 class="mb-0 text-center">Danh sách môn học</h5>
+            <h5 class="mb-0 text-center">Danh sách học kì</h5>
           </div>
           <div class="table-responsive">
             <table class="table table-striped table-hover mb-0">
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th>STT</th>
-                  <th>Mã môn học</th>
-                  <th>Tên môn học</th>
-                  <th>Số tín chỉ</th>
-                  <!-- <th>Học kỳ</th> -->
-                  <th>Khoa</th>
+                  <th>Học kì</th>
+                  <th>Năm học</th>
+                  <th>Tổng tín chỉ</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  v-for="(subject, index) in paginatedSubjects"
-                  :key="subject.id"
+                  v-for="(terms, index) in paginatedTerms"
+                  :key="terms.id"
                   class="align-middle text-center"
                 >
                   <td class="text-center">
                     {{ (currentPage - 1) * perPage + index + 1 }}
                   </td>
-                  <td class="h6">{{ subject.subject_code }}</td>
-                  <td class="text-start">{{ subject.subject_name }}</td>
-                  <td class="text-center">{{ subject.credits }}</td>
-                  <!-- <td class="text-center">{{ subject }}</td> -->
-                  <td class="text-center">{{ subject.department }}</td>
+                  <td class="h6">{{ terms.term_semester }}</td>
+                  <td class="text-start">{{ terms.term_from_year}} - {{ terms.term_to_year }}</td>
+                  <td class="text-center">{{ terms.total_credits }}</td>
                   <td class="text-center">
                     <b-button-group>
                       <b-button
                         variant="transtration"
                         size="md"
-                        :to="`/manager/subjects/edit/${subject.id}`"
+                        :to="`/manager/term/edit/${terms.id}`"
                       >
                         <i class="bx bxs-edit-alt fs-4 text-info"></i>
                       </b-button>
                       <b-button
                         variant="transtration"
                         size="md"
-                        @click="confirmDelete(subject.id)"
+                        @click="confirmDelete(terms.id)"
                       >
                         <i class="bx bxs-trash fs-4 text-danger"></i>
                       </b-button>
                     </b-button-group>
                   </td>
                 </tr>
-                <tr
-                  v-if="paginatedSubjects?.length === 0 || !paginatedSubjects"
-                >
+                <tr v-if="paginatedTerms?.length === 0 || !paginatedTerms">
                   <td colspan="8" class="text-center">Không có dữ liệu</td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <Pagination
-            :total="totalSubjects"
-            :limit="perPage"
-            :currentPage="currentPage"
-            @page-changed="handlePageChange"
-          />
         </div>
       </div>
     </div>
@@ -92,7 +80,7 @@ import {
   showSuccessMessage,
 } from "../../common/utils/notifications";
 import Pagination from "../../components/layout/Pagination.vue";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: { Pagination },
@@ -117,68 +105,40 @@ export default {
     };
   },
   computed: {
-    filteredSubjects() {
+    ...mapGetters("term", ["terms"]),
+    filteredTerms() {
       if (!this.searchQuery) {
         return this.entries;
       }
       const query = this.searchQuery.toLowerCase();
       return this.entries.filter((entry) => {
-        return (
-          entry.subject_name.toLowerCase().includes(query) ||
-          entry.subject_code.toLowerCase().includes(query)
-        );
+        return entry.term_semester.toLowerCase().includes(query);
       });
     },
-    paginatedSubjects() {
+    paginatedTerms() {
       const start = (this.currentPage - 1) * this.perPage;
       const end = start + this.perPage;
-      return this.filteredSubjects?.slice(start, end);
+      return this.filteredTerms?.slice(start, end);
     },
   },
   methods: {
-    ...mapActions("subject", ["ListSubjects", "DeleteSubject"]),
-    async getSubjects(page = this.currentPage) {
+    ...mapActions("term", ["ListTerms", "DeleteTerm"]),
+    async getAllTerms() {
       this.loading = true;
-      const response = await this.ListSubjects({ page, limit: this.perPage });
-      if (response?.status === 200) {
-        this.entries = response.data.data;
-        this.totalSubjects = response.data.total;
-      }
-      console.log(response.data);
-    },
-    async confirmDelete(id) {
-      const isConfirmed = await showDeleteConfirmation();
-      if (isConfirmed) {
-        const response = await this.DeleteSubject(id);
+      try {
+        const response = await this.ListTerms();
         if (response?.status === 200) {
-          showSuccessMessage();
-          this.getSubjects();
-        } else {
-          showErrorMessage();
+          this.entries = response.data.data;
         }
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      } finally {
+        this.loading = false;
       }
-    },
-
-    handlePageChange(page) {
-      this.currentPage = page;
-      this.$router.push({
-        name: "subjects",
-        query: { page, limit: this.perPage },
-      });
-    },
-  },
-  watch: {
-    page(newPage) {
-      this.currentPage = newPage;
-      this.getSubjects(newPage);
-    },
-    limit(newLimit) {
-      this.perPage = newLimit;
-      this.getSubjects(this.currentPage);
     },
   },
   created() {
-    this.getSubjects();
+    this.getAllTerms();
   },
 };
 </script>

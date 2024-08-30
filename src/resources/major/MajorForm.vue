@@ -24,6 +24,7 @@
               isEdit ? 'Mã ngành học không thể thay đổi' : 'Nhập mã ngành học'
             "
             :readonly="isEdit"
+            :disabled="isEdit"
             @focus="clearError('majorId')"
           />
           <div class="text-danger mb-2" v-if="errors.majorId">
@@ -49,9 +50,6 @@
         <div class="form-group d-flex justify-content-start">
           <button type="submit" class="btn btn-success me-2">
             {{ isEdit ? "Cập nhật ngành học" : "Thêm ngành học" }}
-          </button>
-          <button type="reset" class="btn btn-outline-secondary">
-            Làm mới
           </button>
         </div>
       </form>
