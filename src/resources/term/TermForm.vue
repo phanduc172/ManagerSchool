@@ -8,84 +8,23 @@
     </div>
     <div class="col-md-8 col-lg-6 p-4 border rounded shadow-lg bg-white">
       <h4 class="text-center text-success mb-3">
-        {{ isEdit ? "Cập nhật môn học" : "Thêm môn học" }}
+        {{ isEdit ? "Cập nhật học kì" : "Thêm học kì" }}
       </h4>
       <form @submit.prevent="onSubmit" @reset="onReset">
         <div class="form-group mb-3">
-          <label for="subjectCode" class="form-label">
-            Mã môn học <span class="text-danger">*</span>
-          </label>
-          <input
-            type="text"
-            class="form-control"
-            id="subjectCode"
-            v-model="form.subjectCode"
-            :placeholder="
-              isEdit ? 'Mã môn học không thể thay đổi' : 'Nhập mã môn học'
-            "
-            :readonly="isEdit"
-            @focus="clearError('subjectCode')"
-          />
-          <div class="text-danger mb-2" v-if="errors.subjectCode">
-            * {{ errors.subjectCode }}
-          </div>
-        </div>
-        <div class="form-group mb-3">
           <label for="subjectName" class="form-label">
-            Tên môn học <span class="text-danger">*</span>
+            Học kì <span class="text-danger">*</span>
           </label>
           <input
             type="text"
             class="form-control"
-            id="subjectName"
-            v-model="form.subjectName"
-            placeholder="Nhập tên môn học"
-            @focus="clearError('subjectName')"
+            id="termSemester"
+            v-model="form.termSemester"
+            placeholder="Nhập học kì"
+            @focus="clearError('termSemester')"
           />
-          <div class="text-danger mb-2" v-if="errors.subjectName">
-            * {{ errors.subjectName }}
-          </div>
-        </div>
-        <div class="form-group mb-3">
-          <label for="credit" class="form-label">
-            Số tín chỉ <span class="text-danger">*</span>
-          </label>
-          <select
-            id="credit"
-            class="form-control"
-            v-model="form.credits"
-            @change="clearError('credit')"
-          >
-            <option value="" disabled selected>Chọn số tín chỉ...</option>
-            <option
-              v-for="credit in creditOptions"
-              :key="credit"
-              :value="credit"
-            >
-              {{ credit }}
-            </option>
-          </select>
-          <div class="text-danger mb-2" v-if="errors.credits">
-            * {{ errors.credits }}
-          </div>
-        </div>
-        <div class="form-group mb-3">
-          <label for="term_semester" class="form-label">
-            Học kỳ <span class="text-danger">*</span>
-          </label>
-          <select
-            id="term"
-            class="form-control"
-            v-model="form.term"
-            @change="clearError('term')"
-          >
-            <option value="" disabled selected>Chọn học kỳ...</option>
-            <option v-for="term in termOptions" :key="term" :value="term">
-              {{ term }}
-            </option>
-          </select>
-          <div class="text-danger mb-2" v-if="errors.term">
-            * {{ errors.term }}
+          <div class="text-danger mb-2" v-if="errors.termSemester">
+            * {{ errors.termSemester }}
           </div>
         </div>
         <div class="form-group mb-3">
@@ -124,31 +63,9 @@
             * {{ errors.academicYearStart || errors.academicYearEnd }}
           </div>
         </div>
-        <div class="form-group mb-3">
-          <label for="department" class="form-label">
-            Khoa <span class="text-danger">*</span>
-          </label>
-          <select
-            id="department"
-            class="form-control"
-            v-model="form.department"
-          >
-            <option value="" disabled selected>Chọn khoa...</option>
-            <option
-              v-for="department in departmentOptions"
-              :key="department"
-              :value="department"
-            >
-              {{ department }}
-            </option>
-          </select>
-          <div class="text-danger mb-2" v-if="errors.department">
-            * {{ errors.department }}
-          </div>
-        </div>
         <div class="form-group d-flex justify-content-start">
           <button type="submit" class="btn btn-success me-2">
-            {{ isEdit ? "Cập nhật môn học" : "Thêm môn học" }}
+            {{ isEdit ? "Cập nhật học kì" : "Thêm học kì" }}
           </button>
           <button type="reset" class="btn btn-outline-secondary">
             Làm mới
@@ -161,53 +78,36 @@
 
 <script>
 import { mapActions } from "vuex";
-import {
-  showSuccessMessage,
-  showSuccessUpdate,
-} from "../../common/utils/notifications";
+import { showSuccessMessage } from "../../common/utils/notifications";
 import { validateFormSubject } from "@/common/utils/validate";
 
 export default {
+  name: "UserProfile",
   data() {
     return {
       form: {
-        subjectCode: "",
-        subjectName: "",
-        credits: null,
-        term: "",
+        termSemester: "",
         academicYearStart: "",
         academicYearEnd: "",
-        department: "",
       },
       errors: {
-        subjectCode: "",
-        subjectName: "",
-        credits: null,
-        term: "",
+        termSemester: "",
         academicYearStart: "",
         academicYearEnd: "",
-        department: "",
       },
-      creditOptions: [1, 2, 3, 4, 5],
       yearOptions: Array.from({ length: 20 }, (_, i) => 2023 + i),
-      departmentOptions: [
-        "Khoa Công nghệ thông tin",
-        "Khoa Lý luận - chính trị",
-        "Khoa Toán",
-      ],
-      termOptions: ["Học kỳ I", "Học kỳ II"],
       isEdit: false,
     };
   },
   methods: {
-    ...mapActions("subject", [
+    ...mapActions("term", [
       "CreaterSubject",
       "UpdateSubject",
       "getSubjectById",
     ]),
     async fetchDetailSubject() {
       const id = this.$route.params.id;
-      const response = await this.getSubjectById(id);
+      const response = await this.getTermById(id);
       this.setFormForEdit(response.data);
       console.log(response);
     },
@@ -218,21 +118,15 @@ export default {
           return;
         }
         const data = {
-          subject_code: this.form.subjectCode,
-          subject_name: this.form.subjectName,
-          credits: parseInt(this.form.credits),
-          is_mandatory: this.form.isMandatory,
-          term: this.form.term,
-          academic_year: `${this.form.academicYearStart}-${this.form.academicYearEnd}`,
-          department: this.form.department,
+          term_semester: this.form.termSemester,
+          term_from_year: this.form.academicYearStart,
+          term_to_year: this.form.academicYearEnd,
         };
         if (this.isEdit) {
-          await this.UpdateSubject({ data, id: this.$route.params.id });
+          await this.UpdateTerm({ data, id: this.$route.params.id });
           showSuccessMessage("Cập nhật môn học thành công!");
-          // await this.UpdateSubject({ data, id: this.$route.params.id });
-          // showSuccessMessage("Cập nhật môn học thành công!");
         } else {
-          await this.CreaterSubject(data);
+          await this.CreaterTerm(data);
           showSuccessMessage("Thêm môn học thành công!");
         }
         this.onReset();
@@ -246,35 +140,20 @@ export default {
       }
     },
     onReset() {
-      this.form.subjectCode = "";
-      this.form.subjectName = "";
-      this.form.credits = null;
-      this.form.term = "";
+      this.form.termSemester = "";
       this.form.academicYearStart = "";
       this.form.academicYearEnd = "";
-      this.form.department = "";
 
       this.errors = {
-        subjectCode: "",
-        subjectName: "",
-        credits: null,
-        term: "",
+        termSemester: "",
         academicYearStart: "",
-        academicYearEnd: "",
-        department: "",
+        academicYearEnd: null,
       };
     },
     setFormForEdit(subject) {
-      this.form.subjectCode = subject.subject_code;
-      this.form.subjectName = subject.subject_name;
-      this.form.credits = subject.credits;
-      this.form.isMandatory = subject.is_mandatory;
-      this.form.term = subject.term_id;
-      const [academicYearStart, academicYearEnd] =
-        subject.academic_year.split("-");
-      this.form.academicYearStart = academicYearStart;
-      this.form.academicYearEnd = academicYearEnd;
-      this.form.department = subject.department;
+      this.form.termSemester = subject.term_semester;
+      this.form.academicYearStart = subject.term_from_year;
+      this.form.academicYearEnd = subject.term_to_year;
       this.isEdit = true;
     },
     clearError(field) {

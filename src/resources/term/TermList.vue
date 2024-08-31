@@ -40,7 +40,7 @@
                     {{ (currentPage - 1) * perPage + index + 1 }}
                   </td>
                   <td class="h6">{{ terms.term_semester }}</td>
-                  <td class="text-start">{{ terms.term_from_year}} - {{ terms.term_to_year }}</td>
+                  <td class="text-center">{{ terms.term_from_year}} - {{ terms.term_to_year }}</td>
                   <td class="text-center">{{ terms.total_credits }}</td>
                   <td class="text-center">
                     <b-button-group>

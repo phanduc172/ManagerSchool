@@ -7,11 +7,7 @@ Vue.use(VueRouter);
 const router = new VueRouter({
   mode: "history",
   routes: [
-    { path: "*", redirect: "/" },
-    {
-      path: "/",
-      name: "home",
-    },
+    { path: "*", redirect: "/login" },
 
     // Auth Router
     {
@@ -71,7 +67,7 @@ const router = new VueRouter({
       name: "users",
       component: () => import("../resources/users/ManagerUser.vue"),
     },
-    
+
     // Router Class
     {
       path: "/manager/classes",
@@ -92,7 +88,7 @@ const router = new VueRouter({
         page: parseInt(route.query.page) || 1,
         limit: parseInt(route.query.limit) || 10,
       }),
-    },    
+    },
     {
       path: "/manager/subjects/create",
       name: "subjectsCreate",
@@ -156,11 +152,6 @@ router.beforeEach(async (to, from, next) => {
   if (!token) {
     // Nếu trang truy cập là trang login hoặc register, cho phép tiếp tục
     if (to.name === "login" || to.name === "register" || to.name === "recoverpassword") {
-      return next();
-    }
-
-    // Nếu trang truy cập không phải là login hoặc register, cho phép truy cập trang / là trang home
-    if (to.name === "dashboard") {
       return next();
     }
 

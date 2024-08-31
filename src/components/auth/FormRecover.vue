@@ -29,19 +29,22 @@
             v-model="form.email"
             type="email"
             placeholder="E-mail"
-            required
           ></b-form-input>
+          <div class="text-danger mb-2" v-if="errors.email">
+            * {{ errors.email }}
+          </div>
         </b-form-group>
 
         <div class="d-flex justify-content-center mt-3">
-          <button type="submit">
-            <font-awesome-icon icon="arrow-right" class="arrow-btn" />
+          <button type="submit" class="px-3 py-2 border-0 rounded bg-success">
+            <h5 class="text-white m-0 p-1">Tiếp tục</h5>
           </button>
         </div>
 
         <div class="d-flex justify-content-center flex-wrap mt-4 register">
-          <span class="me-2">Bạn đã khôi phục tài khoản chưa?</span>
-          <a @click="$router.go(-1)" class="loginAccount">Đăng nhập</a>
+          <a @click="$router.go(-1)" class="loginAccount text-hover"
+            >Quay lại trang đăng nhập</a
+          >
         </div>
       </b-form>
     </b-card>
@@ -50,6 +53,7 @@
   
   <script>
 import { mapActions } from "vuex";
+import { validateLoginForm } from "../../common/utils/validate";
 export default {
   data() {
     return {
@@ -58,15 +62,23 @@ export default {
         name: "",
         checked: [],
       },
+      errors: {
+        email: "",
+        checked: [],
+      },
       show: true,
     };
   },
   methods: {
     ...mapActions("auth", ["handleRecoverPassword"]),
     async onSubmit() {
+      this.errors = validateLoginForm(this.form);
+      if (Object.keys(this.errors).length > 0) {
+        return;
+      }
       alert("Submit");
       await this.handleRecoverPassword({
-        email: email
+        email: email,
       });
       console.log("aaaa");
     },

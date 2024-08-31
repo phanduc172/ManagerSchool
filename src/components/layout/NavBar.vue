@@ -12,9 +12,9 @@
             <a class="nav-link" href="/dashboard">Bảng điều khiển</a>
           </li>
         </ul>
-        <ul v-if="!profile.token" class="navbar-nav ms-auto">
+        <ul v-if="!profile || !profile.token" class="navbar-nav ms-auto">
           <b-dropdown
-            :text="profile.name"
+            :text="profile ? profile.name : ''"
             variant="transparent text-success fw-bold"
           >
             <b-dropdown-item href="changepassword"
@@ -56,6 +56,7 @@ export default {
   },
 };
 </script>
+
 
 
 <style scoped>

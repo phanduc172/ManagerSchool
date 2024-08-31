@@ -12,7 +12,12 @@
                     alt="Admin"
                     class="rounded-circle p-1 border border-secondary border-2"
                     width="150"
-                    style="cursor: pointer; width: 200px; height: 200px; object-fit: cover;"
+                    style="
+                      cursor: pointer;
+                      width: 200px;
+                      height: 200px;
+                      object-fit: cover;
+                    "
                   />
                   <input
                     class="d-none"
@@ -28,14 +33,6 @@
                 </div>
               </div>
               <hr class="my-4" />
-              <div class="text-center mt-4">
-                <b-button
-                  type="button"
-                  variant="success"
-                  @click="openUpdateModal"
-                  >Cập nhật thông tin</b-button
-                >
-              </div>
             </div>
           </div>
         </div>
@@ -51,7 +48,7 @@
                     type="text"
                     class="form-control"
                     v-model="profile.name"
-                    readonly
+                    disabled
                   />
                 </div>
               </div>
@@ -60,16 +57,17 @@
                   <h6 class="mb-0">Giới tính</h6>
                 </div>
                 <div class="col-sm-9 text-secondary">
-                  <select
-                    class="w-100 p-1 border-1 rounded border-secondary"
-                    v-model="profile.gender"
+                  <input
+                    class="form-control"
+                    :value="
+                      profile.gender == 1
+                        ? 'Nam'
+                        : profile.gender == 2
+                        ? 'Nữ'
+                        : 'Khác'
+                    "
                     disabled
-                  >
-                    <option value="undefined">Chọn giới tính</option>
-                    <option value="male">Nam</option>
-                    <option value="female">Nữ</option>
-                    <option value="other">Khác</option>
-                  </select>
+                  />
                 </div>
               </div>
               <div class="row mb-3">
@@ -78,11 +76,10 @@
                 </div>
                 <div class="col-sm-9 text-secondary">
                   <input
-                    type="date"
                     :max="maxDate"
                     class="form-control"
-                    v-model="profile.date_of_birth"
-                    readonly
+                    :value="toVNTime(profile.date_of_birth)"
+                    disabled
                   />
                 </div>
               </div>
@@ -95,7 +92,7 @@
                     type="text"
                     class="form-control"
                     v-model="profile.email"
-                    readonly
+                    disabled
                   />
                 </div>
               </div>
@@ -108,7 +105,7 @@
                     type="text"
                     class="form-control"
                     v-model="profile.phone"
-                    readonly
+                    disabled
                   />
                 </div>
               </div>
@@ -122,7 +119,7 @@
                     class="form-control"
                     v-model="profile.address"
                     placeholder="Nhập địa chỉ"
-                    readonly
+                    disabled
                   />
                 </div>
               </div>
@@ -135,8 +132,16 @@
                     type="text"
                     class="form-control"
                     :value="profile.role_type"
-                    readonly
+                    disabled
                   />
+                </div>
+                <div class="text-center mt-4">
+                  <b-button
+                    type="button"
+                    variant="success"
+                    @click="openUpdateModal"
+                    >Cập nhật thông tin</b-button
+                  >
                 </div>
               </div>
             </div>
@@ -156,7 +161,9 @@
     >
       <form>
         <div class="row mb-3">
-          <label for="name" class="col-sm-3 col-form-label">Họ tên <span class="text-danger">*</span></label>
+          <label for="name" class="col-sm-3 col-form-label"
+            >Họ tên <span class="text-danger">*</span></label
+          >
           <div class="col-sm-9">
             <input
               type="text"
@@ -172,9 +179,9 @@
           <div class="col-sm-9">
             <select class="form-select" id="gender" v-model="profile.gender">
               <option value="undefined" disabled>Chọn giới tính</option>
-              <option value="male">Nam</option>
-              <option value="female">Nữ</option>
-              <option value="other">Khác</option>
+              <option :value="1">Nam</option>
+              <option :value="2">Nữ</option>
+              <option :value="3">Khác</option>
             </select>
           </div>
         </div>
@@ -195,7 +202,9 @@
         </div>
 
         <div class="row mb-3">
-          <label for="email" class="col-sm-3 col-form-label">Email <span class="text-danger">*</span></label>
+          <label for="email" class="col-sm-3 col-form-label"
+            >Email <span class="text-danger">*</span></label
+          >
           <div class="col-sm-9">
             <input
               type="email"
@@ -255,7 +264,9 @@
         />
       </div>
       <template v-slot:modal-footer>
-        <b-button variant="outline-secondary" @click="cancelImage">Hủy</b-button>
+        <b-button variant="outline-secondary" @click="cancelImage"
+          >Hủy</b-button
+        >
         <b-button variant="success" @click="handleFileUpload"
           >Cập nhật ảnh</b-button
         >
@@ -268,6 +279,7 @@
 	
 <script>
 import axios from "axios";
+import moment from "moment";
 import { mapActions, mapGetters } from "vuex";
 import { getMaxDate } from "../../common/utils/validate";
 import {
@@ -289,16 +301,21 @@ export default {
   methods: {
     ...mapActions("user", ["UploadImage", "UpdateProfile"]),
     ...mapActions("auth", ["getProfile"]),
+    toVNTime(time) {
+      return moment(time).utc(7).format("DD-MM-YYYY");
+    },
     openUpdateModal() {
       this.$bvModal.show("update-profile-modal");
     },
     async updateUserProfile() {
-      const formattedDate = new Date(this.profile.date_of_birth).toISOString();
+      // const formattedDate = new Date(this.profile.date_of_birth).toISOString();
       const userData = {
         name: this.profile.name,
         email: this.profile.email,
         gender: this.profile.gender,
-        date_of_birth: formattedDate,
+        date_of_birth: moment(this.profile.date_of_birth)
+          .zone(7)
+          .format("YYYY-MM-DDTHH:mm:ssZ"),
         phone: this.profile.phone,
         address: this.profile.address,
       };
@@ -327,6 +344,10 @@ export default {
             },
           }
         );
+        const formattedDate = new Date(
+          this.profile.date_of_birth
+        ).toISOString();
+
         const newAvt = response.data.data;
         this.UpdateProfile({ avatar: newAvt });
         console.log(newAvt);

@@ -1,35 +1,29 @@
 <template>
-  <b-container id="mainContainer" align-v="center">
-    <b-row align-v="center" align-h="center">
-      <b-col md="6" class="mt-5">
-        <login-form @submit="onSubmitLogin" ref="loginform"/>
-      </b-col>
-      <!-- <b-col md="5">
-        <b-img
-          :src="require('@/assets/images/business.png')"
-          fluid
-          class="businessImg scale-in-bottom"
-          center
-        />
-      </b-col> -->
-    </b-row>
+  <b-container
+    id="mainContainer"
+    class="d-flex justify-content-center align-items-center vh-100"
+  >
+    <div class="w-50 w-100-sm">
+      <login-form @submit="onSubmitLogin" ref="loginform" />
+    </div>
   </b-container>
 </template>
+  
 
 <script>
-import { mapActions } from 'vuex';
-import LoginForm from '@/components/auth/LoginForm.vue';
+import { mapActions } from "vuex";
+import LoginForm from "@/components/auth/LoginForm.vue";
 
 export default {
   components: {
     LoginForm,
   },
   methods: {
-    ...mapActions("auth",['handleLogin']),
+    ...mapActions("auth", ["handleLogin"]),
     async onSubmitLogin({ email, password }) {
       await this.handleLogin({ email, password });
     },
-  }
+  },
 };
 </script>
 
@@ -41,7 +35,16 @@ export default {
 }
 #page-content-wrapper {
   margin: 0;
-  background: url('../../assets/images/bg.jpg') no-repeat center center;
+  background: url("../../assets/images/bg.jpg") no-repeat center center;
   background-size: cover;
+}
+.w-100-sm {
+  @media (max-width: 992px) {
+    width: 70% !important;
+  }
+  @media (max-width: 450px) {
+    width: 1000% !important;
+    padding: 5px;
+  }
 }
 </style>

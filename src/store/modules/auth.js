@@ -18,6 +18,15 @@ const mutations = {
   setProfile(state, profile) {
     state.profile = profile;
   },
+  setError(state, errorMessage) {
+    state.errors = {
+      ...state.errors,
+      login: errorMessage,
+    };
+  },
+  clearErrors(state) {
+    state.errors = {};
+  }
 };
 
 const actions = {
@@ -43,7 +52,7 @@ const actions = {
     }
   },
 
-  async handleLogin({ commit }, { account, password }) {
+  async handleLogin(_, { account, password }) {
     const response = await axios({
       url: api.UserLogin,
       method: "POST",
@@ -53,23 +62,19 @@ const actions = {
       },
     });
     if (response.data.status === 200) {
-      // await commit("getProfile")
       sessionStorage.setItem("token", response.data.data.access_token);
-      return {};
-    } else {
-      throw new Error("Tài khoản hoặc mật khẩu không đúng");
     }
-  },
+  }
+  ,
 
   async handleLogout({ commit }) {
     sessionStorage.removeItem("profile");
     sessionStorage.removeItem("token");
     commit("setProfile", null);
     commit("setToken", null);
-    // this.router.push("/login")
   },
 
-  async handleRecoverPassword(_, {email}) {
+  async handleRecoverPassword(_, { email }) {
     const response = await axios({
       url: api.RecoverPassword,
       method: "POST",
@@ -78,7 +83,7 @@ const actions = {
       },
     });
     console.log(response)
-;    return response.data;
+      ; return response.data;
   },
 
   async getProfile({ commit }) {

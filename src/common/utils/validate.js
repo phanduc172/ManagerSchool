@@ -1,3 +1,7 @@
+export function deleteCookie(name) {
+  document.cookie = name + '=; Max-Age=0; path=/; domain=' + window.location.hostname;
+}
+
 export function getMaxDate() {
   return new Date().toISOString().split("T")[0];
 }
@@ -56,12 +60,16 @@ export function validateLoginForm(form) {
 
   if (!form.email) {
     errors.email = "Email không được để trống";
-  } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
     errors.email = "Email không hợp lệ";
   }
 
   if (!form.password) {
     errors.password = "Mật khẩu không được để trống";
+  } else if (form.password.length < 6) {
+    errors.password = "Mật khẩu phải có tối thiểu 6 ký tự";
+  } else if (form.password.length > 30) {
+    errors.password = "Mật khẩu không được vượt quá 32 ký tự";
   }
 
   return errors;
@@ -186,7 +194,7 @@ export function validateFormSubject(form) {
   }
   if (!form.academicYearStart || !form.academicYearEnd) {
     errors.academicYearStart = "Năm bắt đầu và kết thúc không được để trống";
-  } else if(!form.academicYearStart > !form.academicYearEnd) {
+  } else if (!form.academicYearStart > !form.academicYearEnd) {
     errors.academicYearStart = "Năm bắt đầu phải nhỏ hơn năm kết thúc"
   }
   if (!form.department) {
