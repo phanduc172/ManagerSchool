@@ -6,7 +6,7 @@
     :per-page="limit"
     aria-controls="pagination-element"
     @change="onPageChange"
-    class="justify-content-center "
+    class="justify-content-center"
   />
 </template>
 
@@ -39,7 +39,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>

@@ -32,20 +32,20 @@
                   <th></th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody v-if="!loading">
                 <tr
-                  v-for="(subject, index) in paginatedSubjects"
+                  v-for="(subject, index) in entries"
                   :key="subject.id"
                   class="align-middle text-center"
                 >
                   <td class="text-center">
                     {{ (currentPage - 1) * perPage + index + 1 }}
                   </td>
-                  <td class="h6">{{ subject.subject_code }}</td>
+                  <td class="h6 text-start">{{ subject.subject_code }}</td>
                   <td class="text-start">{{ subject.subject_name }}</td>
                   <td class="text-center">{{ subject.credits }}</td>
                   <!-- <td class="text-center">{{ subject }}</td> -->
-                  <td class="text-center">{{ subject.department }}</td>
+                  <td class="text-start">{{ subject.department }}</td>
                   <td class="text-center">
                     <b-button-group>
                       <b-button
@@ -65,15 +65,14 @@
                     </b-button-group>
                   </td>
                 </tr>
-                <tr
-                  v-if="paginatedSubjects?.length === 0 || !paginatedSubjects"
-                >
+                <tr v-if="entries?.length === 0 || !entries">
                   <td colspan="8" class="text-center">Không có dữ liệu</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <Pagination
+            v-show="isShowPagi"
             :total="totalSubjects"
             :limit="perPage"
             :currentPage="currentPage"
@@ -86,13 +85,13 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import {
   showDeleteConfirmation,
   showErrorMessage,
   showSuccessMessage,
 } from "../../common/utils/notifications";
 import Pagination from "../../components/layout/Pagination.vue";
-import { mapActions } from "vuex";
 
 export default {
   components: { Pagination },
@@ -109,31 +108,35 @@ export default {
   data() {
     return {
       entries: [],
+      listEntry: [],
+
       searchQuery: "",
       currentPage: this.page,
       perPage: this.limit,
       totalSubjects: 0,
-      loading: false,
+      loading: true,
+      isShowPagi: true,
     };
   },
   computed: {
-    filteredSubjects() {
-      if (!this.searchQuery) {
-        return this.entries;
-      }
-      const query = this.searchQuery.toLowerCase();
-      return this.entries.filter((entry) => {
-        return (
-          entry.subject_name.toLowerCase().includes(query) ||
-          entry.subject_code.toLowerCase().includes(query)
-        );
-      });
-    },
-    paginatedSubjects() {
-      const start = (this.currentPage - 1) * this.perPage;
-      const end = start + this.perPage;
-      return this.filteredSubjects?.slice(start, end);
-    },
+    // filteredSubjects() {
+    //   if (!this.searchQuery) {
+    //     return this.entries;
+    //   }
+    //   const query = this.searchQuery.toLowerCase();
+    //   return this.entries.filter((entry) => {
+    //     return (
+    //       entry.subject_name.toLowerCase().includes(query) ||
+    //       entry.subject_code.toLowerCase().includes(query)
+    //     );
+    //   });
+    // },
+    // paginatedSubjects() {
+    //   const start = (this.currentPage - 1) * this.perPage;
+    //   const end = start + this.perPage;
+    //   console.log(this.filteredSubjects?.slice(start, end));
+    //   return this.filteredSubjects?.slice(start, end);
+    // },
   },
   methods: {
     ...mapActions("subject", ["ListSubjects", "DeleteSubject"]),
@@ -141,10 +144,14 @@ export default {
       this.loading = true;
       const response = await this.ListSubjects({ page, limit: this.perPage });
       if (response?.status === 200) {
+        this.listEntry = response.data.data;
         this.entries = response.data.data;
         this.totalSubjects = response.data.total;
+      } else {
+        this.listEntry = [];
+        this.entries = [];
       }
-      console.log(response.data);
+      this.loading = false;
     },
     async confirmDelete(id) {
       const isConfirmed = await showDeleteConfirmation();
@@ -165,6 +172,7 @@ export default {
         name: "subjects",
         query: { page, limit: this.perPage },
       });
+      this.getSubjects(this.currentPage);
     },
   },
   watch: {
@@ -175,6 +183,21 @@ export default {
     limit(newLimit) {
       this.perPage = newLimit;
       this.getSubjects(this.currentPage);
+    },
+    searchQuery: {
+      handler() {
+        if (this.searchQuery) {
+          this.isShowPagi = false;
+        } else {
+          this.isShowPagi = true;
+        }
+        this.entries = this.listEntry.filter((entry) => {
+          return entry.subject_name
+            .toLowerCase()
+            .includes(this.searchQuery.toLowerCase());
+        });
+      },
+      deep: true,
     },
   },
   created() {

@@ -282,10 +282,7 @@ import axios from "axios";
 import moment from "moment";
 import { mapActions, mapGetters } from "vuex";
 import { getMaxDate } from "../../common/utils/validate";
-import {
-  showErrorMessage,
-  showSuccessMessage,
-} from "../../common/utils/notifications";
+import { showSuccessMessage } from "../../common/utils/notifications";
 
 export default {
   data() {
@@ -308,7 +305,6 @@ export default {
       this.$bvModal.show("update-profile-modal");
     },
     async updateUserProfile() {
-      // const formattedDate = new Date(this.profile.date_of_birth).toISOString();
       const userData = {
         name: this.profile.name,
         email: this.profile.email,
@@ -344,10 +340,6 @@ export default {
             },
           }
         );
-        const formattedDate = new Date(
-          this.profile.date_of_birth
-        ).toISOString();
-
         const newAvt = response.data.data;
         this.UpdateProfile({ avatar: newAvt });
         console.log(newAvt);
@@ -367,16 +359,6 @@ export default {
           this.$bvModal.show("image-preview-modal");
         });
       }
-    },
-
-    cancelImage() {
-      this.resetPreview();
-    },
-
-    resetPreview() {
-      this.uploadedImage = null;
-      this.fileToUpload = null;
-      this.$bvModal.hide("image-preview-modal");
     },
 
     cancelImage() {

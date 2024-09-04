@@ -12,54 +12,54 @@ export default defineConfig({
       targets: ['defaults', 'not IE 11', 'last 2 versions'],
       additionalLegacyPolyfills: ['regenerator-runtime/runtime']
     }),
-    babel({
-      babelHelpers: 'bundled',
-      presets: ['@babel/preset-env'],
-      plugins: ['@babel/plugin-transform-async-to-generator']
-    })
+    // babel({
+    //   babelHelpers: 'bundled',
+    //   presets: ['@babel/preset-env'],
+    //   plugins: ['@babel/plugin-transform-async-to-generator']
+    // })
   ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src')
     }
   },
-  css: {
-    modules: {
-      scopeBehaviour: 'local',
-    },
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import "@/assets/scss/variables.scss";`
-      }
-    }
-  },
-  build: {
-    outDir: 'dist',
-    sourcemap: false, // Tự động mở trình duyệt
-    // sourcemap: process.env.NODE_ENV === 'production', 
-    rollupOptions: {
-      output: {
-        entryFileNames: 'assets/[name].js',
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]',
-        manualChunks: {
-          vendor: ['vue', 'vuex', 'vue-router'],
-          lodash: ['lodash'],
-        }
-      }
-    },
-    chunkSizeWarningLimit: 2000
-  },
+  // css: {
+  //   modules: {
+  //     scopeBehaviour: 'local',
+  //   },
+  //   preprocessorOptions: {
+  //     scss: {
+  //       additionalData: `@import "@/assets/scss/variables.scss";`
+  //     }
+  //   }
+  // },
+  // build: {
+  //   outDir: 'dist',
+  //   sourcemap: false, // Tự động mở trình duyệt
+  //   // sourcemap: process.env.NODE_ENV === 'production', 
+  //   rollupOptions: {
+  //     output: {
+  //       entryFileNames: 'assets/[name].js',
+  //       chunkFileNames: 'assets/[name].js',
+  //       assetFileNames: 'assets/[name].[ext]',
+  //       manualChunks: {
+  //         vendor: ['vue', 'vuex', 'vue-router'],
+  //         lodash: ['lodash'], 
+  //       }
+  //     }
+  //   },
+  //   chunkSizeWarningLimit: 2000
+  // },
   server: {
     // host: ip.address(),
     port: 8080,
-    open: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      }
-    }
+    // open: true,
+    // proxy: {
+    //   '/api': {
+    //     target: 'http://localhost:5000',
+    //     changeOrigin: true,
+    //     rewrite: (path) => path.replace(/^\/api/, '')
+    //   }
+    // }
   },
 });
