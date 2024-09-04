@@ -1,6 +1,5 @@
 import axios from "@/core/axios";
 import api from "../../api";
-import { method } from "lodash";
 
 const state = {
   entries: [

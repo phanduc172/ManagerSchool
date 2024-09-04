@@ -153,10 +153,10 @@ export default {
       }
       this.loading = false;
     },
-    async confirmDelete(id) {
+    async confirmDelete(Id) {
       const isConfirmed = await showDeleteConfirmation();
       if (isConfirmed) {
-        const response = await this.DeleteSubject(id);
+        const response = await this.DeleteSubject(Id);
         if (response?.status === 200) {
           showSuccessMessage();
           this.getSubjects();

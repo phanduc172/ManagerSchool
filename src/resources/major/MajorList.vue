@@ -31,7 +31,7 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="(major, index) in filteredMajor"
+                  v-for="(major, index) in entries"
                   :key="major.id"
                   class="align-middle text-center"
                 >
@@ -59,9 +59,19 @@
                     </b-button-group>
                   </td>
                 </tr>
+                <tr v-if="entries?.length === 0 || !entries">
+                  <td colspan="8" class="text-center">Không có dữ liệu</td>
+                </tr>
               </tbody>
             </table>
           </div>
+          <Pagination
+            v-show="isShowPagi"
+            :total="totalMajor"
+            :limit="perPage"
+            :currentPage="currentPage"
+            @page-changed="handlePageChange"
+          />
         </div>
       </div>
     </div>
@@ -69,40 +79,49 @@
 </template>
   
 <script>
+import { mapActions } from "vuex/dist/vuex.common.js";
 import {
   showDeleteConfirmation,
   showErrorMessage,
   showSuccessMessage,
 } from "../../common/utils/notifications";
 import Pagination from "../../components/layout/Pagination.vue";
-import { mapActions } from "vuex";
 
 export default {
   components: { Pagination },
+  props: {
+    page: {
+      type: Number,
+      default: 1,
+    },
+    limit: {
+      type: Number,
+      default: 10,
+    },
+  },
 
   data() {
     return {
       entries: [],
+      listEntry: [],
       searchQuery: "",
       loading: false,
+      currentPage: this.page,
+      perPage: this.limit,
+      totalMajor: 0,
+      isShowPagi: true,
     };
   },
-  computed: {
-    filteredMajor() {
-      if (!this.searchQuery) {
-        return this.entries;
-      }
-      const query = this.searchQuery.toLowerCase();
-      return this.entries.filter((entry) => {
-        return entry.major_name.toLowerCase().includes(query);
-      });
-    },
-  },
+  computed: {},
   methods: {
     ...mapActions("major", ["ListMajors", "DeleteMajor"]),
-    async getALlMajor() {
-      const response = await this.ListMajors();
+    async getALlMajor(page = this.currentPage) {
+      this.loading = true;
+      const response = await this.ListMajors({ page, limit: this.perPage });
       if (response?.status === 200) {
+        this.listEntry = response.data.data;
+        console.log(this.listEntry, "listEntry");
+
         this.entries = response.data.data;
         this.totalMajor = response.data.total;
       }
@@ -118,6 +137,40 @@ export default {
           showErrorMessage();
         }
       }
+    },
+    handlePageChange(page) {
+      this.currentPage = page;
+      this.$router.push({
+        name: "major",
+        query: { page, limit: this.perPage },
+      });
+      this.getALlMajor(this.currentPage);
+    },
+  },
+  watch: {
+    page(newPage) {
+      this.currentPage = newPage;
+      this.getALlMajor(newPage);
+    },
+    limit(newLimit) {
+      this.perPage = newLimit;
+      this.getALlMajor(this.currentPage);
+    },
+    searchQuery: {
+      handler() {
+        if (this.searchQuery) {
+          this.isShowPagi = false;
+        } else {
+          this.isShowPagi = true;
+        }
+        console.log(this.searchQuery);
+        this.entries = this.listEntry.filter((entry) => {
+          return entry.major_name
+            .toLowerCase()
+            .includes(this.searchQuery.toLowerCase());
+        });
+      },
+      deep: true,
     },
   },
   created() {

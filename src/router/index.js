@@ -105,6 +105,10 @@ const router = new VueRouter({
       path: "/manager/major",
       name: "major",
       component: () => import("../resources/major/ManagerMajor.vue"),
+      props: (route) => ({
+        page: parseInt(route.query.page) || 1,
+        limit: parseInt(route.query.limit) || 10,
+      }),
     },
     {
       path: "/manager/major/create",

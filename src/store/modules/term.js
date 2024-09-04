@@ -1,20 +1,7 @@
 import axios from "@/core/axios";
 import api from "../../api";
-import {
-  showDeleteConfirmation,
-  showSuccessMessage,
-} from "../../common/utils/notifications";
 const state = {
   entries: [
-    {
-        "id": "66d035feb356f418e9f9f5a0",
-        "term_semester": 1,
-        "term_from_year": 2023,
-        "term_to_year": 2024,
-        "total_credits": 0,
-        "created_at": "2024-08-29T08:49:02.651Z",
-        "updated_at": "2024-08-29T08:49:02.651Z"
-    },
   ],
 };
 

@@ -195,7 +195,7 @@ export default {
       },
       loading: false,
       creditOptions: [1, 2, 3, 4, 5],
-      yearOptions: Array.from({ length: 20 }, (_, i) => 2023 + i),
+      yearOptions: Array.from({ length: 20 }, (_, i) => 2020 + i),
       departmentOptions: [
         "Khoa Công nghệ thông tin",
         "Khoa Lý luận - chính trị",
