@@ -1,5 +1,6 @@
 import axios from "@/core/axios";
 import api from "../../api";
+import { method } from "lodash";
 const state = {
   entries: [
     {
@@ -39,6 +40,30 @@ const actions = {
     });
     return response;
   },
+  async ListAllTeacher(_, query = {}) {
+    const response = await axios({
+      url: api.ListAllAccount,
+      method: "GET",
+      params: query,
+    });
+    return response;
+  },
+  async getUserById(_, id) {
+    const response = await axios({
+      url: api.params("GetDetailUser", { id }),
+      method: "GET",
+    });
+    return response.data;
+  },
+  async CreateUser(_, data) {
+    const response = await axios({
+      url: api.CreateUser,
+      method: "POST",
+      data: data
+    })
+    return response.data;
+  },
+
   async UpdateProfile(_, profileData) {
     await axios({
       url: api.UpdateProfile,
@@ -49,7 +74,7 @@ const actions = {
 
   async UploadImage(_, file) {
     const formData = new FormData();
-    formData.append("image", file); 
+    formData.append("image", file);
     const response = await axios.post(api.UploadImage, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -57,6 +82,14 @@ const actions = {
     });
     return response.data;
   },
+
+  async DeleteUser(_, id) {
+    const response = await axios({
+      url: api.params("DeleteUser", { id }),
+      method: "DELETE"
+    });
+    return response;
+  }
 };
 
 const mutations = {

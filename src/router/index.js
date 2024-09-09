@@ -23,12 +23,17 @@ const router = new VueRouter({
     {
       path: "/changepassword",
       name: "changepassword",
-      // component: () => import("../resources/auth/Register.vue"),
+      component: () => import("../components/auth/ChangePassword.vue"),
     },
     {
       path: "/recoverpassword",
       name: "recoverpassword",
       component: () => import("../components/auth/FormRecover.vue"),
+    },
+    {
+      path: "/confirmotp",
+      name: "confirmotp",
+      component: () => import("../components/auth/ConfirmOTP.vue"),
     },
 
     {
@@ -66,8 +71,21 @@ const router = new VueRouter({
       path: "/manager/users",
       name: "users",
       component: () => import("../resources/users/ManagerUser.vue"),
+      props: (route) => ({
+        page: parseInt(route.query.page) || 1,
+        limit: parseInt(route.query.limit) || 10,
+      }),
     },
-
+    {
+      path: "/manager/users/create",
+      name: "usersCreate",
+      component: () => import("../resources/users/UserForm.vue"),
+    },
+    {
+      path: "/manager/users/edit/:id",
+      name: "usersUpdate",
+      component: () => import("../resources/users/UserFormUpdate.vue"),
+    },
     // Router Class
     {
       path: "/manager/classes",
@@ -126,6 +144,10 @@ const router = new VueRouter({
       path: "/manager/term",
       name: "term",
       component: () => import("../resources/term/ManagerTerm.vue"),
+      props: (route) => ({
+        page: parseInt(route.query.page) || 1,
+        limit: parseInt(route.query.limit) || 10,
+      }),
     },
     {
       path: "/manager/term/create",
@@ -155,7 +177,7 @@ router.beforeEach(async (to, from, next) => {
   // Nếu không có token (người dùng chưa đăng nhập)
   if (!token) {
     // Nếu trang truy cập là trang login hoặc register, cho phép tiếp tục
-    if (to.name === "login" || to.name === "register" || to.name === "recoverpassword") {
+    if (to.name === "login" || to.name === "register" || to.name === "recoverpassword" || to.name === "confirmotp") {
       return next();
     }
 

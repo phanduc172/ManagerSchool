@@ -20,14 +20,14 @@ const actions = {
     });
     return response;
   },
-  async getTermById({ commit }, id) {
+  async getTermById(_, id) {
     const response = await axios({
-      url: api.params("MajorDetails", { id }),
+      url: api.params("TermDetail", { id }),
       method: "GET",
     });
     return response.data;
   },
-  async CreaterTerm(_, data) {
+  async CreateTerm(_, data) {
     const response = await axios({
       url: api.CreateTerm,
       method: "POST",
@@ -38,7 +38,7 @@ const actions = {
 
   async UpdateTerm(_, { id, data }) {
     const response = await axios({
-      url: api.params("UpdateMajor", { id }),
+      url: api.params("UpdateTerm", { id }),
       method: "PATCH",
       data: data,
     });
@@ -48,7 +48,7 @@ const actions = {
 
   async DeleteTerm(_, id) {
     const response = await axios({
-      url: api.params("DeleteMajor", { id }),
+      url: api.params("DeleteTerm", { id }),
       method: "DELETE",
     });
     return response;

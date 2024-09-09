@@ -3,7 +3,10 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 
-import { BootstrapVue, BootstrapVueIcons,FormGroupPlugin,BFormSelect,FormSelectPlugin  } from 'bootstrap-vue'
+
+import { BootstrapVue, BootstrapVueIcons, FormGroupPlugin, BFormSelect, FormSelectPlugin } from 'bootstrap-vue'
+import VueApexCharts from 'vue-apexcharts';
+
 
 import './assets/main.css'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -18,8 +21,9 @@ library.add(fas)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('b-form-select', BFormSelect)
+Vue.component('apexchart', VueApexCharts);
 
-
+Vue.use(VueApexCharts);
 Vue.use(BootstrapVue)
 Vue.use(FormGroupPlugin)
 Vue.use(BootstrapVueIcons)

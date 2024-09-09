@@ -20,7 +20,7 @@
             <h5 class="mb-0 text-center">Danh sách học kì</h5>
           </div>
           <div class="table-responsive">
-            <table class="table table-striped table-hover mb-0">
+            <table class="table table-striped table-hover mb-0 table-wrap">
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th>STT</th>
@@ -32,14 +32,18 @@
               </thead>
               <tbody>
                 <tr
-                  v-for="(terms, index) in paginatedTerms"
+                  v-for="(terms, index) in entries"
                   :key="terms.id"
                   class="align-middle text-center"
                 >
                   <td class="text-center">
-                    {{ (currentPage - 1) * perPage + index + 1 }}
+                    {{
+                      searchQuery
+                        ? index + 1
+                        : (currentPage - 1) * perPage + index + 1
+                    }}
                   </td>
-                  <td class="text-center">Học kì {{ terms.term_semester }}</td>
+                  <td class="text-start">Học kì {{ terms.term_semester }}</td>
                   <td class="text-center">
                     {{ terms.term_from_year }} - {{ terms.term_to_year }}
                   </td>
@@ -63,12 +67,20 @@
                     </b-button-group>
                   </td>
                 </tr>
-                <tr v-if="paginatedTerms?.length === 0 || !paginatedTerms">
+                <tr v-if="entries?.length === 0 || !entries">
                   <td colspan="8" class="text-center">Không có dữ liệu</td>
                 </tr>
               </tbody>
             </table>
           </div>
+
+          <Pagination
+            v-show="isShowPagi"
+            :total="totalTerms"
+            :limit="perPage"
+            :currentPage="currentPage"
+            @page-changed="handlePageChange"
+          />
         </div>
       </div>
     </div>
@@ -78,11 +90,11 @@
 <script>
 import {
   showDeleteConfirmation,
-  showErrorMessage,
+  showErrorLogin,
   showSuccessMessage,
 } from "../../common/utils/notifications";
 import Pagination from "../../components/layout/Pagination.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   components: { Pagination },
@@ -99,44 +111,74 @@ export default {
   data() {
     return {
       entries: [],
+      listEntry: [],
       searchQuery: "",
       currentPage: this.page,
       perPage: this.limit,
-      totalSubjects: 0,
+      totalTerms: 0,
       loading: false,
+      isShowPagi: true,
     };
-  },
-  computed: {
-    ...mapGetters("term", ["terms"]),
-    filteredTerms() {
-      if (!this.searchQuery) {
-        return this.entries;
-      }
-      const query = this.searchQuery.toLowerCase();
-      return this.entries.filter((entry) => {
-        return entry.term_semester.toLowerCase().includes(query);
-      });
-    },
-    paginatedTerms() {
-      const start = (this.currentPage - 1) * this.perPage;
-      const end = start + this.perPage;
-      return this.filteredTerms?.slice(start, end);
-    },
   },
   methods: {
     ...mapActions("term", ["ListTerms", "DeleteTerm"]),
-    async getAllTerms() {
+    async getAllTerms(page = this.currentPage) {
       this.loading = true;
-      try {
-        const response = await this.ListTerms();
-        if (response?.status === 200) {
-          this.entries = response.data.data;
-        }
-      } catch (error) {
-        console.error("Error fetching subjects:", error);
-      } finally {
-        this.loading = false;
+      const response = await this.ListTerms({ page, limit: this.perPage });
+      const listEntryResponse = await this.ListTerms({
+        limit: response.data.total,
+      });
+      if (response?.status === 200 || listEntryResponse?.status === 200) {
+        this.entries = response.data.data;
+        this.listEntry = listEntryResponse.data.data;
+        this.totalTerms = listEntryResponse.data.total;
+      } else {
+        this.listEntry = [];
+        this.entries = [];
       }
+      this.loading = false;
+    },
+    async confirmDelete(id) {
+      const isConfirmed = await showDeleteConfirmation();
+      if (isConfirmed) {
+        const response = await this.DeleteTerm(id);
+        if (response?.status === 200) {
+          showSuccessMessage();
+          this.getAllTerms();
+        } else {
+          showErrorLogin();
+        }
+      }
+    },
+    handlePageChange(page) {
+      this.currentPage = page;
+      this.getAllTerms(this.currentPage);
+    },
+  },
+  watch: {
+    page(newPage) {
+      this.currentPage = newPage;
+      this.getAllTerms(newPage);
+    },
+    limit(newLimit) {
+      this.perPage = newLimit;
+      this.getAllTerms(this.currentPage);
+    },
+    searchQuery: {
+      handler() {
+        if (this.searchQuery) {
+          this.isShowPagi = false;
+        } else {
+          this.isShowPagi = true;
+        }
+        this.entries = this.listEntry.filter((entry) => {
+          if (!this.searchQuery) {
+            return true;
+          }
+          return entry.term_semester == this.searchQuery;
+        });
+      },
+      deep: true,
     },
   },
   created() {
@@ -158,9 +200,14 @@ body {
   height: 2.25rem;
   font-size: 0.818125rem;
 }
-.table-nowrap .table td,
 .table-nowrap .table th {
   white-space: nowrap;
+}
+.table-wrap td {
+  max-width: 400px;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 .table > :not(caption) > * > * {
   padding: 0.75rem 1.25rem;

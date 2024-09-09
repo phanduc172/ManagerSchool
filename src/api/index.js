@@ -1,20 +1,25 @@
+
 const api = {
   UserLogin: "/v1/user/login",
   UserRegiser: "/v1/user/create",
-  RecoverPassword: "/v1/user/find-email",
+  FindEmail: "/v1/user/find-email",
+  VerifyOTP: "/v1/user/otp/verify-otp",
 
   GetProfile: "/v1/user/me",
   UpdateProfile: "/v1/user/me/update",
   UpdateAvatar: "/v1/upload/image",
 
   ListAllAccount: "/v1/admin/all",
+  DeleteUser: "v1/admin/delete/{id}",
+  CreateUser: "/v1/user/create",
+  GetDetailUser: "",
 
-  ListTeachers: "/api/teachers",
+  ListTeachers: "v1/admin/user/teacher/all",
   CreateTeacher: "/api/teachers",
   UpdateTeacher: "/api/teachers/{id}",
   DeleteTeacher: "/api/teachers/{id}",
 
-  ListStudents: "/api/students",
+  ListStudents: "/v1/admin/user/student/all",
   CreateStudent: "/api/students",
   UpdateStudent: "/api/students/{id}",
   DeleteStudent: "/api/students/{id}",
@@ -24,20 +29,25 @@ const api = {
   UpdateClass: "/api/classes/{id}",
   DeleteClass: "/api/classes/{id}",
 
-  ListSubjects: "/v1/subject/all",
+  ListSubjects: "/v1/admin/subject/all",
   CreateSubject: "/v1/admin/subject/add",
-  SubjectDetails: "/v1/subject/details/{id}",
+  SubjectDetails: "/v1/admin/subject/details/{id}",
   UpdateSubject: "/v1/admin/subject/{id}",
   DeleteSubject: "/v1/admin/subject/{id}",
 
-  ListMajor: "v1/major/all",
+  ListMajor: "/v1/admin/major/all",
   CreateMajor: "/v1/admin/major/add",
-  MajorDetails: "/v1/major/details/{id}",
+  MajorDetails: "/v1/admin/major/details/{id}",
   UpdateMajor: "/v1/admin/major/{id}",
   DeleteMajor: "/v1/admin/major/{id}",
 
-  ListTerm: "/v1/term/all",
-  CreateTerm: "v1/admin/term/add",
+  ListTerm: "/v1/admin/term/all",
+  CreateTerm: "/v1/admin/term/add",
+  TermDetail: "/v1/admin/term/details/{id}",
+  UpdateTerm: "/v1/admin/term/{id}",
+  DeleteTerm: "/v1/admin/term/{id}",
+
+  StaticsTerm: "/v1/admin/statistical/term",
 
 
   params(endpoint, params) {

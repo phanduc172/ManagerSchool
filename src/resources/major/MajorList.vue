@@ -17,10 +17,10 @@
           <div
             class="card-header d-flex justify-content-center align-items-center py-3 header-bordered"
           >
-            <h5 class="mb-0 text-center">Danh sách môn học</h5>
+            <h5 class="mb-0 text-center">Danh sách ngành học</h5>
           </div>
           <div class="table-responsive">
-            <table class="table table-striped table-hover mb-0">
+            <table class="table table-striped table-hover mb-0 table-wrap">
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th>STT</th>
@@ -192,9 +192,14 @@ body {
   height: 2.25rem;
   font-size: 0.818125rem;
 }
-.table-nowrap .table td,
 .table-nowrap .table th {
   white-space: nowrap;
+}
+.table-wrap td {
+  max-width: 400px;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 .table > :not(caption) > * > * {
   padding: 0.75rem 1.25rem;

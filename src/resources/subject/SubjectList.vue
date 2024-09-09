@@ -20,14 +20,14 @@
             <h5 class="mb-0 text-center">Danh sách môn học</h5>
           </div>
           <div class="table-responsive">
-            <table class="table table-striped table-hover mb-0">
+            <table class="table table-striped table-hover mb-0 table-wrap">
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th>STT</th>
                   <th>Mã môn học</th>
                   <th>Tên môn học</th>
                   <th>Số tín chỉ</th>
-                  <!-- <th>Học kỳ</th> -->
+                  <th>Học kỳ</th>
                   <th>Khoa</th>
                   <th></th>
                 </tr>
@@ -44,7 +44,9 @@
                   <td class="h6 text-start">{{ subject.subject_code }}</td>
                   <td class="text-start">{{ subject.subject_name }}</td>
                   <td class="text-center">{{ subject.credits }}</td>
-                  <!-- <td class="text-center">{{ subject }}</td> -->
+                  <td class="text-center">
+                    {{ subject.term_name || "Không xác định" }}
+                  </td>
                   <td class="text-start">{{ subject.department }}</td>
                   <td class="text-center">
                     <b-button-group>
@@ -85,7 +87,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import {
   showDeleteConfirmation,
   showErrorMessage,
@@ -109,7 +111,7 @@ export default {
     return {
       entries: [],
       listEntry: [],
-
+      terms: [],
       searchQuery: "",
       currentPage: this.page,
       perPage: this.limit,
@@ -118,40 +120,46 @@ export default {
       isShowPagi: true,
     };
   },
-  computed: {
-    // filteredSubjects() {
-    //   if (!this.searchQuery) {
-    //     return this.entries;
-    //   }
-    //   const query = this.searchQuery.toLowerCase();
-    //   return this.entries.filter((entry) => {
-    //     return (
-    //       entry.subject_name.toLowerCase().includes(query) ||
-    //       entry.subject_code.toLowerCase().includes(query)
-    //     );
-    //   });
-    // },
-    // paginatedSubjects() {
-    //   const start = (this.currentPage - 1) * this.perPage;
-    //   const end = start + this.perPage;
-    //   console.log(this.filteredSubjects?.slice(start, end));
-    //   return this.filteredSubjects?.slice(start, end);
-    // },
-  },
+
   methods: {
-    ...mapActions("subject", ["ListSubjects", "DeleteSubject"]),
+    ...mapActions("subject", ["ListSubjects", "DeleteSubject", "ListTerms"]),
+    ...mapActions("term", ["ListTerms", "getTermById"]),
+    async getTerm() {
+      const response = await this.ListTerms();
+      if (response?.status === 200) {
+        this.terms = response.data.data || [];
+      } else {
+        this.terms = [];
+      }
+      console.log("Học kì", this.terms);
+    },
+    async getTermName(termId) {
+      const term = await this.getTermById(termId);
+      console.log(this.term, "Tên học kì");
+      return term?.term_semester || "Không xác định";
+    },
+
     async getSubjects(page = this.currentPage) {
       this.loading = true;
-      const response = await this.ListSubjects({ page, limit: this.perPage });
-      if (response?.status === 200) {
-        this.listEntry = response.data.data;
-        this.entries = response.data.data;
-        this.totalSubjects = response.data.total;
-      } else {
+      try {
+        const response = await this.ListSubjects({ page, limit: this.perPage });
+
+        if (response?.status === 200) {
+          this.listEntry = response.data.data;
+          this.entries = response.data.data;
+          this.totalSubjects = response.data.total;
+          console.log(this.entries);
+        } else {
+          this.listEntry = [];
+          this.entries = [];
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy danh sách môn học:", error);
         this.listEntry = [];
         this.entries = [];
+      } finally {
+        this.loading = false;
       }
-      this.loading = false;
     },
     async confirmDelete(Id) {
       const isConfirmed = await showDeleteConfirmation();
@@ -168,10 +176,6 @@ export default {
 
     handlePageChange(page) {
       this.currentPage = page;
-      this.$router.push({
-        name: "subjects",
-        query: { page, limit: this.perPage },
-      });
       this.getSubjects(this.currentPage);
     },
   },
@@ -202,6 +206,7 @@ export default {
   },
   created() {
     this.getSubjects();
+    this.getTerm();
   },
 };
 </script>
@@ -219,9 +224,14 @@ body {
   height: 2.25rem;
   font-size: 0.818125rem;
 }
-.table-nowrap .table td,
 .table-nowrap .table th {
   white-space: nowrap;
+}
+.table-wrap td {
+  max-width: 400px;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 .table > :not(caption) > * > * {
   padding: 0.75rem 1.25rem;

@@ -76,14 +76,25 @@ const actions = {
 
   async handleRecoverPassword(_, { email }) {
     const response = await axios({
-      url: api.RecoverPassword,
+      url: api.FindEmail,
+      method: "POST",
+      data: {
+        email: email
+      }
+    });
+    return response.data;
+  },
+
+  async handleVerifyOTP(_, { email, codeOTP }) {
+    const response = await axios({
+      url: api.VerifyOTP,
       method: "POST",
       data: {
         email: email,
-      },
+        data: codeOTP,
+      }
     });
-    console.log(response)
-      ; return response.data;
+    return response.data;
   },
 
   async getProfile({ commit }) {
@@ -99,6 +110,8 @@ const actions = {
       window.location.href = "/";
     }
   },
+
+
 };
 
 export default {

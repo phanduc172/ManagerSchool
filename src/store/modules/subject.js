@@ -1,9 +1,6 @@
 import axios from "@/core/axios";
 import api from "../../api";
-import {
-  showDeleteConfirmation,
-  showSuccessMessage,
-} from "../../common/utils/notifications";
+
 const state = {
   entries: [
     {

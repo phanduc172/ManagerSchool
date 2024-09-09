@@ -6,3 +6,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.truncate-text {
+  max-width: 300px;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow: visible;
+  text-overflow: unset;
+}

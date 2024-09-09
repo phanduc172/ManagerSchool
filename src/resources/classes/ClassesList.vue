@@ -38,7 +38,7 @@
                 >
                   <td class="text-center">
                     {{ (currentPage - 1) * perPage + index + 1 }}
-                  </td> 
+                  </td>
                   <td class="h6">{{ classes.nameClass }}</td>
                   <td class="text-start">{{ classes.nameTeacher }}</td>
                   <td>{{ classes.totalClass }}</td>
@@ -134,9 +134,14 @@ body {
   height: 2.25rem;
   font-size: 0.818125rem;
 }
-.table-nowrap .table td,
 .table-nowrap .table th {
   white-space: nowrap;
+}
+.table-wrap td {
+  max-width: 400px;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 .table > :not(caption) > * > * {
   padding: 0.75rem 1.25rem;
