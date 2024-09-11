@@ -64,6 +64,7 @@ const actions = {
     if (response.data.status === 200) {
       sessionStorage.setItem("token", response.data.data.access_token);
     }
+    return response.data;
   }
   ,
 

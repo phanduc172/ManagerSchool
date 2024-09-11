@@ -131,7 +131,13 @@
                   <input
                     type="text"
                     class="form-control"
-                    :value="profile.role_type"
+                    :value="
+                      profile.role_type == 'admin'
+                        ? 'Quản trị viên'
+                        : profile.role_type == 'teacher'
+                        ? 'Giáo viên'
+                        : 'Học sinh'
+                    "
                     disabled
                   />
                 </div>
@@ -257,7 +263,7 @@
       @hide="resetPreview"
     >
       <div class="d-flex justify-content-center">
-        <img
+        <b-img
           :src="uploadedImage"
           alt="Image Preview"
           class="img-fluid rounded uploadAvt"
@@ -275,8 +281,7 @@
   </div>
 </template>
   
-  
-	
+
 <script>
 import axios from "axios";
 import moment from "moment";
@@ -305,6 +310,10 @@ export default {
       this.$bvModal.show("update-profile-modal");
     },
     async updateUserProfile() {
+      this.errors = validateCreateUserForm(this.form);
+      if (Object.keys(this.errors).length > 0) {
+        return;
+      }
       const userData = {
         name: this.profile.name,
         email: this.profile.email,

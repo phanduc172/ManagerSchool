@@ -1,6 +1,6 @@
 <template>
   <div :class="['sidebar', { collapsed: collapsed }]">
-    <div class="sidebar-heading">Quản lý Trường học</div>
+    <div class="sidebar-heading bg-success text-white">Quản lý Trường học</div>
     <div class="list-group">
       <a class="list-group-item list-group-item-action" href="/profile">
         <font-awesome-icon :icon="['fas', 'user']" class="me-2 fs-5" />Hồ sơ cá
@@ -31,7 +31,6 @@
         <a class="list-group-item list-group-item-action" href="/manager/users"
           >Người dùng</a
         >
-        <!-- <a class="list-group-item list-group-item-action" href="/manager/classes">Lớp học</a> -->
         <a
           class="list-group-item list-group-item-action"
           href="/manager/subjects"
@@ -77,7 +76,6 @@ export default {
 .sidebar {
   width: 250px;
   background-color: #f8f9fa;
-  background-color: #f8f9fa;
   transition: transform 0.3s, width 0.3s;
   height: 100vh;
   position: fixed;
@@ -89,8 +87,7 @@ export default {
   width: 0;
 }
 .sidebar .sidebar-heading {
-  padding: 14px 18px;
-  /* background-color: #e9ecef; */
+  padding: 16px 18px;
   background-color: #fff;
   border-bottom: 2px solid #2a9d8f;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -104,7 +101,7 @@ export default {
 .sidebar .list-group-item {
   padding: 1rem;
   color: #44b97c;
-  font-weight: 500;
+  font-weight: 700;
 }
 .sidebar .list-group-item:hover {
   background-color: #f1f1f1;

@@ -4,7 +4,7 @@
     class="d-flex justify-content-center align-items-center vh-100"
   >
     <div class="w-50 w-100-sm">
-      <login-form @submit="onSubmitLogin" ref="loginform" />
+      <login-form @submit.prevent="onSubmitLogin" ref="loginform" />
     </div>
   </b-container>
 </template>
@@ -35,7 +35,7 @@ export default {
 }
 #page-content-wrapper {
   margin: 0;
-  background: url("../../assets/images/bg.jpg") no-repeat center center;
+  background: url("@/assets/images/bg.jpg") no-repeat center center;
   background-size: cover;
 }
 .w-100-sm {

@@ -146,7 +146,6 @@ export default {
         this.entries = response.data.data;
         this.listEntry = response.data.data;
       }
-      console.log("List Teacher:", response.data);
     },
     async confirmDelete(id) {
       const isConfirmed = await showDeleteConfirmation();
@@ -157,7 +156,7 @@ export default {
         } else {
           showErrorMessage();
         }
-        this.getListStudent();
+        this.getListTeachers();
       }
     },
 
@@ -177,8 +176,6 @@ export default {
     },
     searchQuery: {
       handler(newQuery) {
-        console.log("Key", this.searchQuery);
-
         if (newQuery.trim() === "") {
           this.getListTeachers();
           this.isShowPagi = true;
