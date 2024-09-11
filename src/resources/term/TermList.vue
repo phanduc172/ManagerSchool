@@ -4,9 +4,9 @@
       <input
         type="text"
         v-model="searchQuery"
-        placeholder="Tìm kiếm môn học..."
+        placeholder="Tìm kiếm học kì..."
       />
-      <b-button href="/manager/subjects/create" variant="success fw-bold">
+      <b-button href="/manager/term/create" variant="success fw-bold">
         <i class="bx bx-plus"></i>
         Thêm mới
       </b-button>
@@ -17,50 +17,50 @@
           <div
             class="card-header d-flex justify-content-center align-items-center py-3 header-bordered"
           >
-            <h5 class="mb-0 text-center">Danh sách môn học</h5>
+            <h5 class="mb-0 text-center">Danh sách học kì</h5>
           </div>
           <div class="table-responsive">
             <table class="table table-striped table-hover mb-0 table-wrap">
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th>STT</th>
-                  <th>Mã môn học</th>
-                  <th>Tên môn học</th>
-                  <th>Số tín chỉ</th>
-                  <th>Học kỳ</th>
-                  <th>Khoa</th>
+                  <th>Học kì</th>
+                  <th>Năm học</th>
+                  <th>Tổng tín chỉ</th>
                   <th></th>
                 </tr>
               </thead>
-              <tbody v-if="!loading">
+              <tbody>
                 <tr
-                  v-for="(subject, index) in entries"
-                  :key="subject.id"
+                  v-for="(terms, index) in entries"
+                  :key="terms.id"
                   class="align-middle text-center"
                 >
                   <td class="text-center">
-                    {{ (currentPage - 1) * perPage + index + 1 }}
+                    {{
+                      searchQuery
+                        ? index + 1
+                        : (currentPage - 1) * perPage + index + 1
+                    }}
                   </td>
-                  <td class="h6 text-start">{{ subject.subject_code }}</td>
-                  <td class="text-start">{{ subject.subject_name }}</td>
-                  <td class="text-center">{{ subject.credits }}</td>
+                  <td class="text-start">Học kì {{ terms.term_semester }}</td>
                   <td class="text-center">
-                    {{ subject.term_name || "Không xác định" }}
+                    {{ terms.term_from_year }} - {{ terms.term_to_year }}
                   </td>
-                  <td class="text-start">{{ subject.department }}</td>
+                  <td class="text-center">{{ terms.total_credits }}</td>
                   <td class="text-center">
                     <b-button-group>
                       <b-button
                         variant="transtration"
                         size="md"
-                        :to="`/manager/subjects/edit/${subject.id}`"
+                        :to="`/manager/term/edit/${terms.id}`"
                       >
                         <i class="bx bxs-edit-alt fs-4 text-info"></i>
                       </b-button>
                       <b-button
                         variant="transtration"
                         size="md"
-                        @click="confirmDelete(subject.id)"
+                        @click="confirmDelete(terms.id)"
                       >
                         <i class="bx bxs-trash fs-4 text-danger"></i>
                       </b-button>
@@ -73,9 +73,10 @@
               </tbody>
             </table>
           </div>
+
           <Pagination
             v-show="isShowPagi"
-            :total="totalSubjects"
+            :total="totalTerms"
             :limit="perPage"
             :currentPage="currentPage"
             @page-changed="handlePageChange"
@@ -87,13 +88,13 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
 import {
   showDeleteConfirmation,
-  showErrorMessage,
+  showErrorLogin,
   showSuccessMessage,
 } from "../../common/utils/notifications";
 import Pagination from "../../components/layout/Pagination.vue";
+import { mapActions } from "vuex";
 
 export default {
   components: { Pagination },
@@ -111,82 +112,57 @@ export default {
     return {
       entries: [],
       listEntry: [],
-      terms: [],
       searchQuery: "",
       currentPage: this.page,
       perPage: this.limit,
-      totalSubjects: 0,
-      loading: true,
+      totalTerms: 0,
+      loading: false,
       isShowPagi: true,
     };
   },
-
   methods: {
-    ...mapActions("subject", ["ListSubjects", "DeleteSubject", "ListTerms"]),
-    ...mapActions("term", ["ListTerms", "getTermById"]),
-    async getTerm() {
-      const response = await this.ListTerms();
-      if (response?.status === 200) {
-        this.terms = response.data.data || [];
-      } else {
-        this.terms = [];
-      }
-      console.log("Học kì", this.terms);
-    },
-    async getTermName(termId) {
-      const term = await this.getTermById(termId);
-      console.log(this.term, "Tên học kì");
-      return term?.term_semester || "Không xác định";
-    },
-
-    async getSubjects(page = this.currentPage) {
+    ...mapActions("term", ["ListTerms", "DeleteTerm"]),
+    async getAllTerms(page = this.currentPage) {
       this.loading = true;
-      try {
-        const response = await this.ListSubjects({ page, limit: this.perPage });
-
-        if (response?.status === 200) {
-          this.listEntry = response.data.data;
-          this.entries = response.data.data;
-          this.totalSubjects = response.data.total;
-          console.log(this.entries);
-        } else {
-          this.listEntry = [];
-          this.entries = [];
-        }
-      } catch (error) {
-        console.error("Lỗi khi lấy danh sách môn học:", error);
+      const response = await this.ListTerms({ page, limit: this.perPage });
+      const listEntryResponse = await this.ListTerms({
+        limit: response.data.total,
+      });
+      if (response?.status === 200 || listEntryResponse?.status === 200) {
+        this.entries = response.data.data;
+        this.listEntry = listEntryResponse.data.data;
+        this.totalTerms = listEntryResponse.data.total;
+      } else {
         this.listEntry = [];
         this.entries = [];
-      } finally {
-        this.loading = false;
       }
+      this.loading = false;
     },
-    async confirmDelete(Id) {
+    async confirmDelete(id) {
       const isConfirmed = await showDeleteConfirmation();
       if (isConfirmed) {
-        const response = await this.DeleteSubject(Id);
+        const response = await this.DeleteTerm(id);
         if (response?.status === 200) {
           showSuccessMessage();
-          this.getSubjects();
+          this.getAllTerms();
         } else {
-          showErrorMessage();
+          showErrorLogin();
         }
       }
     },
-
     handlePageChange(page) {
       this.currentPage = page;
-      this.getSubjects(this.currentPage);
+      this.getAllTerms(this.currentPage);
     },
   },
   watch: {
     page(newPage) {
       this.currentPage = newPage;
-      this.getSubjects(newPage);
+      this.getAllTerms(newPage);
     },
     limit(newLimit) {
       this.perPage = newLimit;
-      this.getSubjects(this.currentPage);
+      this.getAllTerms(this.currentPage);
     },
     searchQuery: {
       handler() {
@@ -196,17 +172,17 @@ export default {
           this.isShowPagi = true;
         }
         this.entries = this.listEntry.filter((entry) => {
-          return entry.subject_name
-            .toLowerCase()
-            .includes(this.searchQuery.toLowerCase());
+          if (!this.searchQuery) {
+            return true;
+          }
+          return entry.term_semester == this.searchQuery;
         });
       },
       deep: true,
     },
   },
   created() {
-    this.getSubjects();
-    this.getTerm();
+    this.getAllTerms();
   },
 };
 </script>

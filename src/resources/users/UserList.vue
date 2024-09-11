@@ -5,10 +5,14 @@
         <input
           type="text"
           class="form-control"
+          v-model="searchQuery"
           placeholder="Tìm kiếm người dùng..."
         />
       </div>
-      <button class="btn btn-success border-2 shadow-sm">Thêm</button>
+      <b-button href="/manager/users/create" variant="success fw-bold">
+        <i class="bx bx-plus"></i>
+        Thêm mới
+      </b-button>
     </div>
     <div class="row">
       <div class="col-12 mb-3 mb-lg-5">
@@ -19,7 +23,7 @@
             <h5 class="mb-0 text-center">Danh sách người dùng</h5>
           </div>
           <div class="table-responsive">
-            <table class="table mb-0">
+            <table class="table mb-0 table-wrap">
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th class="text-center">STT</th>
@@ -41,7 +45,9 @@
                   :key="user.id"
                   class="align-middle"
                 >
-                  <td class="text-center">{{ index + 1 }}</td>
+                  <td class="text-center">
+                    {{ (currentPage - 1) * perPage + index + 1 }}
+                  </td>
                   <td>
                     <div class="d-flex align-items-center">
                       <img
@@ -49,36 +55,55 @@
                         class="avatar sm rounded-pill me-3 flex-shrink-0"
                         alt="Giáo viên"
                       />
-                      <div>
-                        <div class="h6 mb-0 truncate">{{ user.name }}</div>
+                      <div class="h6 mb-0 truncate">
+                        {{ user.name }}
                       </div>
                     </div>
                   </td>
-                  <td class="text-center">{{ user.date_of_birth }}</td>
-                  <td class="text-center">{{ user.email }}</td>
+                  <td class="text-center minwidth">
+                    {{ toVNTime(user.date_of_birth) }}
+                  </td>
+                  <td class="text-start">{{ user.email }}</td>
                   <td class="text-center">{{ user.phone }}</td>
-                  <td class="text-center">{{ user.address }}</td>
-                  <td class="text-center">{{ user.department }}</td>
-                  <td class="text-center">{{ user.enrollment_date }}</td>
-                  <td class="text-center">{{ user.hire_date }}</td>
+                  <td class="text-start">{{ user.address }}</td>
+                  <td class="text-start">{{ user.department }}</td>
+                  <td class="text-center">
+                    {{ toVNTime(user.enrollment_date) }}
+                  </td>
+                  <td class="text-center">{{ toVNTime(user.hire_date) }}</td>
                   <td class="text-center">{{ user.role_type }}</td>
                   <td class="text-center">
                     <b-button-group>
-                      <b-button variant="transtration" size="md">
-                        <b-icon icon="eye" class="text-secondary"></b-icon>
-                      </b-button>
-                      <b-button variant="transtration" size="md">
+                      <b-button
+                        variant="transtration"
+                        size="md"
+                        :to="`/manager/users/edit/${user.Id}`"
+                      >
                         <i class="bx bxs-edit-alt fs-4 text-info"></i>
                       </b-button>
-                      <b-button variant="transtration" size="md">
+                      <b-button
+                        variant="transtration"
+                        size="md"
+                        @click="confirmDelete(user.Id)"
+                      >
                         <i class="bx bxs-trash fs-4 text-danger"></i>
                       </b-button>
                     </b-button-group>
                   </td>
                 </tr>
+                <tr v-if="entries?.length === 0 || !entries">
+                  <td colspan="8" class="text-center">Không có dữ liệu</td>
+                </tr>
               </tbody>
             </table>
           </div>
+          <Pagination
+            v-show="isShowPagi"
+            :total="totalUsers"
+            :limit="perPage"
+            :currentPage="currentPage"
+            @page-changed="handlePageChange"
+          />
         </div>
       </div>
     </div>
@@ -87,43 +112,101 @@
   
   <script>
 import { mapActions, mapGetters } from "vuex";
-import { formatDate } from "@/common/utils/validate";
+import Pagination from "@/components/layout/Pagination.vue";
+import {
+  showDeleteConfirmation,
+  showErrorMessage,
+  showSuccessMessage,
+} from "@/common/utils/notifications";
+import moment from "moment";
 export default {
+  props: {
+    page: {
+      type: Number,
+      default: 1,
+    },
+    limit: {
+      type: Number,
+      default: 10,
+    },
+  },
   data() {
     return {
       entries: [],
+      listEntry: [],
+      searchQuery: "",
+      currentPage: this.page,
+      perPage: this.limit,
+      totalUsers: 0,
+      isShowPagi: true,
     };
   },
+  components: { Pagination },
   computed: {
     ...mapGetters("user", ["users"]),
   },
   methods: {
-    ...mapActions("user", ["ListAllAccount", "GetProfile"]),
+    ...mapActions("user", ["ListAllAccount", "GetProfile", "DeleteUser"]),
+    toVNTime(time) {
+      return moment(time).utc(7).format("DD-MM-YYYY");
+    },
     async getProfile() {
       const response = await this.GetProfile(this.$route.query);
       if (response?.status == 200) {
-        this.entries = response?.data?.data ?? [];
+        this.entries = response.data.data;
       } else {
-        this.entries = this.users;
+        this.entries = [];
       }
     },
-    async getListAllAccount() {
-      const response = await this.ListAllAccount(this.$route.query);
-      if (response?.status == 200) {
-        this.entries =
-          response.data?.data.map((entry) => {
-            return {
-              ...entry,
-              date_of_birth: formatDate(entry.date_of_birth),
-              enrollment_date: formatDate(entry.enrollment_date),
-              hire_date: formatDate(entry.hire_date),
-              created_at: formatDate(entry.created_at),
-              updated_at: formatDate(entry.updated_at),
-            };
-          }) ?? [];
-      } else {
-        this.entries = this.users;
+    async getListAllAccount(page = this.currentPage) {
+      const response = await this.ListAllAccount({ page, limit: this.perPage });
+
+      const response2 = await this.ListAllAccount({
+        limit: response.data.total,
+      });
+      console.log(response2.data.data);
+      if (response2.status === 200) {
+        this.listEntry = response2.data.data;
       }
+
+      if (response?.status === 200) {
+        this.entries = response.data.data;
+        this.totalUsers = response.data.total;
+      } else {
+        this.entries = [];
+      }
+    },
+    async confirmDelete(id) {
+      const isConfirmed = await showDeleteConfirmation();
+      if (isConfirmed) {
+        const response = await this.DeleteUser(id);
+        if (response.status === 200) {
+          showSuccessMessage();
+        } else {
+          showErrorMessage();
+        }
+        this.getListAllAccount();
+      }
+    },
+    handlePageChange(page) {
+      this.currentPage = page;
+      this.getListAllAccount(this.currentPage);
+    },
+  },
+  watch: {
+    searchQuery: {
+      handler(newQuery) {
+        if (newQuery.trim() === "") {
+          this.getListAllAccount();
+          this.isShowPagi = true;
+        } else {
+          this.isShowPagi = false;
+          this.entries = this.listEntry.filter((entry) =>
+            entry.name.toLowerCase().includes(newQuery.toLowerCase())
+          );
+        }
+      },
+      deep: true,
     },
   },
   created() {
@@ -132,7 +215,7 @@ export default {
 };
 </script>
     
-  <style scoped>
+<style scoped>
 body {
   margin-top: 20px;
   background: #eee;
@@ -145,9 +228,13 @@ body {
   height: 2.25rem;
   font-size: 0.818125rem;
 }
-.table-nowrap .table td,
 .table-nowrap .table th {
   white-space: nowrap;
+}
+.table-wrap td {
+  max-width: 400px !important;
+  white-space: normal;
+  word-wrap: break-word;
 }
 .table > :not(caption) > * > * {
   padding: 0.75rem 1.25rem;
@@ -175,6 +262,9 @@ table td {
   color: var(--vt-c-green);
   font-weight: bold;
   text-transform: uppercase;
+}
+.minwidth {
+  min-width: 200px !important;
 }
 </style>
     

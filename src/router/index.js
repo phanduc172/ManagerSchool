@@ -7,11 +7,7 @@ Vue.use(VueRouter);
 const router = new VueRouter({
   mode: "history",
   routes: [
-    { path: "*", redirect: "/" },
-    {
-      path: "/",
-      name: "home",
-    },
+    { path: "*", redirect: "/login" },
 
     // Auth Router
     {
@@ -27,12 +23,17 @@ const router = new VueRouter({
     {
       path: "/changepassword",
       name: "changepassword",
-      // component: () => import("../resources/auth/Register.vue"),
+      component: () => import("../components/auth/ChangePassword.vue"),
     },
     {
       path: "/recoverpassword",
       name: "recoverpassword",
       component: () => import("../components/auth/FormRecover.vue"),
+    },
+    {
+      path: "/confirmotp",
+      name: "confirmotp",
+      component: () => import("../components/auth/ConfirmOTP.vue"),
     },
 
     {
@@ -70,8 +71,21 @@ const router = new VueRouter({
       path: "/manager/users",
       name: "users",
       component: () => import("../resources/users/ManagerUser.vue"),
+      props: (route) => ({
+        page: parseInt(route.query.page) || 1,
+        limit: parseInt(route.query.limit) || 10,
+      }),
     },
-    
+    {
+      path: "/manager/users/create",
+      name: "usersCreate",
+      component: () => import("../resources/users/UserForm.vue"),
+    },
+    {
+      path: "/manager/users/edit/:id",
+      name: "usersUpdate",
+      component: () => import("../resources/users/UserFormUpdate.vue"),
+    },
     // Router Class
     {
       path: "/manager/classes",
@@ -92,7 +106,7 @@ const router = new VueRouter({
         page: parseInt(route.query.page) || 1,
         limit: parseInt(route.query.limit) || 10,
       }),
-    },    
+    },
     {
       path: "/manager/subjects/create",
       name: "subjectsCreate",
@@ -104,6 +118,49 @@ const router = new VueRouter({
       component: () => import("../resources/subject/SubjectForm.vue"),
       props: true,
     },
+    //Router Major
+    {
+      path: "/manager/major",
+      name: "major",
+      component: () => import("../resources/major/ManagerMajor.vue"),
+      props: (route) => ({
+        page: parseInt(route.query.page) || 1,
+        limit: parseInt(route.query.limit) || 10,
+      }),
+    },
+    {
+      path: "/manager/major/create",
+      name: "majorCreate",
+      component: () => import("../resources/major/MajorForm.vue"),
+    },
+    {
+      path: '/manager/major/edit/:id',
+      name: "majorEdit",
+      component: () => import("../resources/major/MajorForm.vue"),
+      props: true,
+    },
+    //Router Term
+    {
+      path: "/manager/term",
+      name: "term",
+      component: () => import("../resources/term/ManagerTerm.vue"),
+      props: (route) => ({
+        page: parseInt(route.query.page) || 1,
+        limit: parseInt(route.query.limit) || 10,
+      }),
+    },
+    {
+      path: "/manager/term/create",
+      name: "termCreate",
+      component: () => import("../resources/term/TermForm.vue"),
+    },
+    {
+      path: '/manager/term/edit/:id',
+      name: "termEdit",
+      component: () => import("../resources/term/TermForm.vue"),
+      props: true,
+    },
+
     //
     {
       path: "/profile",
@@ -120,12 +177,7 @@ router.beforeEach(async (to, from, next) => {
   // Nếu không có token (người dùng chưa đăng nhập)
   if (!token) {
     // Nếu trang truy cập là trang login hoặc register, cho phép tiếp tục
-    if (to.name === "login" || to.name === "register" || to.name === "recoverpassword") {
-      return next();
-    }
-
-    // Nếu trang truy cập không phải là login hoặc register, cho phép truy cập trang / là trang home
-    if (to.path === "/") {
+    if (to.name === "login" || to.name === "register" || to.name === "recoverpassword" || to.name === "confirmotp") {
       return next();
     }
 

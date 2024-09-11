@@ -6,10 +6,10 @@
         v-model="searchQuery"
         placeholder="Tìm kiếm học sinh..."
       />
-      <b-button href="/manager/students/create" variant="success fw-bold">
+      <!-- <b-button href="/manager/students/create" variant="success fw-bold">
         <i class="bx bx-plus"></i>
         Thêm mới
-      </b-button>
+      </b-button> -->
     </div>
     <div class="row">
       <div class="col-12 mb-3 mb-lg-5">
@@ -20,28 +20,30 @@
             <h5 class="mb-0 text-center">Danh sách học sinh</h5>
           </div>
           <div class="table-responsive">
-            <table class="table table-striped table-hover mb-0">
+            <table class="table table-striped table-hover mb-0 table-wrap">
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th>STT</th>
                   <th>Họ tên</th>
+                  <th>Email</th>
+                  <th style="min-width: 200px">Ngày sinh</th>
                   <th>Giới tính</th>
-                  <th>Ngày sinh</th>
                   <th>Số điện thoại</th>
-                  <th>Địa chỉ</th>
-                  <th>Lớp học</th>
-                  <th>Giáo viên chủ nhiệm</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  v-for="(student, index) in paginatedStudents"
+                  v-for="(student, index) in entries"
                   :key="student.id"
                   class="align-middle"
                 >
                   <td class="text-center">
-                    {{ (currentPage - 1) * perPage + index + 1 }}
+                    {{
+                      searchQuery
+                        ? index + 1
+                        : (currentPage - 1) * perPage + index + 1
+                    }}
                   </td>
                   <td>
                     <div class="d-flex align-items-center">
@@ -53,39 +55,46 @@
                       <div class="h6 mb-0 truncate">{{ student.name }}</div>
                     </div>
                   </td>
-                  <td>{{ student.gender }}</td>
-                  <td>{{ student.birthdate }}</td>
-                  <td>{{ student.phone }}</td>
-                  <td class="truncate" style="max-width: 500px">
-                    {{ student.address }}
+                  <td>{{ student.email }}</td>
+                  <td class="text-center">
+                    {{ toVNTime(student.date_of_birth) }}
                   </td>
-                  <td>{{ student.class }}</td>
-                  <td class="truncate">{{ student.homeroomTeacher }}</td>
+                  <td class="text-center">
+                    {{
+                      student.gender === 1
+                        ? "Nam"
+                        : student.gender === 2
+                        ? "Nữ"
+                        : "Khác"
+                    }}
+                  </td>
+                  <td>{{ student.phone }}</td>
+
                   <td class="text-center">
                     <b-button-group>
-                      <b-button variant="transtration" size="md">
-                        <b-icon icon="eye" class="text-secondary"></b-icon>
-                      </b-button>
-                      <b-button variant="transtration" size="md">
-                        <i class="bx bxs-edit-alt fs-4 text-info"></i>
-                      </b-button>
-                      <b-button variant="transtration" size="md">
+                      <b-button
+                        variant="transtration"
+                        size="md"
+                        @click="confirmDelete(student.Id)"
+                      >
                         <i class="bx bxs-trash fs-4 text-danger"></i>
                       </b-button>
                     </b-button-group>
                   </td>
                 </tr>
-                <tr v-if="paginatedStudents.length === 0">
-                  <td colspan="9" class="text-center">Không có dữ liệu</td>
+                <tr v-if="entries?.length === 0 || !entries">
+                  <td colspan="8" class="text-center">Không có dữ liệu</td>
                 </tr>
               </tbody>
             </table>
-            <pagination
-              :total="totalStudents"
-              :per-page="perPage"
-              :current-page.sync="currentPage"
-            />
           </div>
+          <Pagination
+            v-show="isShowPagi"
+            :total="totalStudents"
+            :limit="perPage"
+            :currentPage="currentPage"
+            @page-changed="handlePageChange"
+          />
         </div>
       </div>
     </div>
@@ -93,46 +102,81 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 import Pagination from "../../components/layout/Pagination.vue";
+import moment from "moment";
+import {
+  showDeleteConfirmation,
+  showErrorMessage,
+  showSuccessMessage,
+} from "../../common/utils/notifications";
 export default {
   components: { Pagination },
+  props: {
+    page: {
+      type: Number,
+      default: 1,
+    },
+    limit: {
+      type: Number,
+      default: 10,
+    },
+  },
   data() {
     return {
+      entries: [],
       searchQuery: "",
-      currentPage: 1,
-      perPage: 10,
+      currentPage: this.page,
+      perPage: this.limit,
+      totalStudents: 0,
+      isShowPagi: true,
     };
   },
-  computed: {
-    ...mapGetters("student", ["students"]),
-    filteredStudents() {
-      if (!this.searchQuery) {
-        return this.students;
+  methods: {
+    toVNTime(time) {
+      return moment(time).utc(7).format("DD-MM-YYYY");
+    },
+    ...mapActions("student", ["ListStudents"]),
+    ...mapActions("user", ["DeleteUser"]),
+    async getListStudent(page = this.currentPage) {
+      const response = await this.ListStudents({ page, limit: this.perPage });
+      if (response?.status === 200) {
+        this.entries = response.data.data;
+        this.totalStudents = response.data.total;
       }
-      const query = this.searchQuery.toLowerCase();
-      return this.students.filter((student) => {
-        return (
-          student.name.toLowerCase().includes(query) ||
-          student.phone.toLowerCase().includes(query) ||
-          student.class.toLowerCase().includes(query) ||
-          student.homeroomTeacher.toLowerCase().includes(query)
-        );
-      });
+      console.log("List Student:", response.data.data);
     },
-    totalStudents() {
-      return this.filteredStudents.length;
+    async confirmDelete(id) {
+      const isConfirmed = await showDeleteConfirmation();
+      if (isConfirmed) {
+        const response = await this.DeleteUser(id);
+        if (response.status === 200) {
+          showSuccessMessage();
+        } else {
+          showErrorMessage();
+        }
+        this.getListStudent();
+      }
     },
-    paginatedStudents() {
-      const start = (this.currentPage - 1) * this.perPage;
-      const end = start + this.perPage;
-      return this.filteredStudents.slice(start, end);
+    handlePageChange(page) {
+      this.currentPage = page;
+      this.getListStudent(this.currentPage);
     },
   },
-  methods: {
-    ...mapActions("student", ["ListStudents"]),
-    async getListStudent() {
-      await this.ListStudents();
+  watch: {
+    searchQuery: {
+      handler(newQuery) {
+        if (newQuery.trim() === "") {
+          this.getListStudent();
+          this.isShowPagi = true;
+        } else {
+          this.isShowPagi = false;
+          this.entries = this.entries.filter((entry) =>
+            entry.name.toLowerCase().includes(newQuery.toLowerCase())
+          );
+        }
+      },
+      deep: true,
     },
   },
   created() {
@@ -155,9 +199,13 @@ body {
   height: 2.25rem;
   font-size: 0.818125rem;
 }
-.table-nowrap .table td,
 .table-nowrap .table th {
   white-space: nowrap;
+}
+.table-wrap td {
+  max-width: 400px;
+  white-space: normal;
+  word-wrap: break-word;
 }
 .table > :not(caption) > * > * {
   padding: 0.75rem 1.25rem;

@@ -6,7 +6,10 @@
         Quay lại
       </b-button>
     </div>
-    <div class="col-md-8 col-lg-6 p-4 border rounded shadow-lg bg-white">
+    <div
+      class="col-md-8 col-lg-6 p-4 border rounded shadow-lg bg-white"
+      v-if="loading"
+    >
       <h4 class="text-center text-success mb-3">
         {{ isEdit ? "Cập nhật môn học" : "Thêm môn học" }}
       </h4>
@@ -47,16 +50,16 @@
           </div>
         </div>
         <div class="form-group mb-3">
-          <label for="credits" class="form-label">
+          <label for="credit" class="form-label">
             Số tín chỉ <span class="text-danger">*</span>
           </label>
           <select
-            id="credits"
+            id="credit"
             class="form-control"
             v-model="form.credits"
-            @change="clearError('credits')"
+            @change="clearError('credit')"
           >
-            <option value="" disabled selected>Số tín chỉ</option>
+            <option value="" disabled selected>Chọn số tín chỉ...</option>
             <option
               v-for="credit in creditOptions"
               :key="credit"
@@ -70,22 +73,28 @@
           </div>
         </div>
         <div class="form-group mb-3">
-          <label for="term" class="form-label">
+          <label for="termSemester" class="form-label">
             Học kỳ <span class="text-danger">*</span>
           </label>
           <select
-            id="term"
+            id="termSemester"
             class="form-control"
-            v-model="form.term"
-            @change="clearError('term')"
+            v-model="form.termSemester"
+            @change="onTermSemesterChange"
           >
-            <option value="" disabled selected>Chọn học kỳ...</option>
-            <option v-for="term in termOptions" :key="term" :value="term">
-              {{ term }}
+            <option value="" disabled>Chọn học kỳ...</option>
+            <option
+              v-for="(term, index) in termOptions"
+              :key="index"
+              :value="term.term_semester"
+            >
+              Học kỳ {{ term.term_semester }} ({{ term.term_from_year }} -
+              {{ term.term_to_year }}) - {{ term.id }}
             </option>
           </select>
-          <div class="text-danger mb-2" v-if="errors.term">
-            * {{ errors.term }}
+
+          <div class="text-danger mb-2" v-if="errors.termSemester">
+            * {{ errors.termSemester }}
           </div>
         </div>
         <div class="form-group mb-3">
@@ -160,18 +169,28 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import { showSuccessMessage } from "../../common/utils/notifications";
 import { validateFormSubject } from "@/common/utils/validate";
 
 export default {
+  props: {
+    page: {
+      type: Number,
+      default: 1,
+    },
+    limit: {
+      type: Number,
+      default: 10,
+    },
+  },
   data() {
     return {
       form: {
         subjectCode: "",
         subjectName: "",
-        credits: null,
-        term: "",
+        credits: "",
+        termSemester: "",
         academicYearStart: "",
         academicYearEnd: "",
         department: "",
@@ -179,113 +198,168 @@ export default {
       errors: {
         subjectCode: "",
         subjectName: "",
-        credits: null,
-        term: "",
+        credits: "",
+        termSemester: "",
         academicYearStart: "",
         academicYearEnd: "",
         department: "",
       },
-      creditOptions: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      yearOptions: Array.from({ length: 20 }, (_, i) => 2023 + i),
+      loading: false,
+      creditOptions: [1, 2, 3, 4, 5],
+      yearOptions: Array.from({ length: 20 }, (_, i) => 2020 + i),
       departmentOptions: [
         "Khoa Công nghệ thông tin",
         "Khoa Lý luận - chính trị",
         "Khoa Toán",
       ],
-      termOptions: ["Học kỳ I", "Học kỳ II"],
+      termOptions: [],
       isEdit: false,
+      currentPage: this.page,
+      perPage: this.limit,
+      totalTerms: 0,
     };
   },
+  computed: {
+    ...mapGetters("term", ["terms"]),
+  },
   methods: {
+    ...mapActions("term", ["ListTerms", "getTermById"]),
     ...mapActions("subject", [
       "CreaterSubject",
       "UpdateSubject",
       "getSubjectById",
     ]),
-    async fetchDetailSubject() {
-      const id = this.$route.params.id;
-      const response = await this.getSubjectById(id);
-      this.setFormForEdit(response.data);
-      console.log(response);
+
+    async getAllTerms(page = this.currentPage) {
+      const data = await this.ListTerms({ page, limit: this.perPage });
+      const term = await this.ListTerms({
+        limit: data.data.total,
+      });
+      this.termOptions = term.data.data;
+      console.log("Dữ liệu các học kỳ:", this.termOptions);
     },
-    async onSubmit() {
-      try {
-        this.errors = validateFormSubject(this.form);
-        if (Object.keys(this.errors).length > 0) {
-          return;
-        }
-        const data = {
-          subject_code: this.form.subjectCode,
-          subject_name: this.form.subjectName,
-          credits: parseInt(this.form.credits),
-          is_mandatory: this.form.isMandatory,
-          term: this.form.term,
-          academic_year: `${this.form.academicYearStart}-${this.form.academicYearEnd}`,
-          department: this.form.department,
-        };
-        if (this.isEdit) {
-          await this.UpdateSubject({ data, id: this.$route.params.id });
-          showSuccessMessage("Cập nhật môn học thành công!");
-          // await this.UpdateSubject({ data, id: this.$route.params.id });
-          // showSuccessMessage("Cập nhật môn học thành công!");
-        } else {
-          await this.CreaterSubject(data);
-          showSuccessMessage("Thêm môn học thành công!");
-        }
-        this.onReset();
-        setTimeout(() => {
-          window.location.href = "/manager/subjects";
-        }, 3000);
-      } catch (error) {
-        alert(
-          `Có lỗi xảy ra: ${
-            error.response ? error.response.data.message : error.message
-          }`
-        );
+    async getTermById(id) {
+      const response = await this.getTermById(id);
+      if (response?.status === 200) {
+        return response.data.data;
       }
     },
-    onReset() {
-      this.form.subjectCode = "";
-      this.form.subjectName = "";
-      this.form.credits = null;
-      this.form.term = "";
-      this.form.academicYearStart = "";
-      this.form.academicYearEnd = "";
-      this.form.department = "";
 
+    async getDetailSubject() {
+      this.loading = false;
+      if (this.$route.params.id) {
+        this.isEdit = true;
+        const response = await this.getSubjectById(this.$route.params.id);
+        this.setFormForEdit(response.data);
+      }
+      this.loading = true;
+    },
+    async onSubmit() {
+      this.errors = validateFormSubject(this.form);
+      if (Object.keys(this.errors).length > 0) {
+        return;
+      }
+
+      const term = this.termOptions.find(
+        (t) => t.term_semester == this.form.termSemester
+      );
+      if (!term) {
+        throw new Error("Học kỳ không tồn tại trong hệ thống!");
+      }
+      const data = {
+        subject_code: this.form.subjectCode,
+        subject_name: this.form.subjectName,
+        credits: parseInt(this.form.credits),
+        is_mandatory: false,
+        term_semester: parseInt(term.term_semester),
+        term_from_year: this.form.academicYearStart,
+        term_to_year: this.form.academicYearEnd,
+        department: this.form.department,
+      };
+
+      if (this.isEdit) {
+        await this.UpdateSubject({ data, id: this.$route.params.id });
+        showSuccessMessage("Cập nhật môn học thành công!");
+      } else {
+        await this.CreaterSubject(data);
+        showSuccessMessage("Thêm môn học thành công!");
+      }
+      this.$router.push({ name: "subjects" });
+    },
+
+    async onReset() {
+      this.getDetailSubject();
       this.errors = {
         subjectCode: "",
         subjectName: "",
-        credits: null,
-        term: "",
+        credits: "",
+        termSemester: "",
         academicYearStart: "",
         academicYearEnd: "",
         department: "",
       };
     },
+
     setFormForEdit(subject) {
+      let subjectTerm = this.termOptions.find(
+        ({ id }) => subject.term_id == id
+      );
+      if (subjectTerm) {
+        this.form.termSemester = subjectTerm.term_semester;
+        this.form.academicYearStart = subjectTerm.term_from_year;
+        this.form.academicYearEnd = subjectTerm.term_to_year;
+      } else {
+        console.warn("Term not found for ID:", subject.term_id);
+      }
       this.form.subjectCode = subject.subject_code;
       this.form.subjectName = subject.subject_name;
       this.form.credits = subject.credits;
       this.form.isMandatory = subject.is_mandatory;
-      this.form.term = subject.term_id;
-      const [academicYearStart, academicYearEnd] =
-        subject.academic_year.split("-");
-      this.form.academicYearStart = academicYearStart;
-      this.form.academicYearEnd = academicYearEnd;
       this.form.department = subject.department;
       this.isEdit = true;
     },
+
     clearError(field) {
       this.$set(this.errors, field, "");
     },
+    onTermSemesterChange() {
+      const selectedTerm = this.termOptions.find(
+        (term) =>
+          parseInt(this.form.termSemester) === parseInt(term.term_semester)
+      );
+
+      if (selectedTerm) {
+        this.form.academicYearStart = selectedTerm.term_from_year;
+        this.form.academicYearEnd = selectedTerm.term_to_year;
+      } else {
+        this.form.academicYearStart = "";
+        this.form.academicYearEnd = "";
+      }
+    },
+  },
+  watch: {
+    "form.termSemester"(newVal) {
+      this.onTermSemesterChange();
+
+      const selectedTerm = this.termOptions.find(
+        (term) => parseInt(newVal) === parseInt(term.term_semester)
+      );
+      console.log("Select term", selectedTerm.term_semester);
+      console.log("Term form", this.form.termSemester);
+      console.log("Term object", selectedTerm);
+      if (selectedTerm) {
+        console.log(
+          `Năm bắt đầu: ${selectedTerm.term_from_year}, Năm kết thúc: ${selectedTerm.term_to_year}`
+        );
+      } else {
+        console.log("Không tìm thấy học kỳ phù hợp.");
+      }
+    },
   },
 
-  created() {
-    if (this.$route.params.id) {
-      this.isEdit = true;
-      this.fetchDetailSubject();
-    }
+  async created() {
+    this.getDetailSubject();
+    this.getAllTerms();
   },
 };
 </script>

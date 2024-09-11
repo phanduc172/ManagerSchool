@@ -6,7 +6,7 @@
     :per-page="limit"
     aria-controls="pagination-element"
     @change="onPageChange"
-    class="justify-content-center my-4"
+    class="justify-content-center"
   />
 </template>
 
@@ -39,10 +39,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.my-4 {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-</style>

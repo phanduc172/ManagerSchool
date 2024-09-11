@@ -1,3 +1,7 @@
+export function deleteCookie(name) {
+  document.cookie = name + '=; Max-Age=0; path=/; domain=' + window.location.hostname;
+}
+
 export function getMaxDate() {
   return new Date().toISOString().split("T")[0];
 }
@@ -12,17 +16,72 @@ function validatePhoneNumber(phone) {
   return phoneRegex.test(phone);
 }
 
+function validateDate(dateString) {
+  const date = new Date(dateString);
+  return !isNaN(date.getTime());
+}
+
+export function validateFormProfile(form) {
+  const errors = {};
+
+  if (!form.id) {
+    errors.id = "Mã sinh viên không được để trống";
+  }
+
+  if (!form.name) {
+    errors.name = "Họ tên không được để trống";
+  }
+
+  if (!form.gender) {
+    errors.gender = "Vui lòng chọn giới tính";
+  }
+
+  if (!form.birthdate) {
+    errors.birthdate = "Vui lòng chọn ngày sinh";
+  } else if (!validateDate(form.birthdate)) {
+    errors.birthdate = "Ngày sinh không hợp lệ";
+  }
+
+  if (!form.phone) {
+    errors.phone = "Số điện thoại không được để trống";
+  } else if (!validatePhoneNumber(form.phone)) {
+    errors.phone = "Số điện thoại không hợp lệ";
+  }
+
+  if (!form.address) {
+    errors.address = "Địa chỉ không được để trống";
+  }
+
+  return errors;
+}
+
 export function validateLoginForm(form) {
   const errors = {};
 
   if (!form.email) {
     errors.email = "Email không được để trống";
-  } else if (!/\S+@\S+\.\S+/.test(form.email)) {
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
     errors.email = "Email không hợp lệ";
   }
 
   if (!form.password) {
     errors.password = "Mật khẩu không được để trống";
+  } else if (form.password.length < 6) {
+    errors.password = "Mật khẩu phải có tối thiểu 6 ký tự";
+  } else if (form.password.length > 30) {
+    errors.password = "Mật khẩu không được vượt quá 32 ký tự";
+  }
+
+  return errors;
+}
+
+export function validateRecoverForm(form) {
+  const errors = {};
+
+  if (!form.email) {
+    errors.email = "Email không được để trống";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    errors.email = "Email không hợp lệ";
   }
 
   return errors;
@@ -142,17 +201,72 @@ export function validateFormSubject(form) {
   if (!form.credits) {
     errors.credits = "Số tín chỉ không được để trống";
   }
-  if (!form.term) {
-    errors.term = "Học kỳ không được để trống";
+  if (!form.termSemester) {
+    errors.termSemester = "Học kỳ không được để trống";
   }
-  if (!form.academicYearStart) {
-    errors.academicYearStart = "Năm bắt đầu và kết thúc không được đển trống";
-  }
-  if (!form.academicYearEnd) {
-    errors.academicYearEnd = "Năm kết thúc và kết thúc không được đển trống";
+  if (!form.academicYearStart || !form.academicYearEnd) {
+    errors.academicYearStart = "Năm bắt đầu và kết thúc không được để trống";
+  } else if (form.academicYearStart >= form.academicYearEnd) {
+    errors.academicYearStart = "Năm bắt đầu phải nhỏ hơn năm kết thúc";
   }
   if (!form.department) {
     errors.department = "Khoa không được để trống";
+  }
+
+  return errors;
+}
+
+export function validateFormMajor(form) {
+  const errors = {};
+
+  if (!form.majorId) {
+    errors.majorId = "Mã ngành học không được để trống";
+  }
+
+  if (!form.majorName) {
+    errors.majorName = "Tên ngành học không được để trống";
+  }
+
+  return errors;
+}
+
+export function validateFormTerm(form) {
+  const errors = {}
+
+  if (!form.termSemester) {
+    errors.termSemester = "Học kì không được để trống";
+  }
+  if (!form.academicYearStart || !form.academicYearEnd) {
+    errors.academicYearStart = "Năm bắt đầu và kết thúc không được để trống";
+  } else if (form.academicYearStart >= form.academicYearEnd) {
+    errors.academicYearStart = "Năm bắt đầu phải nhỏ hơn năm kết thúc";
+  }
+
+
+  return errors;
+}
+
+
+export function validateCreateUserForm(form) {
+  const errors = {};
+
+  if (!form.name) {
+    errors.name = "Họ tên không được để trống";
+  }
+
+  if (!form.email) {
+    errors.email = "Email không được để trống";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    errors.email = "Email không hợp lệ";
+  }
+
+  if (!form.password) {
+    errors.password = "Mật khẩu không được để trống";
+  }
+  if (!form.phone) {
+    errors.phone = "Số điện thoại không được để trống";
+  } else if (!validatePhoneNumber(form.phone)) {
+    errors.phone = "Số điện thoại không hợp lệ";
   }
 
   return errors;

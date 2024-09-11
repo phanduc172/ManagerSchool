@@ -4,9 +4,9 @@
       <input
         type="text"
         v-model="searchQuery"
-        placeholder="Tìm kiếm môn học..."
+        placeholder="Tìm kiếm ngành học"
       />
-      <b-button href="/manager/subjects/create" variant="success fw-bold">
+      <b-button href="/manager/major/create" variant="success fw-bold">
         <i class="bx bx-plus"></i>
         Thêm mới
       </b-button>
@@ -17,50 +17,42 @@
           <div
             class="card-header d-flex justify-content-center align-items-center py-3 header-bordered"
           >
-            <h5 class="mb-0 text-center">Danh sách môn học</h5>
+            <h5 class="mb-0 text-center">Danh sách ngành học</h5>
           </div>
           <div class="table-responsive">
             <table class="table table-striped table-hover mb-0 table-wrap">
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th>STT</th>
-                  <th>Mã môn học</th>
-                  <th>Tên môn học</th>
-                  <th>Số tín chỉ</th>
-                  <th>Học kỳ</th>
-                  <th>Khoa</th>
+                  <th>Mã ngành học</th>
+                  <th>Tên ngành học</th>
                   <th></th>
                 </tr>
               </thead>
-              <tbody v-if="!loading">
+              <tbody>
                 <tr
-                  v-for="(subject, index) in entries"
-                  :key="subject.id"
+                  v-for="(major, index) in entries"
+                  :key="major.id"
                   class="align-middle text-center"
                 >
                   <td class="text-center">
-                    {{ (currentPage - 1) * perPage + index + 1 }}
+                    {{ index + 1 }}
                   </td>
-                  <td class="h6 text-start">{{ subject.subject_code }}</td>
-                  <td class="text-start">{{ subject.subject_name }}</td>
-                  <td class="text-center">{{ subject.credits }}</td>
-                  <td class="text-center">
-                    {{ subject.term_name || "Không xác định" }}
-                  </td>
-                  <td class="text-start">{{ subject.department }}</td>
+                  <td class="h6">{{ major.major_id }}</td>
+                  <td class="text-start">{{ major.major_name }}</td>
                   <td class="text-center">
                     <b-button-group>
                       <b-button
                         variant="transtration"
                         size="md"
-                        :to="`/manager/subjects/edit/${subject.id}`"
+                        :to="`/manager/major/edit/${major.Id}`"
                       >
                         <i class="bx bxs-edit-alt fs-4 text-info"></i>
                       </b-button>
                       <b-button
                         variant="transtration"
                         size="md"
-                        @click="confirmDelete(subject.id)"
+                        @click="confirmDelete(major.Id)"
                       >
                         <i class="bx bxs-trash fs-4 text-danger"></i>
                       </b-button>
@@ -75,7 +67,7 @@
           </div>
           <Pagination
             v-show="isShowPagi"
-            :total="totalSubjects"
+            :total="totalMajor"
             :limit="perPage"
             :currentPage="currentPage"
             @page-changed="handlePageChange"
@@ -85,9 +77,9 @@
     </div>
   </div>
 </template>
-
+  
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex/dist/vuex.common.js";
 import {
   showDeleteConfirmation,
   showErrorMessage,
@@ -107,86 +99,62 @@ export default {
       default: 10,
     },
   },
+
   data() {
     return {
       entries: [],
       listEntry: [],
-      terms: [],
       searchQuery: "",
+      loading: false,
       currentPage: this.page,
       perPage: this.limit,
-      totalSubjects: 0,
-      loading: true,
+      totalMajor: 0,
       isShowPagi: true,
     };
   },
-
+  computed: {},
   methods: {
-    ...mapActions("subject", ["ListSubjects", "DeleteSubject", "ListTerms"]),
-    ...mapActions("term", ["ListTerms", "getTermById"]),
-    async getTerm() {
-      const response = await this.ListTerms();
-      if (response?.status === 200) {
-        this.terms = response.data.data || [];
-      } else {
-        this.terms = [];
-      }
-      console.log("Học kì", this.terms);
-    },
-    async getTermName(termId) {
-      const term = await this.getTermById(termId);
-      console.log(this.term, "Tên học kì");
-      return term?.term_semester || "Không xác định";
-    },
-
-    async getSubjects(page = this.currentPage) {
+    ...mapActions("major", ["ListMajors", "DeleteMajor"]),
+    async getALlMajor(page = this.currentPage) {
       this.loading = true;
-      try {
-        const response = await this.ListSubjects({ page, limit: this.perPage });
+      const response = await this.ListMajors({ page, limit: this.perPage });
+      if (response?.status === 200) {
+        this.listEntry = response.data.data;
+        console.log(this.listEntry, "listEntry");
 
-        if (response?.status === 200) {
-          this.listEntry = response.data.data;
-          this.entries = response.data.data;
-          this.totalSubjects = response.data.total;
-          console.log(this.entries);
-        } else {
-          this.listEntry = [];
-          this.entries = [];
-        }
-      } catch (error) {
-        console.error("Lỗi khi lấy danh sách môn học:", error);
-        this.listEntry = [];
-        this.entries = [];
-      } finally {
-        this.loading = false;
+        this.entries = response.data.data;
+        this.totalMajor = response.data.total;
       }
     },
-    async confirmDelete(Id) {
+    async confirmDelete(id) {
       const isConfirmed = await showDeleteConfirmation();
       if (isConfirmed) {
-        const response = await this.DeleteSubject(Id);
+        const response = await this.DeleteMajor(id);
         if (response?.status === 200) {
           showSuccessMessage();
-          this.getSubjects();
+          this.getALlMajor();
         } else {
           showErrorMessage();
         }
       }
     },
-
     handlePageChange(page) {
       this.currentPage = page;
-      this.getSubjects(this.currentPage);
+      this.$router.push({
+        name: "major",
+        query: { page, limit: this.perPage },
+      });
+      this.getALlMajor(this.currentPage);
     },
   },
   watch: {
     page(newPage) {
       this.currentPage = newPage;
-      this.getSubjects(newPage);
+      this.getALlMajor(newPage);
     },
     limit(newLimit) {
       this.perPage = newLimit;
-      this.getSubjects(this.currentPage);
+      this.getALlMajor(this.currentPage);
     },
     searchQuery: {
       handler() {
@@ -195,8 +163,9 @@ export default {
         } else {
           this.isShowPagi = true;
         }
+        console.log(this.searchQuery);
         this.entries = this.listEntry.filter((entry) => {
-          return entry.subject_name
+          return entry.major_name
             .toLowerCase()
             .includes(this.searchQuery.toLowerCase());
         });
@@ -205,13 +174,12 @@ export default {
     },
   },
   created() {
-    this.getSubjects();
-    this.getTerm();
+    this.getALlMajor();
   },
 };
 </script>
-
-<style scoped>
+  
+  <style scoped>
 body {
   margin-top: 20px;
   background: #eee;
@@ -282,3 +250,4 @@ input[type="text"]:focus {
   border: none !important;
 }
 </style>
+  

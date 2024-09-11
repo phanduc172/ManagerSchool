@@ -15,30 +15,28 @@
         </svg>
 
         <h1 class="text-center mb-3">Quên mật khẩu</h1>
-        <h2 class="text-center mb-4">Nhập email tài khoản của bạn</h2>
-
-        <b-form-group id="input-group-1" label-for="email">
+        <h2 class="text-center mb-4">
+          Xác minh email của bạn: phanduc172@gmail.com
+        </h2>
+        <b-form-group id="input-group-1" label-for="codeOTP" class="mt-3">
           <b-form-input
-            id="email"
+            id="codeOTP"
             class="input"
-            v-model="form.email"
-            type="email"
-            placeholder="Nhập vào email..."
+            v-model="form.codeOTP"
+            type="text"
+            placeholder="Nhập mã xác nhận..."
           ></b-form-input>
-          <div class="text-danger mb-2" v-if="errors.email">
-            * {{ errors.email }}
-          </div>
         </b-form-group>
 
         <div class="d-flex justify-content-center mt-3">
           <button type="submit" class="px-3 py-2 border-0 rounded bg-success">
-            <h5 class="text-white m-0 p-1">Gửi</h5>
+            <h5 class="text-white m-0 p-1">Xác nhận</h5>
           </button>
         </div>
 
         <div class="d-flex justify-content-center flex-wrap mt-4 register">
           <a @click="$router.go(-1)" class="loginAccount text-hover"
-            >Quay lại trang đăng nhập</a
+            >Quay lại trang tìm kiếm email</a
           >
         </div>
       </b-form>
@@ -62,26 +60,24 @@ export default {
     };
   },
   methods: {
-    ...mapActions("auth", ["handleRecoverPassword"]),
+    ...mapActions("auth", ["handleVerifyOTP"]),
     async onSubmit() {
-      this.errors = validateRecoverForm(this.form);
-      if (Object.keys(this.errors).length > 0) {
-        return;
-      }
-      const response = await this.handleRecoverPassword({
-        email: this.form.email,
+      console.log("Submit");
+
+      // this.errors = validateRecoverForm(this.form);
+      // if (Object.keys(this.errors).length > 0) {
+      //   return;
+      // }
+      const response = await this.handleVerifyOTP({
+        email: "ph.duc172@gmail.com",
+        data: this.form.data,
       });
-      if (response?.status === 200) {
-        this.$router.push({ name: "confirmotp" });
-      }
       console.log(response);
+      console.log("Done");
     },
     onReset() {
       this.form.email = "";
       this.show = false;
-      this.$nextTick(() => {
-        this.show = true;
-      });
     },
   },
 };
