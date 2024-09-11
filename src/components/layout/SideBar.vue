@@ -1,28 +1,51 @@
 <template>
-  <div :class="['sidebar', { 'collapsed': collapsed }]">
+  <div :class="['sidebar', { collapsed: collapsed }]">
     <div class="sidebar-heading">Quản lý Trường học</div>
     <div class="list-group">
       <a class="list-group-item list-group-item-action" href="/profile">
-        <font-awesome-icon :icon="['fas', 'user']" class="me-2 fs-5"/>Hồ sơ cá nhân</a>
-      <a 
-        class="list-group-item list-group-item-action" 
-        href="manage" 
+        <font-awesome-icon :icon="['fas', 'user']" class="me-2 fs-5" />Hồ sơ cá
+        nhân</a
+      >
+      <a
+        class="list-group-item list-group-item-action"
+        href="manage"
         @click.prevent="toggleManage"
       >
-      <i class='bx bx-list-ul me-2 fs-5'></i>Quản lý
-        <i :class="['bi', isManageOpen ? 'bi-chevron-up' : 'bi-chevron-down']" class="float-end"></i>
+        <i class="bx bx-list-ul me-2 fs-5"></i>Quản lý
+        <i
+          :class="['bi', isManageOpen ? 'bi-chevron-up' : 'bi-chevron-down']"
+          class="float-end"
+        ></i>
       </a>
       <div v-if="isManageOpen" class="manage-links">
-        <a class="list-group-item list-group-item-action" href="/manager/teachers">Giáo viên</a>
-        <a class="list-group-item list-group-item-action" href="/manager/students">Học sinh</a>
-        <a class="list-group-item list-group-item-action" href="/manager/users">Người dùng</a>
+        <a
+          class="list-group-item list-group-item-action"
+          href="/manager/teachers"
+          >Giáo viên</a
+        >
+        <a
+          class="list-group-item list-group-item-action"
+          href="/manager/students"
+          >Học sinh</a
+        >
+        <a class="list-group-item list-group-item-action" href="/manager/users"
+          >Người dùng</a
+        >
         <!-- <a class="list-group-item list-group-item-action" href="/manager/classes">Lớp học</a> -->
-        <a class="list-group-item list-group-item-action" href="/manager/subjects">Môn học</a>
-        <a class="list-group-item list-group-item-action" href="/manager/major">Ngành học</a>
-        <a class="list-group-item list-group-item-action" href="/manager/term">Học kì</a>
+        <a
+          class="list-group-item list-group-item-action"
+          href="/manager/subjects"
+          >Môn học</a
+        >
+        <a class="list-group-item list-group-item-action" href="/manager/major"
+          >Ngành học</a
+        >
+        <a class="list-group-item list-group-item-action" href="/manager/term"
+          >Học kì</a
+        >
       </div>
       <a class="list-group-item list-group-item-action" href="settings">
-        <i class='bx bxs-cog me-2 fs-5' ></i>
+        <i class="bx bxs-cog me-2 fs-5"></i>
         Cài đặt
       </a>
     </div>
@@ -34,7 +57,7 @@ export default {
   data() {
     return {
       isManageOpen: true,
-    }
+    };
   },
   props: {
     collapsed: {
@@ -67,20 +90,20 @@ export default {
 }
 .sidebar .sidebar-heading {
   padding: 14px 18px;
-    /* background-color: #e9ecef; */
-    background-color: #fff;
-    border-bottom: 2px solid #2a9d8f;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    letter-spacing: 0.8px;
-    text-transform: uppercase;
-    font-size: 1.1rem;
-    text-align: center;
-    color: #44B97C;
-    font-weight: bold;
+  /* background-color: #e9ecef; */
+  background-color: #fff;
+  border-bottom: 2px solid #2a9d8f;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  text-align: center;
+  color: #44b97c;
+  font-weight: bold;
 }
 .sidebar .list-group-item {
   padding: 1rem;
-  color: #44B97C;
+  color: #44b97c;
   font-weight: 500;
 }
 .sidebar .list-group-item:hover {
@@ -90,20 +113,20 @@ export default {
   padding-left: 1rem;
 }
 .manage-links .list-group-item {
-  border-left: 2px solid #44B97C; 
+  border-left: 2px solid #44b97c;
 }
 .float-end {
   float: right;
 }
 .list-group-item.active {
-    z-index: 2;
-    color: var(--bs-list-group-active-color);
-    border-color: #44B97C;
-    background-color: #44B97C;
+  z-index: 2;
+  color: var(--bs-list-group-active-color);
+  border-color: #44b97c;
+  background-color: #44b97c;
 }
 .sidebar .list-group-item:hover {
   color: var(--vt-c-white);
-  border-color: #44B97C;
-  background-color: #44B97C;
+  border-color: #44b97c;
+  background-color: #44b97c;
 }
 </style>

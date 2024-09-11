@@ -268,6 +268,9 @@ export function validateCreateUserForm(form) {
   } else if (!validatePhoneNumber(form.phone)) {
     errors.phone = "Số điện thoại không hợp lệ";
   }
+  if (!form.role) {
+    errors.role = "Vai trò không được để trống";
+  }
 
   return errors;
 }
