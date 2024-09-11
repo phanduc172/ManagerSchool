@@ -1,21 +1,32 @@
 <template>
   <nav
-    class="navbar navbar-expand navbar-light bg-light border-bottom shadow-sm bg-white"
+    class="navbar navbar-expand navbar-light bg-success border-bottom shadow-sm"
   >
     <div class="container-fluid">
       <button class="btn btn-outline-success" @click="$emit('toggleSidebar')">
-        <i class="bi bi-list chevron_color"></i>
+        <i class="bi bi-list chevron_color text-white fs-5"></i>
       </button>
       <div class="collapse navbar-collapse ms-3" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="/dashboard">Bảng điều khiển</a>
+            <a class="nav-link text-white" href="/dashboard">Bảng điều khiển</a>
           </li>
         </ul>
         <ul v-if="!profile || !profile.token" class="navbar-nav ms-auto">
+          <img
+            :src="profile.avatar"
+            alt="Admin"
+            class="rounded-circle border"
+            style="
+              cursor: pointer;
+              width: 40px;
+              height: 40px;
+              object-fit: cover;
+            "
+          />
           <b-dropdown
             :text="profile ? profile.name : ''"
-            variant="transparent text-success fw-bold"
+            variant="transparent text-white fw-bold"
           >
             <b-dropdown-item href="changepassword"
               >Đổi mật khẩu</b-dropdown-item

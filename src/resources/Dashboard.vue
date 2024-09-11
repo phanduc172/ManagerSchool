@@ -1,7 +1,14 @@
 <template>
   <div class="container mt-3">
     <div class="row">
-      <div class="col-md-8 offset-md-2 mb-3 mb-lg-5 border border-2 rounded">
+      <div
+        class="col-md-5 mb-3 mb-lg-5 border border-2 rounded p-3 bg-light ms-5"
+      >
+        <apexchart type="bar" :options="chartOptions" :series="chartSeries" />
+      </div>
+      <div
+        class="col-md-5 offset-md-1 mb-3 mb-lg-5 border border-2 rounded p-3 bg-light"
+      >
         <apexchart type="bar" :options="chartOptions" :series="chartSeries" />
       </div>
     </div>

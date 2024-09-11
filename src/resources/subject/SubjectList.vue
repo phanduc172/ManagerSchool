@@ -44,9 +44,7 @@
                   <td class="h6 text-start">{{ subject.subject_code }}</td>
                   <td class="text-start">{{ subject.subject_name }}</td>
                   <td class="text-center">{{ subject.credits }}</td>
-                  <td class="text-center">
-                    {{ subject.term_name || "Không xác định" }}
-                  </td>
+                  <td class="text-center">Học kì {{ subject.term_name }}</td>
                   <td class="text-start">{{ subject.department }}</td>
                   <td class="text-center">
                     <b-button-group>
@@ -131,12 +129,10 @@ export default {
       } else {
         this.terms = [];
       }
-      console.log("Học kì", this.terms);
     },
     async getTermName(termId) {
       const term = await this.getTermById(termId);
-      console.log(this.term, "Tên học kì");
-      return term?.term_semester || "Không xác định";
+      return term.data.term_semester || "Không xác định";
     },
 
     async getSubjects(page = this.currentPage) {
@@ -146,9 +142,13 @@ export default {
 
         if (response?.status === 200) {
           this.listEntry = response.data.data;
-          this.entries = response.data.data;
+          this.entries = await Promise.all(
+            this.listEntry.map(async (subject) => {
+              const termName = await this.getTermName(subject.term_id);
+              return { ...subject, term_name: termName };
+            })
+          );
           this.totalSubjects = response.data.total;
-          console.log(this.entries);
         } else {
           this.listEntry = [];
           this.entries = [];

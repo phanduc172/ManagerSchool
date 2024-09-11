@@ -86,13 +86,12 @@
             <option
               v-for="(term, index) in termOptions"
               :key="index"
-              :value="term.term_semester"
+              :value="term.id"
             >
               Học kỳ {{ term.term_semester }} ({{ term.term_from_year }} -
-              {{ term.term_to_year }}) - {{ term.id }}
+              {{ term.term_to_year }})
             </option>
           </select>
-
           <div class="text-danger mb-2" v-if="errors.termSemester">
             * {{ errors.termSemester }}
           </div>
@@ -211,6 +210,8 @@ export default {
         "Khoa Công nghệ thông tin",
         "Khoa Lý luận - chính trị",
         "Khoa Toán",
+        "Khoa Hóa học",
+        "Khoa Sinh học",
       ],
       termOptions: [],
       isEdit: false,
@@ -223,7 +224,7 @@ export default {
     ...mapGetters("term", ["terms"]),
   },
   methods: {
-    ...mapActions("term", ["ListTerms", "getTermById"]),
+    ...mapActions("term", ["ListTerms"]),
     ...mapActions("subject", [
       "CreaterSubject",
       "UpdateSubject",
@@ -238,12 +239,6 @@ export default {
       this.termOptions = term.data.data;
       console.log("Dữ liệu các học kỳ:", this.termOptions);
     },
-    async getTermById(id) {
-      const response = await this.getTermById(id);
-      if (response?.status === 200) {
-        return response.data.data;
-      }
-    },
 
     async getDetailSubject() {
       this.loading = false;
@@ -254,26 +249,29 @@ export default {
       }
       this.loading = true;
     },
+
     async onSubmit() {
       this.errors = validateFormSubject(this.form);
       if (Object.keys(this.errors).length > 0) {
         return;
       }
 
-      const term = this.termOptions.find(
-        (t) => t.term_semester == this.form.termSemester
-      );
+      const term = this.termOptions.find((t) => t.id == this.form.termSemester);
       if (!term) {
         throw new Error("Học kỳ không tồn tại trong hệ thống!");
       }
+      console.log(this.form.termSemester, "1111");
+
       const data = {
+        // // term_id: term.id,
+        term_id: this.form.termSemester,
         subject_code: this.form.subjectCode,
         subject_name: this.form.subjectName,
         credits: parseInt(this.form.credits),
         is_mandatory: false,
         term_semester: parseInt(term.term_semester),
-        term_from_year: this.form.academicYearStart,
-        term_to_year: this.form.academicYearEnd,
+        term_from_year: term.term_from_year,
+        term_to_year: term.term_to_year,
         department: this.form.department,
       };
 
@@ -299,17 +297,19 @@ export default {
         department: "",
       };
     },
-
     setFormForEdit(subject) {
+      console.log("Subject Term: ", subject.term_id);
+      console.log("Options: ", this.termOptions);
       let subjectTerm = this.termOptions.find(
-        ({ id }) => subject.term_id == id
+        ({ id }) => subject.term_id === id
       );
+      console.log("Select Name Term: ", subjectTerm);
       if (subjectTerm) {
-        this.form.termSemester = subjectTerm.term_semester;
+        this.form.termSemester = subjectTerm.id;
         this.form.academicYearStart = subjectTerm.term_from_year;
         this.form.academicYearEnd = subjectTerm.term_to_year;
       } else {
-        console.warn("Term not found for ID:", subject.term_id);
+        console.warn("Không tìm thấy học kỳ cho môn học này.");
       }
       this.form.subjectCode = subject.subject_code;
       this.form.subjectName = subject.subject_name;
@@ -318,15 +318,14 @@ export default {
       this.form.department = subject.department;
       this.isEdit = true;
     },
-
     clearError(field) {
       this.$set(this.errors, field, "");
     },
     onTermSemesterChange() {
       const selectedTerm = this.termOptions.find(
-        (term) =>
-          parseInt(this.form.termSemester) === parseInt(term.term_semester)
+        (t) => t.id == this.form.termSemester
       );
+      console.log("Select Term: ", selectedTerm);
 
       if (selectedTerm) {
         this.form.academicYearStart = selectedTerm.term_from_year;
@@ -337,26 +336,6 @@ export default {
       }
     },
   },
-  watch: {
-    "form.termSemester"(newVal) {
-      this.onTermSemesterChange();
-
-      const selectedTerm = this.termOptions.find(
-        (term) => parseInt(newVal) === parseInt(term.term_semester)
-      );
-      console.log("Select term", selectedTerm.term_semester);
-      console.log("Term form", this.form.termSemester);
-      console.log("Term object", selectedTerm);
-      if (selectedTerm) {
-        console.log(
-          `Năm bắt đầu: ${selectedTerm.term_from_year}, Năm kết thúc: ${selectedTerm.term_to_year}`
-        );
-      } else {
-        console.log("Không tìm thấy học kỳ phù hợp.");
-      }
-    },
-  },
-
   async created() {
     this.getDetailSubject();
     this.getAllTerms();

@@ -81,11 +81,6 @@ const router = new VueRouter({
       name: "usersCreate",
       component: () => import("../resources/users/UserForm.vue"),
     },
-    {
-      path: "/manager/users/edit/:id",
-      name: "usersUpdate",
-      component: () => import("../resources/users/UserFormUpdate.vue"),
-    },
     // Router Class
     {
       path: "/manager/classes",
