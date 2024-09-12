@@ -6,7 +6,10 @@
           <div class="card">
             <div class="card-body">
               <div class="d-flex flex-column align-items-center text-center">
-                <label for="upload-image" class="position-relative">
+                <label
+                  for="upload-image"
+                  class="position-relative upload-image-label"
+                >
                   <img
                     :src="profile.avatar"
                     alt="Admin"
@@ -19,6 +22,11 @@
                       object-fit: cover;
                     "
                   />
+                  <div class="upload-overlay">
+                    <span class="upload-icon"
+                      ><i class="bx bxs-camera"></i
+                    ></span>
+                  </div>
                   <input
                     class="d-none"
                     type="file"
@@ -28,6 +36,7 @@
                     @change="previewImage"
                   />
                 </label>
+
                 <div class="mt-3">
                   <h4>{{ profile.name }}</h4>
                 </div>
@@ -131,7 +140,13 @@
                   <input
                     type="text"
                     class="form-control"
-                    :value="profile.role_type"
+                    :value="
+                      profile.role_type == 'admin'
+                        ? 'Quản trị viên'
+                        : profile.role_type == 'teacher'
+                        ? 'Giáo viên'
+                        : 'Học sinh'
+                    "
                     disabled
                   />
                 </div>
@@ -257,7 +272,7 @@
       @hide="resetPreview"
     >
       <div class="d-flex justify-content-center">
-        <img
+        <b-img
           :src="uploadedImage"
           alt="Image Preview"
           class="img-fluid rounded uploadAvt"
@@ -275,13 +290,15 @@
   </div>
 </template>
   
-  
-	
+
 <script>
 import axios from "axios";
 import moment from "moment";
 import { mapActions, mapGetters } from "vuex";
-import { getMaxDate } from "../../common/utils/validate";
+import {
+  getMaxDate,
+  validateCreateUserForm,
+} from "../../common/utils/validate";
 import { showSuccessMessage } from "../../common/utils/notifications";
 
 export default {
@@ -305,6 +322,10 @@ export default {
       this.$bvModal.show("update-profile-modal");
     },
     async updateUserProfile() {
+      // this.errors = validateCreateUserForm(this.form);
+      // if (Object.keys(this.errors).length > 0) {
+      //   return;
+      // }
       const userData = {
         name: this.profile.name,
         email: this.profile.email,
@@ -331,7 +352,7 @@ export default {
         const token = sessionStorage.getItem("token");
         if (!token) return;
         const response = await axios.post(
-          "http://192.168.1.23:3000/v1/upload/image",
+          "http://localhost:3000/v1/upload/image",
           formData,
           {
             headers: {
@@ -442,5 +463,34 @@ body {
   width: 300px;
   height: 300px;
   object-fit: cover;
+}
+.upload-image-label {
+  position: relative;
+  display: inline-block;
+}
+
+.upload-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.upload-icon {
+  color: white;
+  font-size: 48px;
+}
+
+.upload-image-label:hover .upload-overlay {
+  opacity: 1; /* Hiển thị overlay khi hover */
 }
 </style>

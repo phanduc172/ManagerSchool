@@ -246,7 +246,6 @@ export function validateFormTerm(form) {
   return errors;
 }
 
-
 export function validateCreateUserForm(form) {
   const errors = {};
 

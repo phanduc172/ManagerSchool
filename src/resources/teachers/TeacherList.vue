@@ -144,9 +144,9 @@ export default {
       const response = await this.ListTeachers({ page, limit: this.perPage });
       if (response?.status === 200) {
         this.entries = response.data.data;
+        this.totalTeachers = response.data.total;
         this.listEntry = response.data.data;
       }
-      console.log("List Teacher:", response.data);
     },
     async confirmDelete(id) {
       const isConfirmed = await showDeleteConfirmation();
@@ -157,7 +157,7 @@ export default {
         } else {
           showErrorMessage();
         }
-        this.getListStudent();
+        this.getListTeachers();
       }
     },
 
@@ -177,15 +177,15 @@ export default {
     },
     searchQuery: {
       handler(newQuery) {
-        console.log("Key", this.searchQuery);
-
         if (newQuery.trim() === "") {
           this.getListTeachers();
           this.isShowPagi = true;
         } else {
           this.isShowPagi = false;
-          this.entries = this.listEntry.filter((entry) =>
-            entry.name.toLowerCase().includes(newQuery.toLowerCase())
+          this.entries = this.listEntry.filter(
+            (entry) =>
+              entry.name.toLowerCase().includes(newQuery.toLowerCase()) ||
+              entry.email.toLowerCase().includes(newQuery.toLowerCase())
           );
         }
       },
