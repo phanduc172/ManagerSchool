@@ -171,8 +171,10 @@ export default {
           this.isShowPagi = true;
         } else {
           this.isShowPagi = false;
-          this.entries = this.entries.filter((entry) =>
-            entry.name.toLowerCase().includes(newQuery.toLowerCase())
+          this.entries = this.entries.filter(
+            (entry) =>
+              entry.name.toLowerCase().includes(newQuery.toLowerCase()) ||
+              entry.email.toLowerCase().includes(newQuery.toLowerCase())
           );
         }
       },

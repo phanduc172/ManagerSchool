@@ -22,6 +22,7 @@ export default {
     ...mapActions("auth", ["handleLogin"]),
     async onSubmitLogin({ email, password }) {
       await this.handleLogin({ email, password });
+      this.$router.push("/dashboard");
     },
   },
 };
@@ -35,7 +36,7 @@ export default {
 }
 #page-content-wrapper {
   margin: 0;
-  background: url("@/assets/images/bg.jpg") no-repeat center center;
+  background: url("../../assets/images/bg.jpg") no-repeat center center;
   background-size: cover;
 }
 .w-100-sm {

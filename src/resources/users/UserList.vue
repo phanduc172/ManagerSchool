@@ -46,7 +46,11 @@
                   class="align-middle"
                 >
                   <td class="text-center">
-                    {{ (currentPage - 1) * perPage + index + 1 }}
+                    {{
+                      searchQuery
+                        ? index + 1
+                        : (currentPage - 1) * perPage + index + 1
+                    }}
                   </td>
                   <td>
                     <div class="d-flex align-items-center">
@@ -201,8 +205,10 @@ export default {
           this.isShowPagi = true;
         } else {
           this.isShowPagi = false;
-          this.entries = this.listEntry.filter((entry) =>
-            entry.name.toLowerCase().includes(newQuery.toLowerCase())
+          this.entries = this.listEntry.filter(
+            (entry) =>
+              entry.name.toLowerCase().includes(newQuery.toLowerCase()) ||
+              entry.email.toLowerCase().includes(newQuery.toLowerCase())
           );
         }
       },

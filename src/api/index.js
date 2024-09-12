@@ -4,6 +4,7 @@ const api = {
   UserRegiser: "/v1/user/create",
   FindEmail: "/v1/user/find-email",
   VerifyOTP: "/v1/user/otp/verify-otp",
+  ChangePassword: "/v1/user/change-password",
 
   GetProfile: "/v1/user/me",
   UpdateProfile: "/v1/user/me/update",

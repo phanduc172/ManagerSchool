@@ -65,8 +65,20 @@ const actions = {
       sessionStorage.setItem("token", response.data.data.access_token);
     }
     return response.data;
-  }
-  ,
+  },
+
+  async handleChangePassword(_, { oldPassword, newPassword, confirmPassword }) {
+    const response = await axios({
+      url: api.ChangePassword,
+      method: "PUT",
+      data: {
+        older_password: oldPassword,
+        new_password: newPassword,
+        confirm_new_password: confirmPassword,
+      },
+    });
+    return response.data;
+  },
 
   async handleLogout({ commit }) {
     sessionStorage.removeItem("profile");

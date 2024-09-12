@@ -114,6 +114,7 @@ export default {
         { value: null, text: "Chọn vai trò", disabled: true },
         { value: "student", text: "Học sinh" },
         { value: "teacher", text: "Giáo viên" },
+        { value: "admin", text: "Quản trị viên" },
       ],
       form: {
         name: "",

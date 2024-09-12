@@ -1,10 +1,14 @@
 <template>
   <div class="container mt-3">
-    <div class="row">
-      <div class="col-md-5 mb-3 mb-lg-5 border border-2 rounded p-3 bg-light">
+    <div class="row justify-content-md-center p-3">
+      <div
+        class="col-lg-5 mb-3 mb-lg-5 border border-2 rounded p-3 bg-light mx-4"
+      >
         <apexchart type="bar" :options="chartOptions" :series="chartSeries" />
       </div>
-      <div class="col-md-5 mb-3 mb-lg-5 border border-2 rounded p-3 bg-light">
+      <div
+        class="col-lg-5 mb-3 mb-lg-5 border border-2 rounded p-3 bg-light mx-4"
+      >
         <apexchart type="bar" :options="chartOptions" :series="chartSeries" />
       </div>
     </div>

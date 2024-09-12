@@ -2,13 +2,18 @@
   <div :class="['sidebar', { collapsed: collapsed }]">
     <div class="sidebar-heading bg-success text-white">Quản lý Trường học</div>
     <div class="list-group">
-      <a class="list-group-item list-group-item-action" href="/profile">
-        <font-awesome-icon :icon="['fas', 'user']" class="me-2 fs-5" />Hồ sơ cá
-        nhân</a
+      <router-link
+        class="list-group-item list-group-item-action"
+        :class="{ active: isActive('/profile') }"
+        to="/profile"
       >
+        <font-awesome-icon :icon="['fas', 'user']" class="me-2 fs-5" />Hồ sơ cá
+        nhân
+      </router-link>
+
       <a
         class="list-group-item list-group-item-action"
-        href="manage"
+        href="#"
         @click.prevent="toggleManage"
       >
         <i class="bx bx-list-ul me-2 fs-5"></i>Quản lý
@@ -17,39 +22,63 @@
           class="float-end"
         ></i>
       </a>
+
       <div v-if="isManageOpen" class="manage-links">
-        <a
+        <router-link
           class="list-group-item list-group-item-action"
-          href="/manager/teachers"
-          >Giáo viên</a
+          :class="{ active: isActive('/manager/teachers') }"
+          to="/manager/teachers"
         >
-        <a
+          Giáo viên
+        </router-link>
+        <router-link
           class="list-group-item list-group-item-action"
-          href="/manager/students"
-          >Học sinh</a
+          :class="{ active: isActive('/manager/students') }"
+          to="/manager/students"
         >
-        <a class="list-group-item list-group-item-action" href="/manager/users"
-          >Người dùng</a
-        >
-        <a
+          Học sinh
+        </router-link>
+        <router-link
           class="list-group-item list-group-item-action"
-          href="/manager/subjects"
-          >Môn học</a
+          :class="{ active: isActive('/manager/users') }"
+          to="/manager/users"
         >
-        <a class="list-group-item list-group-item-action" href="/manager/major"
-          >Ngành học</a
+          Người dùng
+        </router-link>
+        <router-link
+          class="list-group-item list-group-item-action"
+          :class="{ active: isActive('/manager/subjects') }"
+          to="/manager/subjects"
         >
-        <a class="list-group-item list-group-item-action" href="/manager/term"
-          >Học kì</a
+          Môn học
+        </router-link>
+        <router-link
+          class="list-group-item list-group-item-action"
+          :class="{ active: isActive('/manager/major') }"
+          to="/manager/major"
         >
+          Ngành học
+        </router-link>
+        <router-link
+          class="list-group-item list-group-item-action"
+          :class="{ active: isActive('/manager/term') }"
+          to="/manager/term"
+        >
+          Học kì
+        </router-link>
       </div>
-      <a class="list-group-item list-group-item-action" href="settings">
-        <i class="bx bxs-cog me-2 fs-5"></i>
-        Cài đặt
-      </a>
+
+      <router-link
+        class="list-group-item list-group-item-action"
+        :class="{ active: isActive('/settings') }"
+        to="/settings"
+      >
+        <i class="bx bxs-cog me-2 fs-5"></i> Cài đặt
+      </router-link>
     </div>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -68,9 +97,13 @@ export default {
     toggleManage() {
       this.isManageOpen = !this.isManageOpen;
     },
+    isActive(path) {
+      return this.$route.path === path;
+    },
   },
 };
 </script>
+
 
 <style scoped>
 .sidebar {
@@ -123,6 +156,12 @@ export default {
 }
 .sidebar .list-group-item:hover {
   color: var(--vt-c-white);
+  border-color: #44b97c;
+  background-color: #44b97c;
+}
+.list-group-item.active {
+  z-index: 2;
+  color: #fff;
   border-color: #44b97c;
   background-color: #44b97c;
 }
