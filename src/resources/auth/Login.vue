@@ -4,7 +4,7 @@
     class="d-flex justify-content-center align-items-center vh-100"
   >
     <div class="w-50 w-100-sm">
-      <login-form @submit.prevent="onSubmitLogin" ref="loginform" />
+      <login-form @submit="onSubmitLogin" ref="loginform" />
     </div>
   </b-container>
 </template>
@@ -22,7 +22,6 @@ export default {
     ...mapActions("auth", ["handleLogin"]),
     async onSubmitLogin({ email, password }) {
       await this.handleLogin({ email, password });
-      this.$router.push("/dashboard");
     },
   },
 };

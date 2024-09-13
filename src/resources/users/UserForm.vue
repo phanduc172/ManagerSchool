@@ -1,8 +1,12 @@
 <template>
   <div class="row p-3 m-3">
-    <div
-      class="col-md-8 col-lg-6 offset-lg-3 offset-md-2 p-3 border rounded shadow-lg bg-white"
-    >
+    <div class="col-md-2 col-lg-3 ms-3 mb-3 d-none d-md-block">
+      <b-button href="/manager/users" variant="outline-secondary">
+        <i class="bx bx-arrow-back"></i>
+        Quay lại
+      </b-button>
+    </div>
+    <div class="col-md-8 col-lg-6 p-4 border rounded shadow-lg bg-white">
       <h4 class="d-block text-center fw-bold text-success">Thêm người dùng</h4>
       <hr />
       <b-form
@@ -93,6 +97,9 @@
             {{ errors.role }}
           </div>
         </b-form-group>
+        <div class="text-danger mt-2" v-if="errors.messageError">
+          * {{ errors.messageError }}
+        </div>
         <b-form-group class="mt-4">
           <b-button type="submit" variant="success me-3">Thêm</b-button>
           <b-button type="reset" variant="outline-secondary">Làm mới</b-button>
@@ -136,21 +143,27 @@ export default {
   methods: {
     ...mapActions("user", ["CreateUser"]),
     async onSubmit() {
-      this.errors = validateCreateUserForm(this.form);
-      if (Object.keys(this.errors).length > 0) {
-        return;
+      try {
+        this.errors = validateCreateUserForm(this.form);
+        if (Object.keys(this.errors).length > 0) {
+          return;
+        }
+        await this.CreateUser({
+          name: this.form.name,
+          email: this.form.email,
+          password: this.form.password,
+          phone: this.form.phone,
+          role_type: this.form.role,
+          avatar:
+            "http://192.168.1.9:3000/static/images/58ea0c03-c034-4a44-9120-6742ee665bb5.jpg",
+        });
+        showSuccessMessage();
+        this.$router.push({ name: "users" });
+      } catch (error) {
+        this.errors = {
+          messageError: error.response.data.message,
+        };
       }
-      await this.CreateUser({
-        name: this.form.name,
-        email: this.form.email,
-        password: this.form.password,
-        phone: this.form.phone,
-        role_type: this.form.role,
-        avatar:
-          "http://localhost:3000/static/images/58ea0c03-c034-4a44-9120-6742ee665bb5.jpg",
-      });
-      showSuccessMessage();
-      this.$router.push({ name: "users" });
     },
     onReset() {
       this.form.name = "";

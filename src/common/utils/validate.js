@@ -24,32 +24,24 @@ function validateDate(dateString) {
 export function validateFormProfile(form) {
   const errors = {};
 
-  if (!form.id) {
-    errors.id = "Mã sinh viên không được để trống";
-  }
-
   if (!form.name) {
-    errors.name = "Họ tên không được để trống";
+    errors.nameUpdate = "Họ tên không được để trống";
   }
 
   if (!form.gender) {
     errors.gender = "Vui lòng chọn giới tính";
   }
 
-  if (!form.birthdate) {
-    errors.birthdate = "Vui lòng chọn ngày sinh";
-  } else if (!validateDate(form.birthdate)) {
-    errors.birthdate = "Ngày sinh không hợp lệ";
+  if (!form.date) {
+    errors.date = "Vui lòng chọn ngày sinh";
+  } else if (!validateDate(form.date)) {
+    errors.date = "Ngày sinh không hợp lệ";
   }
 
   if (!form.phone) {
-    errors.phone = "Số điện thoại không được để trống";
+    errors.phoneUpdate = "Số điện thoại không được để trống";
   } else if (!validatePhoneNumber(form.phone)) {
     errors.phone = "Số điện thoại không hợp lệ";
-  }
-
-  if (!form.address) {
-    errors.address = "Địa chỉ không được để trống";
   }
 
   return errors;
@@ -251,7 +243,10 @@ export function validateCreateUserForm(form) {
 
   if (!form.name) {
     errors.name = "Họ tên không được để trống";
+  } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯưẠ-ỹ\s]+$/.test(form.name)) {
+    errors.name = "Họ tên không hợp lệ";
   }
+
 
   if (!form.email) {
     errors.email = "Email không được để trống";
@@ -261,6 +256,10 @@ export function validateCreateUserForm(form) {
 
   if (!form.password) {
     errors.password = "Mật khẩu không được để trống";
+  } else if (form.password.length < 6) {
+    errors.password = "Mật khẩu phải có tối thiểu 6 ký tự";
+  } else if (form.password.length > 30) {
+    errors.password = "Mật khẩu không được vượt quá 32 ký tự";
   }
   if (!form.phone) {
     errors.phone = "Số điện thoại không được để trống";

@@ -115,13 +115,15 @@ const actions = {
       url: api.GetProfile,
       method: "GET",
     });
-
     if (response?.data?.status === 200) {
       commit("setProfile", response.data?.data);
-    } else {
-      sessionStorage.removeItem("token");
-      window.location.href = "/";
+      return response;
     }
+    // else {
+    //   sessionStorage.removeItem("token");
+    //   window.location.href = "/";
+    // }
+
   },
 
 

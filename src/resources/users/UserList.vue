@@ -9,10 +9,27 @@
           placeholder="Tìm kiếm người dùng..."
         />
       </div>
-      <b-button href="/manager/users/create" variant="success fw-bold">
-        <i class="bx bx-plus"></i>
-        Thêm mới
-      </b-button>
+      <b-button-group>
+        <b-dropdown right variant="success fw-bold">
+          <template #button-content>
+            <i class="bx bx-plus"></i> Thêm mới
+          </template>
+
+          <b-dropdown-item
+            variant="success fw-bold"
+            href="/manager/users/create"
+          >
+            Thủ công
+          </b-dropdown-item>
+
+          <b-dropdown-item
+            variant="success fw-bold"
+            href="/manager/users/readexcel"
+          >
+            Nhập từ Excel
+          </b-dropdown-item>
+        </b-dropdown>
+      </b-button-group>
     </div>
     <div class="row">
       <div class="col-12 mb-3 mb-lg-5">
@@ -23,7 +40,7 @@
             <h5 class="mb-0 text-center">Danh sách người dùng</h5>
           </div>
           <div class="table-responsive">
-            <table class="table mb-0 table-wrap">
+            <table class="table table-striped table-hover mb-0 table-wrap">
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th class="text-center">STT</th>
@@ -33,8 +50,6 @@
                   <th>Số điện thoại</th>
                   <th>Địa chỉ</th>
                   <th>Phòng ban</th>
-                  <th>Ngày nhập học</th>
-                  <th>Ngày bắt đầu</th>
                   <th>Vai trò</th>
                   <th></th>
                 </tr>
@@ -71,11 +86,15 @@
                   <td class="text-center">{{ user.phone }}</td>
                   <td class="text-start">{{ user.address }}</td>
                   <td class="text-start">{{ user.department }}</td>
-                  <td class="text-center">
-                    {{ toVNTime(user.enrollment_date) }}
+                  <td class="text-center w-100">
+                    {{
+                      user.role_type == "admin"
+                        ? "Quản trị viên"
+                        : user.role_type == "teacher"
+                        ? "Giáo viên"
+                        : "Học sinh"
+                    }}
                   </td>
-                  <td class="text-center">{{ toVNTime(user.hire_date) }}</td>
-                  <td class="text-center">{{ user.role_type }}</td>
                   <td class="text-center">
                     <b-button-group>
                       <b-button
@@ -271,6 +290,9 @@ table td {
 }
 .minwidth {
   min-width: 200px !important;
+}
+.dropdown-menu .dropdown-item:active {
+  background-color: #44b97c;
 }
 </style>
     
