@@ -21,7 +21,9 @@
                       height: 200px;
                       object-fit: cover;
                     "
+                    @error="handleImageError"
                   />
+
                   <div class="upload-overlay">
                     <span class="upload-icon"
                       ><i class="bx bxs-camera"></i
@@ -120,20 +122,6 @@
               </div>
               <div class="row mb-3">
                 <div class="col-sm-3">
-                  <h6 class="mb-0">Địa chỉ</h6>
-                </div>
-                <div class="col-sm-9 text-secondary">
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="profile.address"
-                    placeholder="Nhập địa chỉ"
-                    disabled
-                  />
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-sm-3">
                   <h6 class="mb-0">Vai trò</h6>
                 </div>
                 <div class="col-sm-9 text-secondary">
@@ -211,7 +199,7 @@
               class="form-control"
               id="date_of_birth"
               :max="maxDate"
-              v-model="profile.date_of_birth"
+              :value="toVNTime(profile.date_of_birth)"
             />
           </div>
         </div>
@@ -240,19 +228,6 @@
               class="form-control"
               id="phone"
               v-model="profile.phone"
-            />
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <label for="address" class="col-sm-3 col-form-label">Địa chỉ </label>
-          <div class="col-sm-9">
-            <input
-              type="text"
-              class="form-control"
-              id="address"
-              v-model="profile.address"
-              placeholder="Nhập địa chỉ"
             />
           </div>
         </div>
@@ -294,23 +269,19 @@
 <script>
 import axios from "axios";
 import moment from "moment";
-import { mapActions, mapGetters } from "vuex";
-import {
-  getMaxDate,
-  validateCreateUserForm,
-} from "../../common/utils/validate";
+import { mapActions } from "vuex";
+import { getMaxDate } from "../../common/utils/validate";
 import { showSuccessMessage } from "../../common/utils/notifications";
 
 export default {
   data() {
     return {
+      profile: {},
       maxDate: getMaxDate(),
       uploadedImage: null,
       fileToUpload: null,
+      defaultAvatar: "/avt.jpg",
     };
-  },
-  computed: {
-    ...mapGetters("auth", ["profile"]),
   },
   methods: {
     ...mapActions("user", ["UploadImage", "UpdateProfile"]),
@@ -321,6 +292,14 @@ export default {
     openUpdateModal() {
       this.$bvModal.show("update-profile-modal");
     },
+
+    async GetProfile() {
+      const response = await this.getProfile();
+      if (response?.status === 200) {
+        this.profile = response.data.data;
+      }
+    },
+
     async updateUserProfile() {
       // this.errors = validateCreateUserForm(this.form);
       // if (Object.keys(this.errors).length > 0) {
@@ -352,7 +331,7 @@ export default {
         const token = sessionStorage.getItem("token");
         if (!token) return;
         const response = await axios.post(
-          "http://localhost:3000/v1/upload/image",
+          "http://192.168.1.9:3000/v1/upload/image",
           formData,
           {
             headers: {
@@ -370,6 +349,9 @@ export default {
       } else {
         console.error("Không có file nào được chọn");
       }
+    },
+    handleImageError(event) {
+      event.target.src = this.defaultAvatar;
     },
     previewImage(event) {
       const file = event.target.files[0];
@@ -393,6 +375,7 @@ export default {
     },
   },
   created() {
+    this.GetProfile();
     this.maxDate = getMaxDate();
   },
 };

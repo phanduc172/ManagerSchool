@@ -32,9 +32,12 @@ export default {
   },
   watch: {
     $route(to) {
-      this.isAuthPage = ["login", "register", "recoverpassword"].includes(
-        to.name
-      );
+      this.isAuthPage = [
+        "login",
+        "register",
+        "recoverpassword",
+        "confirmotp",
+      ].includes(to.name);
     },
   },
   methods: {
@@ -47,9 +50,12 @@ export default {
     },
   },
   created() {
-    this.isAuthPage = ["login", "register", "recoverpassword"].includes(
-      this.$route.name
-    );
+    this.isAuthPage = [
+      "login",
+      "register",
+      "recoverpassword",
+      "confirmotp",
+    ].includes(this.$route.name);
   },
 };
 </script>

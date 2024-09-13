@@ -33,23 +33,23 @@ export default defineConfig({
   //     }
   //   }
   // },
-  build: {
-    outDir: 'dist',
-    sourcemap: false, // Tự động mở trình duyệt
-    // sourcemap: process.env.NODE_ENV === 'production', 
-    rollupOptions: {
-      output: {
-        entryFileNames: 'assets/[name].js',
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]',
-        manualChunks: {
-          vendor: ['vue', 'vuex', 'vue-router'],
-          lodash: ['lodash'],
-        }
-      }
-    },
-    chunkSizeWarningLimit: 2000
-  },
+  // build: {
+  //   outDir: 'dist',
+  //   sourcemap: false, // Tự động mở trình duyệt
+  //   // sourcemap: process.env.NODE_ENV === 'production', 
+  //   rollupOptions: {
+  //     output: {
+  //       entryFileNames: 'assets/[name].js',
+  //       chunkFileNames: 'assets/[name].js',
+  //       assetFileNames: 'assets/[name].[ext]',
+  //       manualChunks: {
+  //         vendor: ['vue', 'vuex', 'vue-router'],
+  //         lodash: ['lodash'],
+  //       }
+  //     }
+  //   },
+  //   chunkSizeWarningLimit: 2000
+  // },
   server: {
     // host: ip.address(),
     port: 8080,

@@ -81,6 +81,11 @@ const router = new VueRouter({
       name: "usersCreate",
       component: () => import("../resources/users/UserForm.vue"),
     },
+    {
+      path: "/manager/users/readexcel",
+      name: "readExcel",
+      component: () => import("../components/layout/ReadExcel.vue"),
+    },
     // Router Class
     {
       path: "/manager/classes",
@@ -186,7 +191,7 @@ router.beforeEach(async (to, from, next) => {
     }
 
     // Nếu là trang khác, kiểm tra và lấy profile từ Vuex store
-    await store.dispatch("auth/getProfile");
+    // await store.dispatch("auth/getProfile");
     return next();
   }
 });

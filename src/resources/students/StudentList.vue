@@ -125,6 +125,7 @@ export default {
   data() {
     return {
       entries: [],
+      listEntry: [],
       searchQuery: "",
       currentPage: this.page,
       perPage: this.limit,
@@ -142,6 +143,7 @@ export default {
       const response = await this.ListStudents({ page, limit: this.perPage });
       if (response?.status === 200) {
         this.entries = response.data.data;
+        this.listEntry = response.data.data;
         this.totalStudents = response.data.total;
       }
       console.log("List Student:", response.data.data);
@@ -171,7 +173,7 @@ export default {
           this.isShowPagi = true;
         } else {
           this.isShowPagi = false;
-          this.entries = this.entries.filter(
+          this.entries = this.listEntry.filter(
             (entry) =>
               entry.name.toLowerCase().includes(newQuery.toLowerCase()) ||
               entry.email.toLowerCase().includes(newQuery.toLowerCase())

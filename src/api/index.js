@@ -14,6 +14,7 @@ const api = {
   DeleteUser: "v1/admin/delete/{id}",
   CreateUser: "/v1/user/create",
   GetDetailUser: "",
+  AddUserExcel: "/v1/admin/excel/upload/user",
 
   ListTeachers: "v1/admin/user/teacher/all",
   CreateTeacher: "/api/teachers",

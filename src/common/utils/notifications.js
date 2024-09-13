@@ -57,3 +57,23 @@ export const showErrorLogin = () => {
     timer: 5000,
   });
 };
+
+export const confirmReset = () => {
+  Swal.fire({
+    title: "Bạn có chắc chắn làm mới?",
+    showClass: {
+      popup: `
+      animate__animated
+      animate__fadeInUp
+      animate__faster
+    `
+    },
+    hideClass: {
+      popup: `
+      animate__animated
+      animate__fadeOutDown
+      animate__faster
+    `
+    }
+  });
+}

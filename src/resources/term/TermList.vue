@@ -257,4 +257,7 @@ input[type="text"]:focus {
 .btn-group:active {
   border: none !important;
 }
+.dropdown-item:active {
+  background-color: #44b97c !important;
+}
 </style>

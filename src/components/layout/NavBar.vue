@@ -12,7 +12,7 @@
             <a class="nav-link text-white" href="/dashboard">Bảng điều khiển</a>
           </li>
         </ul>
-        <ul v-if="!profile || !profile.token" class="navbar-nav ms-auto">
+        <ul v-if="!profile.token" class="navbar-nav ms-auto">
           <img
             :src="profile.avatar"
             alt="Admin"
@@ -52,18 +52,33 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
-  computed: {
-    ...mapGetters("auth", ["profile"]),
+  data() {
+    return {
+      profile: {
+        name: "",
+        avatar: "",
+        token: "",
+      },
+    };
   },
   methods: {
-    ...mapActions("auth", ["handleLogout"]),
+    ...mapActions("auth", ["handleLogout", "getProfile"]),
     async logout() {
       await this.handleLogout();
       this.$router.push("/login");
     },
+    async GetProfile() {
+      const response = await this.getProfile();
+      if (response?.status === 200) {
+        this.profile = response.data.data;
+      }
+    },
+  },
+  created() {
+    this.GetProfile();
   },
 };
 </script>
