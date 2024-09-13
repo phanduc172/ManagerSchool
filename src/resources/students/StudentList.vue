@@ -141,9 +141,13 @@ export default {
     ...mapActions("user", ["DeleteUser"]),
     async getListStudent(page = this.currentPage) {
       const response = await this.ListStudents({ page, limit: this.perPage });
+      const response2 = await this.ListStudents({ limit: response.data.total });
+      if (response2?.status === 200) {
+        this.listEntry = response2.data.data;
+        console.log("List: ", this.listEntry);
+      }
       if (response?.status === 200) {
         this.entries = response.data.data;
-        this.listEntry = response.data.data;
         this.totalStudents = response.data.total;
       }
       console.log("List Student:", response.data.data);

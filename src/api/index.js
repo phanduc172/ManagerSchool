@@ -5,6 +5,7 @@ const api = {
   FindEmail: "/v1/user/find-email",
   VerifyOTP: "/v1/user/otp/verify-otp",
   ChangePassword: "/v1/user/change-password",
+  ForgotPassword: "/v1/user/forgot-password",
 
   GetProfile: "/v1/user/me",
   UpdateProfile: "/v1/user/me/update",

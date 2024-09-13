@@ -22,14 +22,16 @@
             id="email"
             class="input"
             v-model="form.email"
-            type="email"
+            type="text"
             placeholder="Nhập vào email..."
           ></b-form-input>
           <div class="text-danger mb-2" v-if="errors.email">
             * {{ errors.email }}
           </div>
         </b-form-group>
-
+        <div class="text-danger mb-2" v-if="errors.messageError">
+          * {{ errors.messageError }}
+        </div>
         <div class="d-flex justify-content-center mt-3">
           <button type="submit" class="px-3 py-2 border-0 rounded bg-success">
             <h5 class="text-white m-0 p-1">Gửi</h5>
@@ -64,17 +66,23 @@ export default {
   methods: {
     ...mapActions("auth", ["handleRecoverPassword"]),
     async onSubmit() {
-      this.errors = validateRecoverForm(this.form);
-      if (Object.keys(this.errors).length > 0) {
-        return;
+      try {
+        this.errors = validateRecoverForm(this.form);
+        if (Object.keys(this.errors).length > 0) {
+          return;
+        }
+        const response = await this.handleRecoverPassword({
+          email: this.form.email,
+        });
+        if (response?.status === 200) {
+          this.$router.push({ name: "confirmpassword" });
+        }
+        console.log(response);
+      } catch (error) {
+        this.errors = {
+          messageError: error.response.data.message,
+        };
       }
-      const response = await this.handleRecoverPassword({
-        email: this.form.email,
-      });
-      if (response?.status === 200) {
-        this.$router.push({ name: "confirmotp" });
-      }
-      console.log(response);
     },
     onReset() {
       this.form.email = "";
