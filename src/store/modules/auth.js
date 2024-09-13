@@ -109,6 +109,19 @@ const actions = {
     });
     return response.data;
   },
+  async handForgotPassword(_, { email, otp_token, new_password, confirm_password }) {
+    const response = await axios({
+      url: api.ForgotPassword,
+      method: "POST",
+      data: {
+        email: email,
+        otp_token: otp_token,
+        new_password: new_password,
+        confirm_password: confirm_password,
+      }
+    });
+    return response.data;
+  },
 
   async getProfile({ commit }) {
     const response = await axios({

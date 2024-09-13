@@ -142,10 +142,13 @@ export default {
     },
     async getListTeachers(page = this.currentPage) {
       const response = await this.ListTeachers({ page, limit: this.perPage });
+      const response2 = await this.ListTeachers({ limit: response.data.total });
+      if (response2.status === 200) {
+        this.listEntry = response2.data.data;
+      }
       if (response?.status === 200) {
         this.entries = response.data.data;
         this.totalTeachers = response.data.total;
-        this.listEntry = response.data.data;
       }
     },
     async confirmDelete(id) {

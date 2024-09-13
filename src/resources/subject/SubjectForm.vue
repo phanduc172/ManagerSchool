@@ -106,6 +106,7 @@
               class="form-control me-2"
               v-model="form.academicYearStart"
               @change="clearError('academicYearStart')"
+              disabled
             >
               <option value="" disabled selected>Chọn năm bắt đầu...</option>
               <option v-for="year in yearOptions" :key="year" :value="year">
@@ -118,6 +119,7 @@
               class="form-control ms-2"
               v-model="form.academicYearEnd"
               @change="clearError('academicYearEnd')"
+              disabled
             >
               <option value="" disabled selected>Chọn năm kết thúc...</option>
               <option v-for="year in yearOptions" :key="year" :value="year">
@@ -153,14 +155,17 @@
           <div class="text-danger mb-2" v-if="errors.department">
             * {{ errors.department }}
           </div>
+          <div class="text-danger my-2" v-if="errors.messageError">
+            * {{ errors.messageError }}
+          </div>
         </div>
         <div class="form-group d-flex justify-content-start">
           <button type="submit" class="btn btn-success me-2">
             {{ isEdit ? "Cập nhật môn học" : "Thêm môn học" }}
           </button>
-          <button type="reset" class="btn btn-outline-secondary">
+          <!-- <button type="reset" class="btn btn-outline-secondary">
             Làm mới
-          </button>
+          </button> -->
         </div>
       </form>
     </div>
@@ -251,38 +256,45 @@ export default {
     },
 
     async onSubmit() {
-      this.errors = validateFormSubject(this.form);
-      if (Object.keys(this.errors).length > 0) {
-        return;
-      }
+      try {
+        this.errors = validateFormSubject(this.form);
+        if (Object.keys(this.errors).length > 0) {
+          return;
+        }
 
-      const term = this.termOptions.find((t) => t.id == this.form.termSemester);
-      if (!term) {
-        throw new Error("Học kỳ không tồn tại trong hệ thống!");
-      }
-      console.log(this.form.termSemester, "1111");
+        const term = this.termOptions.find(
+          (t) => t.id == this.form.termSemester
+        );
+        if (!term) {
+          throw new Error("Học kỳ không tồn tại trong hệ thống!");
+        }
 
-      const data = {
-        // // term_id: term.id,
-        term_id: this.form.termSemester,
-        subject_code: this.form.subjectCode,
-        subject_name: this.form.subjectName,
-        credits: parseInt(this.form.credits),
-        is_mandatory: false,
-        term_semester: parseInt(term.term_semester),
-        term_from_year: term.term_from_year,
-        term_to_year: term.term_to_year,
-        department: this.form.department,
-      };
+        const data = {
+          // // term_id: term.id,
+          term_id: this.form.termSemester,
+          subject_code: this.form.subjectCode,
+          subject_name: this.form.subjectName,
+          credits: parseInt(this.form.credits),
+          is_mandatory: false,
+          term_semester: parseInt(term.term_semester),
+          term_from_year: term.term_from_year,
+          term_to_year: term.term_to_year,
+          department: this.form.department,
+        };
 
-      if (this.isEdit) {
-        await this.UpdateSubject({ data, id: this.$route.params.id });
-        showSuccessMessage("Cập nhật môn học thành công!");
-      } else {
-        await this.CreaterSubject(data);
-        showSuccessMessage("Thêm môn học thành công!");
+        if (this.isEdit) {
+          await this.UpdateSubject({ data, id: this.$route.params.id });
+          showSuccessMessage("Cập nhật môn học thành công!");
+        } else {
+          await this.CreaterSubject(data);
+          showSuccessMessage("Thêm môn học thành công!");
+        }
+        this.$router.push({ name: "subjects" });
+      } catch (error) {
+        this.errors = {
+          messageError: error.response.data.error,
+        };
       }
-      this.$router.push({ name: "subjects" });
     },
 
     async onReset() {
@@ -346,5 +358,8 @@ export default {
 <style scoped>
 label {
   font-weight: bold;
+}
+.form-control:disabled {
+  background-color: white;
 }
 </style>

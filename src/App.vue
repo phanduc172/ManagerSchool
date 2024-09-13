@@ -3,7 +3,10 @@
     <SideBar v-if="!isSidebarCollapsed && !isAuthPage" />
     <div
       id="page-content-wrapper"
-      :class="{ collapsed: isSidebarCollapsed && !isAuthPage }"
+      :class="[
+        isSidebarCollapsed && !isAuthPage ? 'collapsed' : '',
+        isAuthPage ? 'auth-page' : '',
+      ]"
       class="flex-grow-1"
     >
       <NavBar v-if="!isAuthPage" @toggleSidebar="toggleSidebar" />
@@ -36,7 +39,8 @@ export default {
         "login",
         "register",
         "recoverpassword",
-        "confirmotp",
+        "confirmpassword",
+        "forgot-change-password",
       ].includes(to.name);
     },
   },
@@ -54,7 +58,8 @@ export default {
       "login",
       "register",
       "recoverpassword",
-      "confirmotp",
+      "confirmpassword",
+      "forgot-change-password",
     ].includes(this.$route.name);
   },
 };
@@ -79,5 +84,12 @@ export default {
 #page-content-wrapper.collapsed {
   margin-left: 0;
   width: 100%;
+}
+
+#page-content-wrapper.auth-page {
+  margin-left: 0;
+  width: 100%;
+  background: none;
+  background-color: #f8f9fa;
 }
 </style>

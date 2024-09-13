@@ -50,7 +50,7 @@
                   <th>Số điện thoại</th>
                   <th>Địa chỉ</th>
                   <th>Phòng ban</th>
-                  <th>Vai trò</th>
+                  <th style="min-width: 140px">Vai trò</th>
                   <th></th>
                 </tr>
               </thead>
@@ -86,7 +86,7 @@
                   <td class="text-center">{{ user.phone }}</td>
                   <td class="text-start">{{ user.address }}</td>
                   <td class="text-start">{{ user.department }}</td>
-                  <td class="text-center w-100">
+                  <td class="text-center">
                     {{
                       user.role_type == "admin"
                         ? "Quản trị viên"

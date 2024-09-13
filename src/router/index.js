@@ -31,9 +31,16 @@ const router = new VueRouter({
       component: () => import("../components/auth/FormRecover.vue"),
     },
     {
-      path: "/confirmotp",
-      name: "confirmotp",
-      component: () => import("../components/auth/ConfirmOTP.vue"),
+      path: "/forgot-change-password",
+      name: "forgot-change-password",
+      component: () => import("../components/auth/ForgotChangePassword.vue"),
+      props: (route) => ({ email: route.query.e, token: route.query.token }),
+    },
+
+    {
+      path: "/confirmpassword",
+      name: "confirmpassword",
+      component: () => import("../components/auth/ForgotChangePassword.vue"),
     },
 
     {
@@ -174,27 +181,29 @@ router.beforeEach(async (to, from, next) => {
   // Lấy token từ Vuex store hoặc sessionStorage
   let token = store.getters["auth/profile"]?.token || sessionStorage.getItem("token");
 
-  // Nếu không có token (người dùng chưa đăng nhập)
+  // Danh sách các trang không yêu cầu đăng nhập
+  const publicPages = ["login", "register", "recoverpassword", "confirmpassword", "forgot-change-password"];
+
+  // Nếu người dùng không có token (chưa đăng nhập)
   if (!token) {
-    // Nếu trang truy cập là trang login hoặc register, cho phép tiếp tục
-    if (to.name === "login" || to.name === "register" || to.name === "recoverpassword" || to.name === "confirmotp") {
+    // Cho phép truy cập các trang công khai
+    if (publicPages.includes(to.name)) {
       return next();
     }
 
-    // Chuyển hướng đến trang login cho các trang khác
+    // Chuyển hướng đến trang login cho các trang yêu cầu đăng nhập
     return next("/login");
   } else {
-    // Nếu người dùng đã đăng nhập
+    // Nếu đã đăng nhập, không cho truy cập lại trang login và register
     if (to.name === "login" || to.name === "register") {
-      // Nếu truy cập vào trang login hoặc register, chuyển hướng đến trang dashboard
       return next("/dashboard");
     }
 
-    // Nếu là trang khác, kiểm tra và lấy profile từ Vuex store
-    // await store.dispatch("auth/getProfile");
+    // Nếu là trang khác, cho phép tiếp tục
     return next();
   }
 });
+
 
 
 

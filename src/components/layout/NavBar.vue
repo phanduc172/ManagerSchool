@@ -23,6 +23,7 @@
               height: 40px;
               object-fit: cover;
             "
+            @error="handleImageError"
           />
           <b-dropdown
             :text="profile ? profile.name : ''"
@@ -62,6 +63,7 @@ export default {
         avatar: "",
         token: "",
       },
+      defaultAvatar: "/avt.jpg",
     };
   },
   methods: {
@@ -75,6 +77,9 @@ export default {
       if (response?.status === 200) {
         this.profile = response.data.data;
       }
+    },
+    handleImageError(event) {
+      event.target.src = this.defaultAvatar;
     },
   },
   created() {

@@ -157,17 +157,17 @@
       title="Cập nhật thông tin"
       @ok="updateUserProfile"
       @hide="resetModal"
-      size="lg"
+      size="md"
       scrollable
       class="custom-modal"
       hide-header
     >
       <form>
         <div class="row mb-3">
-          <label for="name" class="col-sm-3 col-form-label"
+          <label for="name" class="col-sm-4 col-form-label"
             >Họ tên <span class="text-danger">*</span></label
           >
-          <div class="col-sm-9">
+          <div class="col-sm-8">
             <input
               type="text"
               class="form-control"
@@ -178,8 +178,8 @@
         </div>
 
         <div class="row mb-3">
-          <label for="gender" class="col-sm-3 col-form-label">Giới tính </label>
-          <div class="col-sm-9">
+          <label for="gender" class="col-sm-4 col-form-label">Giới tính </label>
+          <div class="col-sm-8">
             <select class="form-select" id="gender" v-model="profile.gender">
               <option value="undefined" disabled>Chọn giới tính</option>
               <option :value="1">Nam</option>
@@ -190,10 +190,10 @@
         </div>
 
         <div class="row mb-3">
-          <label for="date_of_birth" class="col-sm-3 col-form-label"
+          <label for="date_of_birth" class="col-sm-4 col-form-label"
             >Ngày sinh</label
           >
-          <div class="col-sm-9">
+          <div class="col-sm-8">
             <input
               type="date"
               class="form-control"
@@ -205,10 +205,10 @@
         </div>
 
         <div class="row mb-3">
-          <label for="email" class="col-sm-3 col-form-label"
+          <label for="email" class="col-sm-4 col-form-label"
             >Email <span class="text-danger">*</span></label
           >
-          <div class="col-sm-9">
+          <div class="col-sm-8">
             <input
               type="email"
               class="form-control"
@@ -219,10 +219,10 @@
         </div>
 
         <div class="row mb-3">
-          <label for="phone" class="col-sm-3 col-form-label"
+          <label for="phone" class="col-sm-4 col-form-label"
             >Số điện thoại <span class="text-danger">*</span></label
           >
-          <div class="col-sm-9">
+          <div class="col-sm-8">
             <input
               type="tel"
               class="form-control"
@@ -331,7 +331,7 @@ export default {
         const token = sessionStorage.getItem("token");
         if (!token) return;
         const response = await axios.post(
-          "http://192.168.1.9:3000/v1/upload/image",
+          "http://localhost:3000/v1/upload/image",
           formData,
           {
             headers: {
