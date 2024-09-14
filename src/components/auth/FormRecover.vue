@@ -50,6 +50,7 @@
   
   <script>
 import { mapActions } from "vuex";
+import { showSuccessRecoverPassword } from "../../common/utils/notifications";
 import { validateRecoverForm } from "../../common/utils/validate";
 export default {
   data() {
@@ -75,7 +76,7 @@ export default {
           email: this.form.email,
         });
         if (response?.status === 200) {
-          this.$router.push({ name: "confirmpassword" });
+          showSuccessRecoverPassword();
         }
         console.log(response);
       } catch (error) {

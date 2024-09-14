@@ -331,7 +331,7 @@ export default {
         const token = sessionStorage.getItem("token");
         if (!token) return;
         const response = await axios.post(
-          "http://localhost:3000/v1/upload/image",
+          "http://192.168.1.18:3000/v1/upload/image",
           formData,
           {
             headers: {
@@ -345,7 +345,7 @@ export default {
         console.log(newAvt);
         this.cancelImage();
         showSuccessMessage();
-        this.getProfile();
+        this.GetProfile();
       } else {
         console.error("Không có file nào được chọn");
       }

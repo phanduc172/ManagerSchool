@@ -1,3 +1,4 @@
+import { fas } from "@fortawesome/free-solid-svg-icons";
 import * as Swal from "sweetalert2";
 
 export const showDeleteConfirmation = async () => {
@@ -77,3 +78,15 @@ export const confirmReset = () => {
     }
   });
 }
+
+export const showSuccessRecoverPassword = () => {
+  Swal.fire({
+    title: "Yêu cầu khôi phục mật khẩu thành công",
+    text: "Chúng tôi đã gửi hướng dẫn khôi phục mật khẩu vào email của bạn. Vui lòng kiểm tra hộp thư và làm theo hướng dẫn để đặt lại mật khẩu.",
+    icon: "success",
+    showConfirmButton: false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+  });
+};
+
