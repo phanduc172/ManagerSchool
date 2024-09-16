@@ -66,6 +66,9 @@
           >
             * {{ errors.academicYearStart || errors.academicYearEnd }}
           </div>
+          <div class="text-danger my-2" v-if="errors.messageError">
+            * {{ errors.messageError }}
+          </div>
         </div>
         <div class="form-group d-flex justify-content-start">
           <button type="submit" class="btn btn-success me-2">
@@ -111,25 +114,29 @@ export default {
     },
 
     async onSubmit() {
-      this.errors = validateFormTerm(this.form);
-      if (Object.keys(this.errors).length > 0) {
-        return;
+      try {
+        this.errors = validateFormTerm(this.form);
+        if (Object.keys(this.errors).length > 0) {
+          return;
+        }
+        const data = {
+          term_semester: this.form.termSemester,
+          term_from_year: this.form.academicYearStart,
+          term_to_year: this.form.academicYearEnd,
+        };
+        if (this.isEdit) {
+          await this.UpdateTerm({ data, id: this.$route.params.id });
+          showSuccessMessage();
+        } else {
+          await this.CreateTerm(data);
+          showSuccessMessage();
+        }
+        this.$router.push({ name: "term" });
+      } catch (error) {
+        this.errors = {
+          messageError: error.response.data.error,
+        };
       }
-      const data = {
-        term_semester: this.form.termSemester,
-        term_from_year: this.form.academicYearStart,
-        term_to_year: this.form.academicYearEnd,
-      };
-      console.log("data", data);
-
-      if (this.isEdit) {
-        await this.UpdateTerm({ data, id: this.$route.params.id });
-        showSuccessMessage("Cập nhật môn học thành công!");
-      } else {
-        await this.CreateTerm(data);
-        showSuccessMessage("Thêm môn học thành công!");
-      }
-      this.$router.push({ name: "term" });
     },
     onReset() {
       this.form.termSemester = "";

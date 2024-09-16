@@ -24,6 +24,7 @@
             v-model="form.email"
             type="text"
             placeholder="Nhập vào email..."
+            :disabled="isLoading"
           ></b-form-input>
           <div class="text-danger mb-2" v-if="errors.email">
             * {{ errors.email }}
@@ -32,24 +33,37 @@
         <div class="text-danger mb-2" v-if="errors.messageError">
           * {{ errors.messageError }}
         </div>
+
         <div class="d-flex justify-content-center mt-3">
-          <button type="submit" class="px-3 py-2 border-0 rounded bg-success">
-            <h5 class="text-white m-0 p-1">Gửi</h5>
+          <button
+            type="submit"
+            class="px-3 py-2 border-0 rounded bg-success"
+            :disabled="isLoading"
+          >
+            <h5 class="text-white m-0 p-1">
+              <span v-if="isLoading">
+                <b-spinner small label="Loading..."></b-spinner>
+                Đang gửi...
+              </span>
+              <span v-else>Gửi</span>
+            </h5>
           </button>
         </div>
 
         <div class="d-flex justify-content-center flex-wrap mt-4 register">
-          <a @click="$router.go(-1)" class="loginAccount text-hover"
-            >Quay lại trang đăng nhập</a
-          >
+          <a @click="$router.go(-1)" class="loginAccount text-hover">
+            Quay lại trang đăng nhập
+          </a>
         </div>
       </b-form>
     </b-card>
   </div>
 </template>
+
   
   <script>
 import { mapActions } from "vuex";
+import { showSuccessRecoverPassword } from "../../common/utils/notifications";
 import { validateRecoverForm } from "../../common/utils/validate";
 export default {
   data() {
@@ -60,28 +74,33 @@ export default {
       errors: {
         email: "",
       },
+      isLoading: false,
       show: true,
     };
   },
   methods: {
     ...mapActions("auth", ["handleRecoverPassword"]),
     async onSubmit() {
+      this.isLoading = true;
       try {
         this.errors = validateRecoverForm(this.form);
         if (Object.keys(this.errors).length > 0) {
+          this.isLoading = false;
           return;
         }
         const response = await this.handleRecoverPassword({
           email: this.form.email,
         });
         if (response?.status === 200) {
-          this.$router.push({ name: "confirmpassword" });
+          showSuccessRecoverPassword();
         }
         console.log(response);
       } catch (error) {
         this.errors = {
-          messageError: error.response.data.message,
+          messageError: error.response?.data?.message || "Có lỗi xảy ra",
         };
+      } finally {
+        this.isLoading = false;
       }
     },
     onReset() {

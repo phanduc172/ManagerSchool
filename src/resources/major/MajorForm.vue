@@ -46,6 +46,9 @@
           <div class="text-danger mb-2" v-if="errors.majorName">
             * {{ errors.majorName }}
           </div>
+          <div class="text-danger my-2" v-if="errors.messageError">
+            * {{ errors.messageError }}
+          </div>
         </div>
         <div class="form-group d-flex justify-content-start">
           <button type="submit" class="btn btn-success me-2">
@@ -85,25 +88,31 @@ export default {
       console.log(response);
     },
     async onSubmit() {
-      this.errors = validateFormMajor(this.form);
-      if (Object.keys(this.errors).length > 0) {
-        return;
+      try {
+        this.errors = validateFormMajor(this.form);
+        if (Object.keys(this.errors).length > 0) {
+          return;
+        }
+        const data = {
+          major_id: this.form.majorId,
+          major_name: this.form.majorName,
+        };
+        if (this.isEdit) {
+          await this.UpdateMajor({ data, id: this.$route.params.id });
+          showSuccessMessage("Cập nhật ngành học thành công!");
+        } else {
+          await this.CreateMajor(data);
+          showSuccessMessage("Thêm ngành học thành công!");
+        }
+        this.onReset();
+        setTimeout(() => {
+          window.location.href = "/manager/major";
+        }, 1000);
+      } catch (error) {
+        this.errors = {
+          messageError: error.response.data.error,
+        };
       }
-      const data = {
-        major_id: this.form.majorId,
-        major_name: this.form.majorName,
-      };
-      if (this.isEdit) {
-        await this.UpdateMajor({ data, id: this.$route.params.id });
-        showSuccessMessage("Cập nhật ngành học thành công!");
-      } else {
-        await this.CreateMajor(data);
-        showSuccessMessage("Thêm ngành học thành công!");
-      }
-      this.onReset();
-      setTimeout(() => {
-        window.location.href = "/manager/major";
-      }, 1000);
     },
     onReset() {
       this.form.majorId = "";

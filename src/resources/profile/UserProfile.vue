@@ -190,14 +190,14 @@
         </div>
 
         <div class="row mb-3">
-          <label for="date_of_birth" class="col-sm-4 col-form-label"
+          <label for="birthdate" class="col-sm-4 col-form-label"
             >Ngày sinh</label
           >
           <div class="col-sm-8">
             <input
               type="date"
               class="form-control"
-              id="date_of_birth"
+              id="birthdate"
               :max="maxDate"
               :value="toVNTime(profile.date_of_birth)"
             />
@@ -216,6 +216,9 @@
               v-model="profile.email"
             />
           </div>
+          <div class="text-danger mb-2" v-if="errors.email">
+            * {{ errors.email }}
+          </div>
         </div>
 
         <div class="row mb-3">
@@ -229,6 +232,9 @@
               id="phone"
               v-model="profile.phone"
             />
+            <div class="text-danger mb-2" v-if="errors.phone">
+              * {{ errors.phone }}
+            </div>
           </div>
         </div>
       </form>
@@ -270,13 +276,26 @@
 import axios from "axios";
 import moment from "moment";
 import { mapActions } from "vuex";
-import { getMaxDate } from "../../common/utils/validate";
+import { getMaxDate, validateUpdateMeForm } from "../../common/utils/validate";
 import { showSuccessMessage } from "../../common/utils/notifications";
 
 export default {
   data() {
     return {
-      profile: {},
+      profile: {
+        name: "",
+        email: "",
+        birthdate: "",
+        gender: "",
+        phone: "",
+      },
+      errors: {
+        name: "",
+        email: "",
+        birthdate: "",
+        gender: "",
+        phone: "",
+      },
       maxDate: getMaxDate(),
       uploadedImage: null,
       fileToUpload: null,
@@ -301,7 +320,7 @@ export default {
     },
 
     async updateUserProfile() {
-      // this.errors = validateCreateUserForm(this.form);
+      // this.errors = validateUpdateMeForm(this.form);
       // if (Object.keys(this.errors).length > 0) {
       //   return;
       // }
@@ -309,7 +328,7 @@ export default {
         name: this.profile.name,
         email: this.profile.email,
         gender: this.profile.gender,
-        date_of_birth: moment(this.profile.date_of_birth)
+        birthdate: moment(this.profile.date_of_birth)
           .zone(7)
           .format("YYYY-MM-DDTHH:mm:ssZ"),
         phone: this.profile.phone,
@@ -331,7 +350,7 @@ export default {
         const token = sessionStorage.getItem("token");
         if (!token) return;
         const response = await axios.post(
-          "http://localhost:3000/v1/upload/image",
+          "http://192.168.1.28:4000/v1/upload/image",
           formData,
           {
             headers: {
@@ -345,7 +364,7 @@ export default {
         console.log(newAvt);
         this.cancelImage();
         showSuccessMessage();
-        this.getProfile();
+        this.GetProfile();
       } else {
         console.error("Không có file nào được chọn");
       }

@@ -1,6 +1,5 @@
 import axios from "@/core/axios";
 import api from "../../api";
-import { method } from "lodash";
 const state = {
   entries: [
     {
@@ -40,9 +39,9 @@ const actions = {
     });
     return response;
   },
-  async ListAllTeacher(_, query = {}) {
+  async ListAllUserDeleted(_, query = {}) {
     const response = await axios({
-      url: api.ListAllAccount,
+      url: api.ListAllAccountDeleted,
       method: "GET",
       params: query,
     });
@@ -89,6 +88,13 @@ const actions = {
       method: "DELETE"
     });
     return response;
+  },
+  async ResoterUser(_, id) {
+    const response = await axios({
+      url: api.params("RestoreUser", { id }),
+      method: "PATCH"
+    });
+    return response.data;
   }
 };
 

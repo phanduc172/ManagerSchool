@@ -23,7 +23,6 @@
           </div>
         </b-form-group>
 
-        <!-- Xác nhận mật khẩu -->
         <b-form-group label="Xác nhận mật khẩu" class="fw-bold mb-2">
           <div class="input-group">
             <b-form-input
@@ -41,14 +40,12 @@
           </div>
         </b-form-group>
 
-        <!-- Submit -->
         <b-form-group>
           <b-button type="submit" variant="success" class="w-100 mb-3">
             Lưu mật khẩu mới
           </b-button>
         </b-form-group>
 
-        <!-- Hiển thị thông báo thành công hoặc lỗi -->
         <b-alert v-if="successMessage" variant="success" show>
           {{ successMessage }}
         </b-alert>
@@ -63,7 +60,6 @@
 
 <script>
 import { mapActions } from "vuex";
-import { showSuccessMessage } from "../../common/utils/notifications";
 
 export default {
   props: {
@@ -108,7 +104,7 @@ export default {
         this.successMessage = "Mật khẩu đã được thay đổi thành công!";
         setTimeout(() => {
           this.$router.push("/login");
-        }, 3000);
+        }, 2000);
       }
     },
   },

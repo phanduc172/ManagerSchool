@@ -41,6 +41,14 @@ export default {
         "recoverpassword",
         "confirmpassword",
         "forgot-change-password",
+        "changepassword",
+        "usersCreate",
+        "classesCreate",
+        "subjectsCreate",
+        "majorCreate",
+        "termCreate",
+        "teachersCreate",
+        "badpage",
       ].includes(to.name);
     },
   },
@@ -60,6 +68,13 @@ export default {
       "recoverpassword",
       "confirmpassword",
       "forgot-change-password",
+      "usersCreate",
+      "classesCreate",
+      "subjectsCreate",
+      "majorCreate",
+      "termCreate",
+      "teachersCreate",
+      "badpage",
     ].includes(this.$route.name);
   },
 };
@@ -90,6 +105,8 @@ export default {
   margin-left: 0;
   width: 100%;
   background: none;
-  background-color: #f8f9fa;
+  /* background-color: #f8f9fa; */
+  background: url(/src/assets/images/bg.jpg) no-repeat center center;
+  background-size: cover;
 }
 </style>

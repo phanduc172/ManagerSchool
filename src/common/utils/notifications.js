@@ -1,8 +1,22 @@
+import { fas } from "@fortawesome/free-solid-svg-icons";
 import * as Swal from "sweetalert2";
 
 export const showDeleteConfirmation = async () => {
   const result = await Swal.fire({
     title: "Bạn có chắc chắn xóa?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Xác nhận",
+    cancelButtonText: "Hủy",
+  });
+
+  return result.isConfirmed;
+};
+export const showResoreUserConfirmation = async () => {
+  const result = await Swal.fire({
+    title: "Bạn có chắc chắn khôi phục?",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#3085d6",
@@ -77,3 +91,15 @@ export const confirmReset = () => {
     }
   });
 }
+
+export const showSuccessRecoverPassword = () => {
+  Swal.fire({
+    title: "Yêu cầu khôi phục mật khẩu thành công",
+    text: "Chúng tôi đã gửi hướng dẫn khôi phục mật khẩu vào email của bạn. Vui lòng kiểm tra hộp thư và làm theo hướng dẫn để đặt lại mật khẩu.",
+    icon: "success",
+    showConfirmButton: false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+  });
+};
+
