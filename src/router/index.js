@@ -84,6 +84,15 @@ const router = new VueRouter({
       }),
     },
     {
+      path: "/manager/restoreuser",
+      name: "restoreuser",
+      component: () => import("../resources/users/RestoreUser.vue"),
+      props: (route) => ({
+        page: parseInt(route.query.page) || 1,
+        limit: parseInt(route.query.limit) || 10,
+      }),
+    },
+    {
       path: "/manager/users/create",
       name: "usersCreate",
       component: () => import("../resources/users/UserForm.vue"),
@@ -167,6 +176,13 @@ const router = new VueRouter({
       component: () => import("../resources/term/TermForm.vue"),
       props: true,
     },
+    //
+    {
+      path: '/badpage',
+      name: "badpage",
+      component: () => import("../components/layout/404.vue"),
+      props: true,
+    },
 
     //
     {
@@ -198,7 +214,6 @@ router.beforeEach(async (to, from, next) => {
     if (to.name === "login" || to.name === "register") {
       return next("/dashboard");
     }
-
     // Nếu là trang khác, cho phép tiếp tục
     return next();
   }

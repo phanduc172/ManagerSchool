@@ -9,27 +9,6 @@
           placeholder="Tìm kiếm người dùng..."
         />
       </div>
-      <b-button-group>
-        <b-dropdown right variant="success fw-bold">
-          <template #button-content>
-            <i class="bx bx-plus"></i> Thêm mới
-          </template>
-
-          <b-dropdown-item
-            variant="success fw-bold"
-            href="/manager/users/create"
-          >
-            Thủ công
-          </b-dropdown-item>
-
-          <b-dropdown-item
-            variant="success fw-bold"
-            href="/manager/users/readexcel"
-          >
-            Nhập từ Excel
-          </b-dropdown-item>
-        </b-dropdown>
-      </b-button-group>
     </div>
     <div class="row">
       <div class="col-12 mb-3 mb-lg-5">
@@ -37,7 +16,7 @@
           <div
             class="card-header d-flex justify-content-center align-items-center py-3 header-bordered"
           >
-            <h5 class="mb-0 text-center">Danh sách người dùng</h5>
+            <h5 class="mb-0 text-center">Danh sách người dùng đã xóa</h5>
           </div>
           <div class="table-responsive">
             <table class="table table-striped table-hover mb-0 table-wrap">
@@ -48,8 +27,6 @@
                   <th>Ngày sinh</th>
                   <th>Email</th>
                   <th>Số điện thoại</th>
-                  <th>Địa chỉ</th>
-                  <th>Phòng ban</th>
                   <th style="min-width: 140px">Vai trò</th>
                   <th></th>
                 </tr>
@@ -73,7 +50,6 @@
                         :src="user.avatar"
                         class="avatar sm rounded-pill me-3 flex-shrink-0"
                         alt="Giáo viên"
-                        @error="handleImageError"
                       />
                       <div class="h6 mb-0 truncate">
                         {{ user.name }}
@@ -85,8 +61,6 @@
                   </td>
                   <td class="text-start">{{ user.email }}</td>
                   <td class="text-center">{{ user.phone }}</td>
-                  <td class="text-start">{{ user.address }}</td>
-                  <td class="text-start">{{ user.department }}</td>
                   <td class="text-center">
                     {{
                       user.role_type == "admin"
@@ -101,9 +75,9 @@
                       <b-button
                         variant="transtration"
                         size="md"
-                        :to="`/manager/users/edit/${user.Id}`"
+                        @click="confirmRestoreUser(user.Id)"
                       >
-                        <i class="bx bxs-edit-alt fs-4 text-info"></i>
+                        <i class="bx bx-reset fs-4 text-info"></i>
                       </b-button>
                       <b-button
                         variant="transtration"
@@ -139,6 +113,7 @@ import { mapActions, mapGetters } from "vuex";
 import Pagination from "@/components/layout/Pagination.vue";
 import {
   showDeleteConfirmation,
+  showResoreUserConfirmation,
   showErrorMessage,
   showSuccessMessage,
 } from "@/common/utils/notifications";
@@ -162,7 +137,6 @@ export default {
       currentPage: this.page,
       perPage: this.limit,
       totalUsers: 0,
-      defaultAvatar: "/avt.jpg",
       isShowPagi: true,
     };
   },
@@ -171,12 +145,14 @@ export default {
     ...mapGetters("user", ["users"]),
   },
   methods: {
-    ...mapActions("user", ["ListAllAccount", "GetProfile", "DeleteUser"]),
+    ...mapActions("user", [
+      "ListAllUserDeleted",
+      "GetProfile",
+      "DeleteUser",
+      "ResoterUser",
+    ]),
     toVNTime(time) {
       return moment(time).utc(7).format("DD-MM-YYYY");
-    },
-    handleImageError(event) {
-      event.target.src = this.defaultAvatar;
     },
     async getProfile() {
       const response = await this.GetProfile(this.$route.query);
@@ -186,13 +162,18 @@ export default {
         this.entries = [];
       }
     },
-    async getListAllAccount(page = this.currentPage) {
-      const response = await this.ListAllAccount({ page, limit: this.perPage });
+    async getListAllUserDeleted(page = this.currentPage) {
+      const response = await this.ListAllUserDeleted({
+        page,
+        limit: this.perPage,
+      });
 
-      const response2 = await this.ListAllAccount({
+      const response2 = await this.ListAllUserDeleted({
         limit: response.data.total,
       });
+
       console.log(response2.data.data);
+
       if (response2.status === 200) {
         this.listEntry = response2.data.data;
       }
@@ -213,19 +194,31 @@ export default {
         } else {
           showErrorMessage();
         }
-        this.getListAllAccount();
+        this.ListAllUserDeleted();
       }
+    },
+    async confirmRestoreUser(id) {
+      const isConfirmed = await showResoreUserConfirmation();
+      if (isConfirmed) {
+        const response = await this.ResoterUser(id);
+        if (response.status === 200) {
+          showSuccessMessage();
+        } else {
+          showErrorMessage();
+        }
+      }
+      this.getListAllUserDeleted();
     },
     handlePageChange(page) {
       this.currentPage = page;
-      this.getListAllAccount(this.currentPage);
+      this.ListAllUserDeleted(this.currentPage);
     },
   },
   watch: {
     searchQuery: {
       handler(newQuery) {
         if (newQuery.trim() === "") {
-          this.getListAllAccount();
+          this.ListAllUserDeleted();
           this.isShowPagi = true;
         } else {
           this.isShowPagi = false;
@@ -240,7 +233,7 @@ export default {
     },
   },
   created() {
-    this.getListAllAccount();
+    this.getListAllUserDeleted();
   },
 };
 </script>

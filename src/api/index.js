@@ -12,10 +12,12 @@ const api = {
   UpdateAvatar: "/v1/upload/image",
 
   ListAllAccount: "/v1/admin/all",
+  ListAllAccountDeleted: "/v1/admin/user/pending-deletion",
   DeleteUser: "v1/admin/delete/{id}",
   CreateUser: "/v1/user/create",
   GetDetailUser: "",
   AddUserExcel: "/v1/admin/excel/upload/user",
+  RestoreUser: "/v1/admin/user/restore/{id}",
 
   ListTeachers: "v1/admin/user/teacher/all",
   CreateTeacher: "/api/teachers",

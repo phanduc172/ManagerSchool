@@ -245,6 +245,8 @@ export function validateCreateUserForm(form) {
     errors.name = "Họ tên không được để trống";
   } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯưẠ-ỹ\s]+$/.test(form.name)) {
     errors.name = "Họ tên không hợp lệ";
+  } else if (form.name.length > 100) {
+    errors.name = "Họ tên không quá 100 kí tự"
   }
 
 
@@ -270,5 +272,35 @@ export function validateCreateUserForm(form) {
     errors.role = "Vai trò không được để trống";
   }
 
+  return errors;
+}
+
+
+export function validateUpdateMeForm(form) {
+  const errors = {};
+
+  if (!form.name) {
+    errors.name = "Họ tên không được để trống";
+  } else if (!/^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯưẠ-ỹ\s]+$/.test(form.name)) {
+    errors.name = "Họ tên không hợp lệ";
+  }
+
+  if (!form.gender) {
+    errors.gender = "Vui lòng chọn giới tính";
+  }
+
+  if (!form.birthdate) {
+    errors.birthdate = "Vui lòng chọn ngày sinh";
+  }
+  if (!form.email) {
+    errors.email = "Email không được để trống";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    errors.email = "Email không hợp lệ";
+  }
+  if (!form.phone) {
+    errors.phone = "Số điện thoại không được để trống";
+  } else if (!validatePhoneNumber(form.phone)) {
+    errors.phone = "Số điện thoại không hợp lệ";
+  }
   return errors;
 }

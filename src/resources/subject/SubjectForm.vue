@@ -27,6 +27,7 @@
               isEdit ? 'Mã môn học không thể thay đổi' : 'Nhập mã môn học'
             "
             :readonly="isEdit"
+            :disabled="isEdit"
             @focus="clearError('subjectCode')"
           />
           <div class="text-danger mb-2" v-if="errors.subjectCode">
@@ -163,9 +164,6 @@
           <button type="submit" class="btn btn-success me-2">
             {{ isEdit ? "Cập nhật môn học" : "Thêm môn học" }}
           </button>
-          <!-- <button type="reset" class="btn btn-outline-secondary">
-            Làm mới
-          </button> -->
         </div>
       </form>
     </div>
@@ -261,7 +259,6 @@ export default {
         if (Object.keys(this.errors).length > 0) {
           return;
         }
-
         const term = this.termOptions.find(
           (t) => t.id == this.form.termSemester
         );
@@ -270,17 +267,18 @@ export default {
         }
 
         const data = {
-          // // term_id: term.id,
-          term_id: this.form.termSemester,
+          term_id: term.id,
           subject_code: this.form.subjectCode,
           subject_name: this.form.subjectName,
           credits: parseInt(this.form.credits),
-          is_mandatory: false,
+          is_mandatory: this.form.isMandatory || false,
           term_semester: parseInt(term.term_semester),
           term_from_year: term.term_from_year,
           term_to_year: term.term_to_year,
           department: this.form.department,
         };
+
+        console.log("Payload Data:", data);
 
         if (this.isEdit) {
           await this.UpdateSubject({ data, id: this.$route.params.id });
@@ -309,18 +307,19 @@ export default {
         department: "",
       };
     },
+
     setFormForEdit(subject) {
-      console.log("Subject Term: ", subject.term_id);
-      console.log("Options: ", this.termOptions);
       let subjectTerm = this.termOptions.find(
         ({ id }) => subject.term_id === id
       );
-      console.log("Select Name Term: ", subjectTerm);
       if (subjectTerm) {
         this.form.termSemester = subjectTerm.id;
         this.form.academicYearStart = subjectTerm.term_from_year;
         this.form.academicYearEnd = subjectTerm.term_to_year;
       } else {
+        this.form.termSemester = "";
+        this.form.academicYearStart = "";
+        this.form.academicYearEnd = "";
         console.warn("Không tìm thấy học kỳ cho môn học này.");
       }
       this.form.subjectCode = subject.subject_code;
@@ -330,9 +329,11 @@ export default {
       this.form.department = subject.department;
       this.isEdit = true;
     },
+
     clearError(field) {
       this.$set(this.errors, field, "");
     },
+
     onTermSemesterChange() {
       const selectedTerm = this.termOptions.find(
         (t) => t.id == this.form.termSemester
@@ -349,8 +350,8 @@ export default {
     },
   },
   async created() {
-    this.getDetailSubject();
-    this.getAllTerms();
+    await this.getAllTerms();
+    await this.getDetailSubject();
   },
 };
 </script>
@@ -360,6 +361,7 @@ label {
   font-weight: bold;
 }
 .form-control:disabled {
-  background-color: white;
+  background-color: var(--bs-secondary-bg);
+  opacity: 1;
 }
 </style>

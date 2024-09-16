@@ -57,13 +57,13 @@
                       >
                         <i class="bx bxs-edit-alt fs-4 text-info"></i>
                       </b-button>
-                      <b-button
+                      <!-- <b-button
                         variant="transtration"
                         size="md"
                         @click="confirmDelete(terms.id)"
                       >
                         <i class="bx bxs-trash fs-4 text-danger"></i>
-                      </b-button>
+                      </b-button> -->
                     </b-button-group>
                   </td>
                 </tr>

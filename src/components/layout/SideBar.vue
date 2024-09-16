@@ -47,6 +47,13 @@
         </router-link>
         <router-link
           class="list-group-item list-group-item-action"
+          :class="{ active: isActive('/manager/restoreuser') }"
+          to="/manager/restoreuser"
+        >
+          Khôi phục người dùng
+        </router-link>
+        <router-link
+          class="list-group-item list-group-item-action"
           :class="{ active: isActive('/manager/subjects') }"
           to="/manager/subjects"
         >
@@ -68,13 +75,13 @@
         </router-link>
       </div>
 
-      <router-link
+      <!-- <router-link
         class="list-group-item list-group-item-action"
         :class="{ active: isActive('/settings') }"
         to="/settings"
       >
         <i class="bx bxs-cog me-2 fs-5"></i> Cài đặt
-      </router-link>
+      </router-link> -->
     </div>
   </div>
 </template>

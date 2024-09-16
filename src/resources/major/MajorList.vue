@@ -36,7 +36,11 @@
                   class="align-middle text-center"
                 >
                   <td class="text-center">
-                    {{ index + 1 }}
+                    {{
+                      searchQuery
+                        ? index + 1
+                        : (currentPage - 1) * perPage + index + 1
+                    }}
                   </td>
                   <td class="h6">{{ major.major_id }}</td>
                   <td class="text-start">{{ major.major_name }}</td>

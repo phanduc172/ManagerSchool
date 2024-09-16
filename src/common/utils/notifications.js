@@ -14,6 +14,19 @@ export const showDeleteConfirmation = async () => {
 
   return result.isConfirmed;
 };
+export const showResoreUserConfirmation = async () => {
+  const result = await Swal.fire({
+    title: "Bạn có chắc chắn khôi phục?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Xác nhận",
+    cancelButtonText: "Hủy",
+  });
+
+  return result.isConfirmed;
+};
 
 export const showToastSuccess = () => {
   Swal.mixin({
