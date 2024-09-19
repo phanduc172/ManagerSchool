@@ -3,12 +3,11 @@
     id="mainContainer"
     class="d-flex justify-content-center align-items-center vh-100"
   >
-    <div class="w-50 w-100-sm">
+    <div class="w-md-50">
       <login-form @submit="onSubmitLogin" ref="loginform" />
     </div>
   </b-container>
 </template>
-  
 
 <script>
 import { mapActions } from "vuex";
@@ -40,10 +39,10 @@ export default {
 }
 .w-100-sm {
   @media (max-width: 992px) {
-    width: 70% !important;
+    width: 50% !important;
   }
   @media (max-width: 450px) {
-    width: 1000% !important;
+    width: 100% !important;
     padding: 5px;
   }
 }

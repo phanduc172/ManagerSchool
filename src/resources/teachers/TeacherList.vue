@@ -48,9 +48,12 @@
                       <img
                         :src="teacher.avatar"
                         class="avatar sm rounded-pill me-3 flex-shrink-0"
-                        :alt="teacher.name"
+                        alt="Giáo viên"
+                        @error="handleImageError"
                       />
-                      <div class="h6 mb-0 truncate">{{ teacher.name }}</div>
+                      <div class="h6 mb-0 truncate">
+                        {{ teacher.name }}
+                      </div>
                     </div>
                   </td>
                   <td class="text-center">
@@ -118,6 +121,7 @@ export default {
       currentPage: this.page,
       perPage: this.limit,
       totalTeachers: 0,
+      defaultAvatar: "/avt.jpg",
       isShowPagi: true,
     };
   },
@@ -139,6 +143,17 @@ export default {
     ...mapActions("user", ["ListAllAccount", "DeleteUser"]),
     toVNTime(time) {
       return moment(time).utc(7).format("DD-MM-YYYY");
+    },
+    handleImageError(event) {
+      event.target.src = this.defaultAvatar;
+    },
+    async getProfile() {
+      const response = await this.GetProfile(this.$route.query);
+      if (response?.status == 200) {
+        this.entries = response.data.data;
+      } else {
+        this.entries = [];
+      }
     },
     async getListTeachers(page = this.currentPage) {
       const response = await this.ListTeachers({ page, limit: this.perPage });

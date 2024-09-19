@@ -50,9 +50,12 @@
                       <img
                         :src="student.avatar"
                         class="avatar sm rounded-pill me-3 flex-shrink-0"
-                        :alt="student.name"
+                        alt="Giáo viên"
+                        @error="handleImageError"
                       />
-                      <div class="h6 mb-0 truncate">{{ student.name }}</div>
+                      <div class="h6 mb-0 truncate">
+                        {{ student.name }}
+                      </div>
                     </div>
                   </td>
                   <td>{{ student.email }}</td>
@@ -129,6 +132,7 @@ export default {
       searchQuery: "",
       currentPage: this.page,
       perPage: this.limit,
+      defaultAvatar: "/avt.jpg",
       totalStudents: 0,
       isShowPagi: true,
     };
@@ -139,6 +143,17 @@ export default {
     },
     ...mapActions("student", ["ListStudents"]),
     ...mapActions("user", ["DeleteUser"]),
+    handleImageError(event) {
+      event.target.src = this.defaultAvatar;
+    },
+    async getProfile() {
+      const response = await this.GetProfile(this.$route.query);
+      if (response?.status == 200) {
+        this.entries = response.data.data;
+      } else {
+        this.entries = [];
+      }
+    },
     async getListStudent(page = this.currentPage) {
       const response = await this.ListStudents({ page, limit: this.perPage });
       const response2 = await this.ListStudents({ limit: response.data.total });

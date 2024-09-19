@@ -1,47 +1,72 @@
 <template>
   <div class="form-container">
-    <b-card id="cardLogin" class="scale-in-bl">
-      <h3 class="text-center mb-4 text-success">Khôi phục mật khẩu</h3>
+    <b-card id="cardLogin" class="scale-in-bl p-3">
+      <h3 class="text-center mb-3 text-success">Khôi phục mật khẩu</h3>
       <b-form @submit.prevent="onSubmit">
-        <b-form-group label="Email">
+        <b-form-group class="mb-2">
+          <label for="email" class="fw-bold mb-2">
+            Email<span class="text-danger">*</span>
+          </label>
           <b-form-input v-model="email" disabled></b-form-input>
         </b-form-group>
-        <b-form-group label="Nhập mật khẩu mới" class="fw-bold mb-2">
+
+        <b-form-group class="fw-bold mb-2">
+          <label for="newPassword" class="fw-bold mb-2">
+            Nhập mật khẩu mới<span class="text-danger">*</span>
+          </label>
           <div class="input-group">
             <b-form-input
-              v-model="newPassword"
-              :type="passwordFieldType"
+              id="newPassword"
+              v-model="form.newPassword"
+              :type="newPasswordFieldType"
               placeholder="Nhập mật khẩu mới"
             ></b-form-input>
             <b-button
               type="button"
               class="eye-icon"
-              @click="togglePasswordVisibility"
+              variant="bg-none"
+              @click="toggleNewPasswordVisibility"
+              @focus="clearError('newPassword')"
             >
-              <font-awesome-icon :icon="passwordFieldIcon" />
+              <font-awesome-icon :icon="newPasswordFieldIcon" />
             </b-button>
+          </div>
+          <div class="text-danger mt-2" v-if="errors.newPassword">
+            * {{ errors.newPassword }}
           </div>
         </b-form-group>
 
-        <b-form-group label="Xác nhận mật khẩu" class="fw-bold mb-2">
+        <b-form-group class="fw-bold mb-2">
+          <label for="confirmPassword" class="fw-bold mb-2">
+            Xác nhận mật khẩu<span class="text-danger">*</span>
+          </label>
           <div class="input-group">
             <b-form-input
-              v-model="confirmPassword"
-              :type="passwordFieldType"
+              id="confirmPassword"
+              v-model="form.confirmPassword"
+              :type="confirmPasswordFieldType"
               placeholder="Xác nhận mật khẩu"
             ></b-form-input>
             <b-button
               type="button"
               class="eye-icon"
-              @click="togglePasswordVisibility"
+              variant="bg-none"
+              @click="toggleConfirmPasswordVisibility"
+              @focus="clearError(confirmPassword)"
             >
-              <font-awesome-icon :icon="passwordFieldIcon" />
+              <font-awesome-icon :icon="confirmPasswordFieldIcon" />
             </b-button>
           </div>
+          <div class="text-danger mt-2" v-if="errors.confirmPassword">
+            * {{ errors.confirmPassword }}
+          </div>
         </b-form-group>
+        <div class="alert alert-danger" v-if="errors.messageError">
+          * {{ errors.messageError }}
+        </div>
 
         <b-form-group>
-          <b-button type="submit" variant="success" class="w-100 mb-3">
+          <b-button type="submit" variant="success" class="w-100 my-2">
             Lưu mật khẩu mới
           </b-button>
         </b-form-group>
@@ -57,9 +82,9 @@
   </div>
 </template>
 
-
 <script>
 import { mapActions } from "vuex";
+import { validateRecoverPasswordForm } from "../../common/utils/validate";
 
 export default {
   props: {
@@ -68,48 +93,76 @@ export default {
   },
   data() {
     return {
-      newPassword: "",
-      confirmPassword: "",
-      passwordFieldType: "password",
-      passwordFieldIcon: "eye",
+      form: {
+        newPassword: "",
+        confirmPassword: "",
+      },
+      errors: {
+        newPassword: "",
+        confirmPassword: "",
+      },
+      newPasswordFieldType: "password",
+      newPasswordFieldIcon: "eye",
+      confirmPasswordFieldType: "password",
+      confirmPasswordFieldIcon: "eye",
       successMessage: "",
       errorMessage: "",
     };
   },
   methods: {
     ...mapActions("auth", ["handForgotPassword"]),
-    togglePasswordVisibility() {
-      this.passwordFieldType =
-        this.passwordFieldType === "password" ? "text" : "password";
-      this.passwordFieldIcon =
-        this.passwordFieldType === "password" ? "eye" : "eye-slash";
-    },
     async onSubmit() {
-      this.successMessage = "";
-      this.errorMessage = "";
+      try {
+        this.errors = validateRecoverPasswordForm(this.form);
+        if (Object.keys(this.errors).length > 0) {
+          return;
+        }
+        this.successMessage = "";
+        this.errorMessage = "";
 
-      if (this.newPassword !== this.confirmPassword) {
-        this.errorMessage = "Mật khẩu mới và xác nhận mật khẩu không khớp.";
-        return;
+        if (this.newPassword !== this.confirmPassword) {
+          this.errorMessage = "Mật khẩu mới và xác nhận mật khẩu không khớp.";
+          return;
+        }
+
+        const response = await this.handForgotPassword({
+          email: this.email,
+          otp_token: this.token,
+          new_password: this.form.newPassword,
+          confirm_password: this.form.confirmPassword,
+        });
+
+        if (response.status === 200) {
+          this.successMessage = "Mật khẩu đã được thay đổi thành công!";
+          setTimeout(() => {
+            this.$router.push("/login");
+          }, 2000);
+        }
+      } catch (error) {
+        this.errors = {
+          messageError: error.response.data.message,
+        };
       }
-
-      const response = await this.handForgotPassword({
-        email: this.email,
-        otp_token: this.token,
-        new_password: this.newPassword,
-        confirm_password: this.confirmPassword,
-      });
-
-      if (response.status === 200) {
-        this.successMessage = "Mật khẩu đã được thay đổi thành công!";
-        setTimeout(() => {
-          this.$router.push("/login");
-        }, 2000);
-      }
+    },
+    clearError(field) {
+      this.$set(this.errors, field, "");
+    },
+    toggleNewPasswordVisibility() {
+      this.newPasswordFieldType =
+        this.newPasswordFieldType === "password" ? "text" : "password";
+      this.newPasswordFieldIcon =
+        this.newPasswordFieldType === "password" ? "eye" : "eye-slash";
+    },
+    toggleConfirmPasswordVisibility() {
+      this.confirmPasswordFieldType =
+        this.confirmPasswordFieldType === "password" ? "text" : "password";
+      this.confirmPasswordFieldIcon =
+        this.confirmPasswordFieldType === "password" ? "eye" : "eye-slash";
     },
   },
 };
 </script>
+
 <style scoped>
 .form-container {
   display: flex;
@@ -138,8 +191,8 @@ export default {
   cursor: pointer;
   font-size: 20px;
   color: #5f5f5f;
+  z-index: 5;
 }
-
 .eye-icon:hover {
   color: #37a571;
 }
@@ -153,5 +206,13 @@ export default {
 .btn-success:hover {
   background-color: #37a571;
   border-color: #37a571;
+}
+.form-control:focus {
+  border-color: #5a5a5a;
+  box-shadow: none;
+  border-color: #41b883;
+}
+.form-control:focus::placeholder {
+  color: #41b883;
 }
 </style>

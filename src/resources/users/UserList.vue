@@ -133,8 +133,8 @@
     </div>
   </div>
 </template>
-  
-  <script>
+
+<script>
 import { mapActions, mapGetters } from "vuex";
 import Pagination from "@/components/layout/Pagination.vue";
 import {
@@ -210,11 +210,11 @@ export default {
         const response = await this.DeleteUser(id);
         if (response.status === 200) {
           showSuccessMessage();
-        } else {
+        } else if (response.status === 400) {
           showErrorMessage();
         }
-        this.getListAllAccount();
       }
+      this.getListAllAccount();
     },
     handlePageChange(page) {
       this.currentPage = page;
@@ -244,7 +244,7 @@ export default {
   },
 };
 </script>
-    
+
 <style scoped>
 body {
   margin-top: 20px;
@@ -300,5 +300,3 @@ table td {
   background-color: #44b97c;
 }
 </style>
-    
-  

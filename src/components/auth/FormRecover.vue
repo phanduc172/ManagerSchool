@@ -26,11 +26,11 @@
             placeholder="Nhập vào email..."
             :disabled="isLoading"
           ></b-form-input>
-          <div class="text-danger mb-2" v-if="errors.email">
+          <div class="text-danger my-2" v-if="errors.email">
             * {{ errors.email }}
           </div>
         </b-form-group>
-        <div class="text-danger mb-2" v-if="errors.messageError">
+        <div class="text-danger my-2" v-if="errors.messageError">
           * {{ errors.messageError }}
         </div>
 
@@ -51,7 +51,10 @@
         </div>
 
         <div class="d-flex justify-content-center flex-wrap mt-4 register">
-          <a @click="$router.go(-1)" class="loginAccount text-hover">
+          <a
+            @click="$router.push({ name: 'login' })"
+            class="loginAccount text-hover"
+          >
             Quay lại trang đăng nhập
           </a>
         </div>
@@ -60,8 +63,7 @@
   </div>
 </template>
 
-  
-  <script>
+<script>
 import { mapActions } from "vuex";
 import { showSuccessRecoverPassword } from "../../common/utils/notifications";
 import { validateRecoverForm } from "../../common/utils/validate";
@@ -92,9 +94,9 @@ export default {
           email: this.form.email,
         });
         if (response?.status === 200) {
+          console.log(response);
           showSuccessRecoverPassword();
         }
-        console.log(response);
       } catch (error) {
         this.errors = {
           messageError: error.response?.data?.message || "Có lỗi xảy ra",
@@ -113,7 +115,7 @@ export default {
   },
 };
 </script>
-  
+
 <style lang="scss">
 @import "../../assets/scss/animations.scss";
 @import "../../assets/scss/variables.scss";

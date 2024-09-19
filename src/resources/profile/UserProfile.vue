@@ -2,7 +2,7 @@
   <div class="container mt-3">
     <div class="main-body">
       <div class="row">
-        <div class="col-lg-4">
+        <div class="offset-lg-1 col-lg-10">
           <div class="card">
             <div class="card-body">
               <div class="d-flex flex-column align-items-center text-center">
@@ -38,23 +38,17 @@
                     @change="previewImage"
                   />
                 </label>
-
                 <div class="mt-3">
-                  <h4>{{ profile.name }}</h4>
+                  <h2 class="fw-bold">{{ profile.name }}</h2>
                 </div>
               </div>
-              <hr class="my-4" />
             </div>
-          </div>
-        </div>
-        <div class="col-lg-8">
-          <div class="card">
             <div class="card-body">
-              <div class="row mb-3">
+              <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-0">Họ tên</h6>
+                  <h6 class="mb-sm-3">Họ tên</h6>
                 </div>
-                <div class="col-sm-9 text-secondary">
+                <div class="col-sm-8 text-secondary">
                   <input
                     type="text"
                     class="form-control"
@@ -63,11 +57,24 @@
                   />
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-0">Giới tính</h6>
+                  <h6 class="mb-sm-3">Ngày sinh</h6>
                 </div>
-                <div class="col-sm-9 text-secondary">
+                <div class="col-sm-8 text-secondary">
+                  <input
+                    :max="maxDate"
+                    class="form-control"
+                    :value="toVNTime(profile.date_of_birth)"
+                    disabled
+                  />
+                </div>
+              </div>
+              <div class="row mb-3 offset-1">
+                <div class="col-sm-3">
+                  <h6 class="mb-sm-3">Giới tính</h6>
+                </div>
+                <div class="col-sm-8 text-secondary">
                   <input
                     class="form-control"
                     :value="
@@ -81,24 +88,11 @@
                   />
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-0">Ngày sinh</h6>
+                  <h6 class="mb-sm-3">Email</h6>
                 </div>
-                <div class="col-sm-9 text-secondary">
-                  <input
-                    :max="maxDate"
-                    class="form-control"
-                    :value="toVNTime(profile.date_of_birth)"
-                    disabled
-                  />
-                </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-sm-3">
-                  <h6 class="mb-0">Email</h6>
-                </div>
-                <div class="col-sm-9 text-secondary">
+                <div class="col-sm-8 text-secondary">
                   <input
                     type="text"
                     class="form-control"
@@ -107,11 +101,11 @@
                   />
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-0">Số điện thoại</h6>
+                  <h6 class="mb-sm-3">Số điện thoại</h6>
                 </div>
-                <div class="col-sm-9 text-secondary">
+                <div class="col-sm-8 text-secondary">
                   <input
                     type="text"
                     class="form-control"
@@ -120,11 +114,11 @@
                   />
                 </div>
               </div>
-              <div class="row mb-3">
+              <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-0">Vai trò</h6>
+                  <h6 class="mb-sm-3">Vai trò</h6>
                 </div>
-                <div class="col-sm-9 text-secondary">
+                <div class="col-sm-8 text-secondary">
                   <input
                     type="text"
                     class="form-control"
@@ -270,7 +264,6 @@
     </b-modal>
   </div>
 </template>
-  
 
 <script>
 import axios from "axios";
@@ -306,7 +299,7 @@ export default {
     ...mapActions("user", ["UploadImage", "UpdateProfile"]),
     ...mapActions("auth", ["getProfile"]),
     toVNTime(time) {
-      return moment(time).utc(7).format("DD-MM-YYYY");
+      return moment(time).utc(7).format("yyyy-MM-DD");
     },
     openUpdateModal() {
       this.$bvModal.show("update-profile-modal");
@@ -337,6 +330,7 @@ export default {
       await this.UpdateProfile(userData);
       showSuccessMessage();
       this.resetModal();
+      this.GetProfile();
     },
     resetModal() {
       this.$bvModal.hide("update-profile-modal");
@@ -350,7 +344,7 @@ export default {
         const token = sessionStorage.getItem("token");
         if (!token) return;
         const response = await axios.post(
-          "http://192.168.1.28:4000/v1/upload/image",
+          "http://localhost:3000/v1/upload/image",
           formData,
           {
             headers: {
@@ -400,9 +394,10 @@ export default {
 };
 </script>
 
-
-	
 <style scoped>
+h6 {
+  text-wrap: inherit;
+}
 body {
   background: #f7f7ff;
   margin-top: 20px;
@@ -411,9 +406,10 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  min-width: 300px;
   word-wrap: break-word;
-  background-color: #fff;
+  /* background-color: #fff; */
+  background-color: #ffffffed;
   background-clip: border-box;
   border: 0 solid transparent;
   border-radius: 0.25rem;
@@ -493,6 +489,6 @@ body {
 }
 
 .upload-image-label:hover .upload-overlay {
-  opacity: 1; /* Hiển thị overlay khi hover */
+  opacity: 1;
 }
 </style>

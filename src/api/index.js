@@ -7,8 +7,8 @@ const api = {
   ChangePassword: "/v1/user/change-password",
   ForgotPassword: "/v1/user/forgot-password",
 
-  GetProfile: "/v1/user/me",
-  UpdateProfile: "/v1/user/me/update",
+  GetProfile: "/v1/user/me", //Yêu cầu đặt lại tên api
+  UpdateProfile: "/v1/user/me/update", // tương tự
   UpdateAvatar: "/v1/upload/image",
 
   ListAllAccount: "/v1/admin/all",
@@ -21,8 +21,8 @@ const api = {
 
   ListTeachers: "v1/admin/user/teacher/all",
   CreateTeacher: "/api/teachers",
-  UpdateTeacher: "/api/teachers/{id}",
-  DeleteTeacher: "/api/teachers/{id}",
+  UpdateTeacher: "/api/teacher/{id}",
+  DeleteTeacher: "/api/teacher/{id}",
 
   ListStudents: "/v1/admin/user/student/all",
   CreateStudent: "/api/students",
@@ -35,7 +35,7 @@ const api = {
   DeleteClass: "/api/classes/{id}",
 
   ListSubjects: "/v1/admin/subject/all",
-  CreateSubject: "/v1/admin/subject/add",
+  CreateSubject: "/v1/admin/subject/create",
   SubjectDetails: "/v1/admin/subject/details/{id}",
   UpdateSubject: "/v1/admin/subject/{id}",
   DeleteSubject: "/v1/admin/subject/{id}",

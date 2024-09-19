@@ -15,3 +15,28 @@
   overflow: visible;
   text-overflow: unset;
 }
+
+.text-danger {
+  font-size: 14px;
+}
+.form-control:focus {
+  border-color: #5a5a5a;
+  box-shadow: none;
+  border-color: #41b883;
+}
+.form-control:focus::placeholder {
+  color: #41b883;
+}
+
+.eye-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 20px;
+  color: #5f5f5f;
+  z-index: 5;
+}

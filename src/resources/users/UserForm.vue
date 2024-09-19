@@ -17,7 +17,7 @@
       >
         <b-form-group id="input-group-1" label-for="name" class="mb-2">
           <label for="name" class="mb-2">
-            Họ tên <span class="text-danger">*</span></label
+            Họ tên<span class="text-danger fw-bold">*</span></label
           >
           <b-form-input
             id="name"
@@ -35,7 +35,7 @@
 
         <b-form-group id="input-group-2" label-for="email" class="mb-2">
           <label for="email" class="mb-2">
-            Email <span class="text-danger">*</span></label
+            Email<span class="text-danger fw-bold">*</span></label
           >
           <b-form-input
             id="email"
@@ -51,7 +51,7 @@
         </b-form-group>
         <b-form-group id="input-group-3" label-for="phone" class="mb-2">
           <label for="phone" class="mb-2">
-            Số điện thoại <span class="text-danger">*</span></label
+            Số điện thoại<span class="text-danger fw-bold">*</span></label
           >
           <b-form-input
             id="phone"
@@ -68,7 +68,7 @@
 
         <b-form-group id="input-group-4" label-for="password" class="mb-2">
           <label for="password" class="mb-2">
-            Mật khẩu <span class="text-danger">*</span></label
+            Mật khẩu<span class="text-danger fw-bold">*</span></label
           >
           <b-form-input
             id="password"
@@ -85,7 +85,7 @@
         </b-form-group>
         <b-form-group>
           <label for="role" class="mb-2">
-            Vai trò <span class="text-danger">*</span></label
+            Vai trò<span class="text-danger fw-bold">*</span></label
           >
           <b-form-select
             id="role"
@@ -108,8 +108,8 @@
     </div>
   </div>
 </template>
-  
-  <script>
+
+<script>
 import { mapActions } from "vuex/dist/vuex.common.js";
 import { validateCreateUserForm } from "../../common/utils/validate";
 import { showSuccessMessage } from "../../common/utils/notifications";
@@ -190,8 +190,8 @@ export default {
   created() {},
 };
 </script>
-  
-  <style scoped>
+
+<style scoped>
 label {
   font-weight: bold;
 }

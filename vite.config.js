@@ -23,16 +23,17 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src')
     }
   },
-  // css: {
-  //   modules: {
-  //     scopeBehaviour: 'local',
-  //   },
-  //   preprocessorOptions: {
-  //     scss: {
-  //       additionalData: `@import "@/assets/scss/variables.scss";`
-  //     }
-  //   }
-  // },
+  css: {
+    modules: {
+      scopeBehaviour: 'local',
+    },
+    preprocessorOptions: {
+      scss: {
+        additionalData: `@import "@/assets/scss/variables.scss";`,
+        silenceDeprecations: ["legacy-js-api"],
+      }
+    }
+  },
   // build: {
   //   outDir: 'dist',
   //   sourcemap: false, // Tự động mở trình duyệt

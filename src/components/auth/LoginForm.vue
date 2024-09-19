@@ -14,7 +14,7 @@
       </svg>
 
       <h1 class="text-center mb-3">Đăng nhập</h1>
-      <h2 class="text-center mb-4">Chào mừng bạn trở lại!</h2>
+      <h2 class="text-center mb-4">Chào mừng bạn quay trở lại!</h2>
 
       <b-form-group id="input-group-1" label-for="email">
         <b-form-input
@@ -73,16 +73,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { showErrorMessage } from "@/common/utils/notifications";
 import { validateLoginForm } from "@/common/utils/validate";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-  faEye,
-  faEyeSlash,
-  faArrowRight,
-} from "@fortawesome/free-solid-svg-icons";
-
-library.add(faEye, faEyeSlash, faArrowRight);
 
 export default {
   data() {
@@ -253,6 +244,14 @@ body {
 
   .eye-icon:hover {
     color: $primary;
+  }
+  .form-control:focus {
+    border-color: #5a5a5a;
+    box-shadow: none;
+    border-color: #41b883;
+  }
+  .form-control:focus::placeholder {
+    color: #41b883;
   }
 }
 </style>

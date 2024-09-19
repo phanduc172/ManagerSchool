@@ -1,6 +1,6 @@
 <template>
   <nav
-    class="navbar navbar-expand navbar-light bg-success border-bottom shadow-sm"
+    class="navbar navbar-expand navbar-light bg-success border-bottom shadow-sm navbar-expand-lg"
   >
     <div class="container-fluid">
       <button class="btn btn-outline-success" @click="$emit('toggleSidebar')">
@@ -29,6 +29,7 @@
             :text="profile ? profile.name : ''"
             variant="transparent text-white fw-bold"
           >
+            <b-dropdown-item to="/profile">Hồ sơ cá nhân</b-dropdown-item>
             <b-dropdown-item href="changepassword"
               >Đổi mật khẩu</b-dropdown-item
             >
@@ -87,8 +88,6 @@ export default {
   },
 };
 </script>
-
-
 
 <style scoped>
 .chevron_color {

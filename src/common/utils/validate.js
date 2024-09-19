@@ -61,7 +61,7 @@ export function validateLoginForm(form) {
   } else if (form.password.length < 6) {
     errors.password = "Mật khẩu phải có tối thiểu 6 ký tự";
   } else if (form.password.length > 30) {
-    errors.password = "Mật khẩu không được vượt quá 32 ký tự";
+    errors.password = "Mật khẩu không được vượt quá 30 ký tự";
   }
 
   return errors;
@@ -261,7 +261,7 @@ export function validateCreateUserForm(form) {
   } else if (form.password.length < 6) {
     errors.password = "Mật khẩu phải có tối thiểu 6 ký tự";
   } else if (form.password.length > 30) {
-    errors.password = "Mật khẩu không được vượt quá 32 ký tự";
+    errors.password = "Mật khẩu không được vượt quá 30 ký tự";
   }
   if (!form.phone) {
     errors.phone = "Số điện thoại không được để trống";
@@ -302,5 +302,61 @@ export function validateUpdateMeForm(form) {
   } else if (!validatePhoneNumber(form.phone)) {
     errors.phone = "Số điện thoại không hợp lệ";
   }
+  return errors;
+}
+
+export function validateChangePasswordForm(form) {
+  const errors = {};
+
+  if (!form.oldPassword) {
+    errors.oldPassword = "Mật khẩu cũ không được để trống";
+  } else if (form.oldPassword.length < 6) {
+    errors.oldPassword = "Mật khẩu cũ phải có tối thiểu 6 ký tự";
+  } else if (form.oldPassword.length > 30) {
+    errors.oldPassword = "Mật khẩu cũ không được vượt quá 30 ký tự";
+  }
+
+  if (!form.newPassword) {
+    errors.newPassword = "Mật khẩu mới không được để trống";
+  } else if (form.newPassword.length < 6) {
+    errors.newPassword = "Mật khẩu mới phải có tối thiểu 6 ký tự";
+  } else if (form.newPassword.length > 30) {
+    errors.newPassword = "Mật khẩu mới không được vượt quá 30 ký tự";
+  }
+
+  if (!form.confirmPassword) {
+    errors.confirmPassword = "Xác nhận mật khẩu không được để trống";
+  } else if (form.confirmPassword !== form.newPassword) {
+    errors.confirmPassword = "Xác nhận mật khẩu không khớp với mật khẩu mới";
+  } else if (form.confirmPassword.length < 6) {
+    errors.confirmPassword = "Xác nhận mật khẩu phải có tối thiểu 6 ký tự";
+  } else if (form.confirmPassword.length > 30) {
+    errors.confirmPassword = "Xác nhận mật khẩu không được vượt quá 30 ký tự";
+  }
+
+  return errors;
+}
+
+export function validateRecoverPasswordForm(form) {
+  const errors = {};
+
+  if (!form.newPassword) {
+    errors.newPassword = "Mật khẩu mới không được để trống";
+  } else if (form.newPassword.length < 6) {
+    errors.newPassword = "Mật khẩu mới phải có tối thiểu 6 ký tự";
+  } else if (form.newPassword.length > 30) {
+    errors.newPassword = "Mật khẩu mới không được vượt quá 30 ký tự";
+  }
+
+  if (!form.confirmPassword) {
+    errors.confirmPassword = "Xác nhận mật khẩu không được để trống";
+  } else if (form.confirmPassword !== form.newPassword) {
+    errors.confirmPassword = "Xác nhận mật khẩu không khớp với mật khẩu mới";
+  } else if (form.confirmPassword.length < 6) {
+    errors.confirmPassword = "Xác nhận mật khẩu phải có tối thiểu 6 ký tự";
+  } else if (form.confirmPassword.length > 30) {
+    errors.confirmPassword = "Xác nhận mật khẩu không được vượt quá 30 ký tự";
+  }
+
   return errors;
 }

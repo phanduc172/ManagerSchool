@@ -5,10 +5,9 @@
       <router-link
         class="list-group-item list-group-item-action"
         :class="{ active: isActive('/profile') }"
-        to="/profile"
+        to="/dashboard"
       >
-        <font-awesome-icon :icon="['fas', 'user']" class="me-2 fs-5" />Hồ sơ cá
-        nhân
+        <i class="bx bxs-dashboard me-2 fs-5"></i>Bảng điều khiển
       </router-link>
 
       <a
@@ -75,17 +74,16 @@
         </router-link>
       </div>
 
-      <!-- <router-link
+      <router-link
         class="list-group-item list-group-item-action"
         :class="{ active: isActive('/settings') }"
         to="/settings"
       >
         <i class="bx bxs-cog me-2 fs-5"></i> Cài đặt
-      </router-link> -->
+      </router-link>
     </div>
   </div>
 </template>
-
 
 <script>
 export default {
@@ -110,7 +108,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .sidebar {
