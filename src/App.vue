@@ -49,6 +49,8 @@ export default {
         "termCreate",
         "teachersCreate",
         "badpage",
+        "teacherCreate",
+        "teacherEdit",
       ].includes(to.name);
     },
   },
@@ -75,6 +77,8 @@ export default {
       "termCreate",
       "teachersCreate",
       "badpage",
+      "teacherCreate",
+      "teacherEdit",
     ].includes(this.$route.name);
   },
 };
@@ -108,5 +112,10 @@ export default {
   /* background-color: #f8f9fa; */
   background: url(/src/assets/images/bg.jpg) no-repeat center center;
   background-size: cover;
+}
+@media screen and (max-width: 576px) {
+  #page-content-wrapper {
+    margin-left: 0;
+  }
 }
 </style>

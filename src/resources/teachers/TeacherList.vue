@@ -6,6 +6,10 @@
         v-model="searchQuery"
         placeholder="Tìm kiếm giáo viên..."
       />
+      <b-button href="/manager/teacher/create" variant="success fw-bold">
+        <i class="bx bx-plus"></i>
+        Thêm mới
+      </b-button>
     </div>
     <div class="row">
       <div class="col-12 mb-3 mb-lg-5">
@@ -74,6 +78,13 @@
                   <td></td>
                   <td class="text-center">
                     <b-button-group>
+                      <b-button
+                        variant="transtration"
+                        size="md"
+                        :to="`/manager/teacher/edit/${teacher.Id}`"
+                      >
+                        <i class="bx bxs-edit-alt fs-4 text-info"></i>
+                      </b-button>
                       <b-button
                         variant="transtration"
                         size="md"
@@ -170,12 +181,12 @@ export default {
       const isConfirmed = await showDeleteConfirmation();
       if (isConfirmed) {
         const response = await this.DeleteUser(id);
+        this.getListTeachers();
         if (response.status === 200) {
           showSuccessMessage();
         } else {
           showErrorMessage();
         }
-        this.getListTeachers();
       }
     },
 
@@ -215,7 +226,7 @@ export default {
   },
 };
 </script>
-  
+
 <style scoped>
 body {
   margin-top: 20px;
@@ -291,4 +302,3 @@ input[type="text"]:focus {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 </style>
-  

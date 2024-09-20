@@ -46,7 +46,7 @@
             <div class="card-body">
               <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-sm-3">Họ tên</h6>
+                  <h6 class="my-sm-2">Họ tên</h6>
                 </div>
                 <div class="col-sm-8 text-secondary">
                   <input
@@ -59,7 +59,7 @@
               </div>
               <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-sm-3">Ngày sinh</h6>
+                  <h6 class="my-sm-2">Ngày sinh</h6>
                 </div>
                 <div class="col-sm-8 text-secondary">
                   <input
@@ -72,7 +72,7 @@
               </div>
               <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-sm-3">Giới tính</h6>
+                  <h6 class="my-sm-2">Giới tính</h6>
                 </div>
                 <div class="col-sm-8 text-secondary">
                   <input
@@ -90,7 +90,7 @@
               </div>
               <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-sm-3">Email</h6>
+                  <h6 class="my-sm-2">Email</h6>
                 </div>
                 <div class="col-sm-8 text-secondary">
                   <input
@@ -103,7 +103,7 @@
               </div>
               <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-sm-3">Số điện thoại</h6>
+                  <h6 class="my-sm-2">Số điện thoại</h6>
                 </div>
                 <div class="col-sm-8 text-secondary">
                   <input
@@ -116,7 +116,7 @@
               </div>
               <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
-                  <h6 class="mb-sm-3">Vai trò</h6>
+                  <h6 class="my-sm-2">Vai trò</h6>
                 </div>
                 <div class="col-sm-8 text-secondary">
                   <input
@@ -299,7 +299,7 @@ export default {
     ...mapActions("user", ["UploadImage", "UpdateProfile"]),
     ...mapActions("auth", ["getProfile"]),
     toVNTime(time) {
-      return moment(time).utc(7).format("yyyy-MM-DD");
+      return moment(time).utc(7).format("yyy-MM-DD");
     },
     openUpdateModal() {
       this.$bvModal.show("update-profile-modal");

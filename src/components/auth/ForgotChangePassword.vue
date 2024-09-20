@@ -20,13 +20,13 @@
               v-model="form.newPassword"
               :type="newPasswordFieldType"
               placeholder="Nhập mật khẩu mới"
+              @focus="clearError('newPassword')"
             ></b-form-input>
             <b-button
               type="button"
               class="eye-icon"
               variant="bg-none"
               @click="toggleNewPasswordVisibility"
-              @focus="clearError('newPassword')"
             >
               <font-awesome-icon :icon="newPasswordFieldIcon" />
             </b-button>
@@ -46,13 +46,13 @@
               v-model="form.confirmPassword"
               :type="confirmPasswordFieldType"
               placeholder="Xác nhận mật khẩu"
+              @focus="clearError('confirmPassword')"
             ></b-form-input>
             <b-button
               type="button"
               class="eye-icon"
               variant="bg-none"
               @click="toggleConfirmPasswordVisibility"
-              @focus="clearError(confirmPassword)"
             >
               <font-awesome-icon :icon="confirmPasswordFieldIcon" />
             </b-button>

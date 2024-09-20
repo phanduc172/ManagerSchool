@@ -19,6 +19,13 @@ const actions = {
     });
     return response;
   },
+  async getTeacherById(_, id) {
+    const response = await axios({
+      url: api.params("GetDetailUser", { id }),
+      method: "GET",
+    });
+    return response.data;
+  },
   async CreateTeacher(_, { id, body }) {
     const response = await axios({
       url: api.params("CreateTeacher", { id }),
@@ -27,13 +34,13 @@ const actions = {
     });
     return response;
   },
-  async UpdateTeacher(_, { id, body }) {
+  async UpdateTeacher(_, { id, data }) {
     const response = await axios({
       url: api.params("UpdateTeacher", { id }),
-      method: "PUT",
-      data: body,
+      method: "PATCH",
+      data: data,
     });
-    return response;
+    return response.data;
   },
   async DeleteTeacher(_, id) {
     const response = await axios({

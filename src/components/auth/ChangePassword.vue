@@ -137,27 +137,31 @@ export default {
     ...mapActions("auth", ["handleChangePassword"]),
 
     async onSubmit() {
-      this.errors = validateChangePasswordForm(this.form);
-      if (Object.keys(this.errors).length > 0) {
-        return;
-      }
-      this.successMessage = "";
-      this.errorMessage = "";
-      if (this.newPassword !== this.confirmPassword) {
-        this.errorMessage = "Mật khẩu mới và xác nhận mật khẩu không khớp.";
-        return;
-      }
+      try {
+        this.errors = validateChangePasswordForm(this.form);
+        if (Object.keys(this.errors).length > 0) {
+          return;
+        }
+        this.successMessage = "";
+        this.errorMessage = "";
+        if (this.newPassword !== this.confirmPassword) {
+          this.errorMessage = "Mật khẩu mới và xác nhận mật khẩu không khớp.";
+          return;
+        }
 
-      const response = await this.handleChangePassword({
-        oldPassword: this.form.oldPassword,
-        newPassword: this.form.newPassword,
-        confirmPassword: this.form.confirmPassword,
-      });
+        const response = await this.handleChangePassword({
+          oldPassword: this.form.oldPassword,
+          newPassword: this.form.newPassword,
+          confirmPassword: this.form.confirmPassword,
+        });
 
-      if (response.status === 200) {
-        this.successMessage = response.message;
-        showSuccessMessage();
-        this.$router.push({ name: "dashboard" });
+        if (response.status === 200) {
+          this.successMessage = response.message;
+          showSuccessMessage();
+          this.$router.push({ name: "dashboard" });
+        }
+      } catch (error) {
+        this.errorMessage = error.response.data.error;
       }
     },
 

@@ -1,5 +1,5 @@
 <template>
-  <div :class="['sidebar', { collapsed: collapsed }]">
+  <div :class="['sidebar d-none d-sm-block', { collapsed: collapsed }]">
     <div class="sidebar-heading bg-success text-white">Quản lý Trường học</div>
     <div class="list-group">
       <router-link

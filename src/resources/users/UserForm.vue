@@ -135,7 +135,7 @@ export default {
         email: "",
         phone: "",
         password: "",
-        role: " ",
+        role: "",
       },
       show: true,
     };

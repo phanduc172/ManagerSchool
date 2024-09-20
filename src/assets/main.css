@@ -20,12 +20,12 @@
   font-size: 14px;
 }
 .form-control:focus {
-  border-color: #5a5a5a;
-  box-shadow: none;
-  border-color: #41b883;
+  border-color: #5a5a5a !important;
+  box-shadow: none !important;
+  border-color: #41b883 !important;
 }
 .form-control:focus::placeholder {
-  color: #41b883;
+  color: #41b883 !important;
 }
 
 .eye-icon {

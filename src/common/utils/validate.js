@@ -11,6 +11,8 @@ export function formatDate(dateString) {
   return date.toLocaleDateString("vi-VN");
 }
 
+const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 function validatePhoneNumber(phone) {
   const phoneRegex = /^(0[2|3|5|7|8|9])+([0-9]{8,9})$/;
   return phoneRegex.test(phone);
@@ -52,8 +54,10 @@ export function validateLoginForm(form) {
 
   if (!form.email) {
     errors.email = "Email không được để trống";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = "Email không hợp lệ";
+  } else {
+    if (!emailPattern.test(form.email)) {
+      errors.email = "Email không hợp lệ";
+    }
   }
 
   if (!form.password) {
@@ -72,10 +76,11 @@ export function validateRecoverForm(form) {
 
   if (!form.email) {
     errors.email = "Email không được để trống";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = "Email không hợp lệ";
+  } else {
+    if (!emailPattern.test(form.email)) {
+      errors.email = "Email không hợp lệ";
+    }
   }
-
   return errors;
 }
 
@@ -88,8 +93,10 @@ export function validateRegisterForm(form) {
 
   if (!form.email) {
     errors.email = "Email không được để trống";
-  } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-    errors.email = "Email không hợp lệ";
+  } else {
+    if (!emailPattern.test(form.email)) {
+      errors.email = "Email không hợp lệ";
+    }
   }
 
   if (!form.password) {
@@ -101,31 +108,29 @@ export function validateRegisterForm(form) {
 
 export function validateFormTeacher(form) {
   const errors = {};
-
-  if (!form.id) {
-    errors.id = "Mã giáo viên không được để trống";
-  }
-
   if (!form.name) {
     errors.name = "Họ tên không được để trống";
   }
-
-  if (!form.birthdate) {
-    errors.birthdate = "Vui lòng chọn ngày sinh";
+  if (!form.email) {
+    errors.email = "Email không được để trống";
+  } else {
+    if (!emailPattern.test(form.email)) {
+      errors.email = "Email không hợp lệ";
+    }
   }
+
 
   if (!form.phone) {
     errors.phone = "Số điện thoại không được để trống";
   } else if (!validatePhoneNumber(form.phone)) {
     errors.phone = "Số điện thoại không hợp lệ";
   }
-
-  if (!form.address) {
-    errors.address = "Địa chỉ không được để trống";
-  }
-
-  if (!form.classes) {
-    errors.classes = "Vui lòng chọn lớp học";
+  if (!form.password) {
+    errors.password = "Mật khẩu không được để trống";
+  } else if (form.password.length < 6) {
+    errors.password = "Mật khẩu phải có tối thiểu 6 ký tự";
+  } else if (form.password.length > 30) {
+    errors.password = "Mật khẩu không được vượt quá 30 ký tự";
   }
 
   return errors;
@@ -252,8 +257,10 @@ export function validateCreateUserForm(form) {
 
   if (!form.email) {
     errors.email = "Email không được để trống";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = "Email không hợp lệ";
+  } else {
+    if (!emailPattern.test(form.email)) {
+      errors.email = "Email không hợp lệ";
+    }
   }
 
   if (!form.password) {
@@ -294,8 +301,10 @@ export function validateUpdateMeForm(form) {
   }
   if (!form.email) {
     errors.email = "Email không được để trống";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = "Email không hợp lệ";
+  } else {
+    if (!emailPattern.test(form.email)) {
+      errors.email = "Email không hợp lệ";
+    }
   }
   if (!form.phone) {
     errors.phone = "Số điện thoại không được để trống";

@@ -15,13 +15,13 @@ const api = {
   ListAllAccountDeleted: "/v1/admin/user/pending-deletion",
   DeleteUser: "v1/admin/delete/{id}",
   CreateUser: "/v1/user/create",
-  GetDetailUser: "",
+  GetDetailUser: "/v1/user/{id}",
   AddUserExcel: "/v1/admin/excel/upload/user",
   RestoreUser: "/v1/admin/user/restore/{id}",
 
   ListTeachers: "v1/admin/user/teacher/all",
   CreateTeacher: "/api/teachers",
-  UpdateTeacher: "/api/teacher/{id}",
+  UpdateTeacher: "/v1/admin/update/{id}",
   DeleteTeacher: "/api/teacher/{id}",
 
   ListStudents: "/v1/admin/user/student/all",

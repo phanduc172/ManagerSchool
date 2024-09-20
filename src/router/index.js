@@ -56,9 +56,19 @@ const router = new VueRouter({
       component: () => import("../resources/teachers/ManagerTeacher.vue"),
     },
     {
-      path: "/manager/teachers/create",
-      name: "teachersCreate",
+      path: "/manager/teacher/edit/:id",
+      name: "teacherEdit",
       component: () => import("../resources/teachers/TeacherForm.vue"),
+    },
+    {
+      path: "/manager/teacher/create",
+      name: "teacherCreate",
+      component: () => import("../resources/teachers/TeacherForm.vue"),
+    },
+    {
+      path: "/v1/user/:id",
+      name: "getDetailUser",
+      // component: () => import("../resources/teachers/TeacherForm.vue"),
     },
 
     // Router Student
@@ -68,7 +78,7 @@ const router = new VueRouter({
       component: () => import("../resources/students/ManagerStudent.vue"),
     },
     {
-      path: "/manager/students/create",
+      path: "/manager/student/create",
       name: "studentCreate",
       component: () => import('../resources/students/StudentForm.vue'),
     },
@@ -78,10 +88,6 @@ const router = new VueRouter({
       path: "/manager/users",
       name: "users",
       component: () => import("../resources/users/ManagerUser.vue"),
-      props: (route) => ({
-        page: parseInt(route.query.page) || 1,
-        limit: parseInt(route.query.limit) || 10,
-      }),
     },
     {
       path: "/manager/restoreuser",
@@ -118,10 +124,6 @@ const router = new VueRouter({
       path: "/manager/subjects",
       name: "subjects",
       component: () => import("../resources/subject/ManagerSubject.vue"),
-      props: (route) => ({
-        page: parseInt(route.query.page) || 1,
-        limit: parseInt(route.query.limit) || 10,
-      }),
     },
     {
       path: "/manager/subjects/create",
@@ -139,10 +141,6 @@ const router = new VueRouter({
       path: "/manager/major",
       name: "major",
       component: () => import("../resources/major/ManagerMajor.vue"),
-      props: (route) => ({
-        page: parseInt(route.query.page) || 1,
-        limit: parseInt(route.query.limit) || 10,
-      }),
     },
     {
       path: "/manager/major/create",
@@ -160,10 +158,7 @@ const router = new VueRouter({
       path: "/manager/term",
       name: "term",
       component: () => import("../resources/term/ManagerTerm.vue"),
-      props: (route) => ({
-        page: parseInt(route.query.page) || 1,
-        limit: parseInt(route.query.limit) || 10,
-      }),
+
     },
     {
       path: "/manager/term/create",
