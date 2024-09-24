@@ -1,14 +1,12 @@
 <template>
-  <div class="row mt-2">
-    <div class="col-md-2 col-lg-3 ms-3 mb-3 d-none d-md-block">
-      <b-button href="/manager/subjects" variant="outline-secondary">
+  <div class="row p-3 m-3">
+    <div class="col-2 mb-3 d-none d-md-block">
+      <b-button href="/manager/teachers" variant="success">
         <i class="bx bx-arrow-back"></i>
-        Quay lại
       </b-button>
     </div>
     <div
-      class="col-md-8 col-lg-6 p-4 border rounded shadow-lg bg-white"
-      v-if="loading"
+      class="col-sm-8 offset-sm-2 col-md-6 offset-md-2 col-lg-4 offset-lg-2 p-4 border rounded shadow-lg bg-white"
     >
       <h4 class="text-center text-success mb-3">
         {{ isEdit ? "Cập nhật môn học" : "Thêm môn học" }}

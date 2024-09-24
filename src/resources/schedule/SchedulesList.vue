@@ -4,9 +4,9 @@
       <input
         type="text"
         v-model="searchQuery"
-        placeholder="Tìm kiếm học sinh..."
+        placeholder="Tìm kiếm lịch học..."
       />
-      <b-button href="/manager/student/create" variant="success fw-bold">
+      <b-button href="/manager/schedule/create" variant="success fw-bold">
         <i class="bx bx-plus"></i>
         Thêm mới
       </b-button>
@@ -17,26 +17,26 @@
           <div
             class="card-header d-flex justify-content-center align-items-center py-3 header-bordered"
           >
-            <h5 class="mb-0 text-center">Danh sách học sinh</h5>
+            <h5 class="mb-0 text-center">Quản lý lịch học</h5>
           </div>
           <div class="table-responsive">
             <table class="table table-striped table-hover mb-0 table-wrap">
               <thead class="small text-uppercase bg-body text-muted">
                 <tr class="text-center">
                   <th>STT</th>
-                  <th>Họ tên</th>
-                  <th>Email</th>
-                  <th style="min-width: 200px">Ngày sinh</th>
-                  <th>Giới tính</th>
-                  <th>Số điện thoại</th>
+                  <th>Thứ</th>
+                  <th>Tiết học</th>
+                  <th>Phòng học</th>
+                  <th>Học kì</th>
+                  <th>Năm học</th>
                   <th></th>
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  v-for="(student, index) in entries"
-                  :key="student.id"
-                  class="align-middle"
+                  v-for="(schedule, index) in entries"
+                  :key="schedule.id"
+                  class="align-middle text-center"
                 >
                   <td class="text-center">
                     {{
@@ -45,47 +45,28 @@
                         : (currentPage - 1) * perPage + index + 1
                     }}
                   </td>
-                  <td>
-                    <div class="d-flex align-items-center">
-                      <img
-                        :src="student.avatar"
-                        class="avatar sm rounded-pill me-3 flex-shrink-0"
-                        alt="Giáo viên"
-                        @error="handleImageError"
-                      />
-                      <div class="h6 mb-0 truncate">
-                        {{ student.name }}
-                      </div>
-                    </div>
-                  </td>
-                  <td>{{ student.email }}</td>
+                  <td class="text-center">{{ schedule.day_of_week }}</td>
                   <td class="text-center">
-                    {{ toVNTime(student.date_of_birth) }}
+                    {{ schedule.start_period }} - {{ schedule.end_period }}
                   </td>
+                  <td class="text-center">{{ schedule.room }}</td>
+                  <td class="text-center">Học kì {{ schedule.term_name }}</td>
                   <td class="text-center">
-                    {{
-                      student.gender === 1
-                        ? "Nam"
-                        : student.gender === 2
-                        ? "Nữ"
-                        : "Khác"
-                    }}
+                    {{ schedule.term_from_year }} - {{ schedule.term_to_year }}
                   </td>
-                  <td>{{ student.phone }}</td>
-
                   <td class="text-center">
                     <b-button-group>
                       <b-button
                         variant="transtration"
                         size="md"
-                        :to="`/manager/student/edit/${student.Id}`"
+                        :to="`/manager/schedule/edit/${schedule.id}`"
                       >
                         <i class="bx bxs-edit-alt fs-4 text-info"></i>
                       </b-button>
                       <b-button
                         variant="transtration"
                         size="md"
-                        @click="confirmDelete(student.Id)"
+                        @click="confirmDelete(schedule.id)"
                       >
                         <i class="bx bxs-trash fs-4 text-danger"></i>
                       </b-button>
@@ -100,7 +81,7 @@
           </div>
           <Pagination
             v-show="isShowPagi"
-            :total="totalStudents"
+            :total="totalSchedule"
             :limit="perPage"
             :currentPage="currentPage"
             @page-changed="handlePageChange"
@@ -112,14 +93,14 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import Pagination from "../../components/layout/Pagination.vue";
-import moment from "moment";
 import {
   showDeleteConfirmation,
   showErrorMessage,
   showSuccessMessage,
 } from "../../common/utils/notifications";
+import Pagination from "../../components/layout/Pagination.vue";
+import { mapActions } from "vuex";
+
 export default {
   components: { Pagination },
   props: {
@@ -139,78 +120,116 @@ export default {
       searchQuery: "",
       currentPage: this.page,
       perPage: this.limit,
-      defaultAvatar: "/avt.jpg",
-      totalStudents: 0,
+      totalSchedule: 0,
+      loading: false,
       isShowPagi: true,
     };
   },
   methods: {
-    toVNTime(time) {
-      return moment(time).utc(7).format("DD-MM-YYYY");
+    ...mapActions("schedule", ["ListSchedules", "DeleteSchedule"]),
+    ...mapActions("term", ["ListTerms", "getTermById"]),
+    async getAllTerms(page = this.currentPage) {
+      const data = await this.ListTerms({ page, limit: this.perPage });
+      const term = await this.ListTerms({
+        limit: data.data.total,
+      });
+      this.termOptions = term.data.data;
+      console.log("Dữ liệu các học kỳ:", this.termOptions);
     },
-    ...mapActions("student", ["ListStudents"]),
-    ...mapActions("user", ["DeleteUser"]),
-    handleImageError(event) {
-      event.target.src = this.defaultAvatar;
+    async getTerm(termId) {
+      const term = await this.getTermById(termId);
+      console.log("Thông tin học kỳ:", term);
+      return term.data || "Không xác định";
     },
-    async getProfile() {
-      const response = await this.GetProfile(this.$route.query);
-      if (response?.status == 200) {
-        this.entries = response.data.data;
+    async getAllSchedules(page = this.currentPage) {
+      this.loading = true;
+      const response = await this.ListSchedules({ page, limit: this.perPage });
+      if (response?.status === 200) {
+        this.listEntry = response.data.data;
+        this.entries = await Promise.all(
+          this.listEntry.map(async (schedule) => {
+            const term = await this.getTerm(schedule.term_id);
+            return {
+              ...schedule,
+              term_name: term.term_semester,
+              term_from_year: term.term_from_year,
+              term_to_year: term.term_to_year,
+            };
+          })
+        );
+        this.totalSchedule = response.data.total;
       } else {
+        this.listEntry = [];
         this.entries = [];
       }
-    },
-    async getListStudent(page = this.currentPage) {
-      const response = await this.ListStudents({ page, limit: this.perPage });
-      const response2 = await this.ListStudents({ limit: response.data.total });
-      if (response2?.status === 200) {
-        this.listEntry = response2.data.data;
-        console.log("List: ", this.listEntry);
-      }
-      if (response?.status === 200) {
-        this.entries = response.data.data;
-        this.totalStudents = response.data.total;
-      }
-      console.log("List Student:", response.data.data);
+      this.loading = false;
     },
     async confirmDelete(id) {
       const isConfirmed = await showDeleteConfirmation();
       if (isConfirmed) {
-        const response = await this.DeleteUser(id);
-        if (response.status === 200) {
+        const response = await this.DeleteSchedule(id);
+        if (response?.status === 200) {
           showSuccessMessage();
         } else {
           showErrorMessage();
         }
-        this.getListStudent();
+        this.getAllSchedules();
       }
     },
     handlePageChange(page) {
       this.currentPage = page;
-      this.getListStudent(this.currentPage);
+      this.getAllSchedules(this.currentPage);
     },
   },
   watch: {
     searchQuery: {
-      handler(newQuery) {
-        if (newQuery.trim() === "") {
-          this.getListStudent();
-          this.isShowPagi = true;
+      handler() {
+        this.isShowPagi = !this.searchQuery;
+
+        console.log("Từ khóa tìm kiếm:", this.searchQuery);
+
+        if (this.searchQuery) {
+          const searchLower = this.searchQuery.toLowerCase();
+          this.entries = this.listEntry.filter((entry) => {
+            return entry.day_of_week.toLowerCase().includes(searchLower);
+          });
+
+          console.log("Entries sau khi tìm kiếm:", this.entries);
         } else {
-          this.isShowPagi = false;
-          this.entries = this.listEntry.filter(
-            (entry) =>
-              entry.name.toLowerCase().includes(newQuery.toLowerCase()) ||
-              entry.email.toLowerCase().includes(newQuery.toLowerCase())
-          );
+          this.getAllSchedules(this.currentPage);
         }
       },
       deep: true,
     },
   },
+  async getAllSchedules(page = this.currentPage) {
+    this.loading = true;
+    const response = await this.ListSchedules({ page, limit: this.perPage });
+    if (response?.status === 200) {
+      this.listEntry = response.data.data;
+      this.entries = await Promise.all(
+        this.listEntry.map(async (schedule) => {
+          const term = await this.getTerm(schedule.term_id);
+          return {
+            ...schedule,
+            term_name: term.term_semester,
+            term_from_year: term.term_from_year,
+            term_to_year: term.term_to_year,
+          };
+        })
+      );
+      this.totalSchedule = response.data.total;
+    } else {
+      this.listEntry = [];
+      this.entries = [];
+    }
+    this.loading = false;
+  },
+
   created() {
-    this.getListStudent();
+    this.getTerm();
+    this.getAllSchedules();
+    this.getAllTerms();
   },
 };
 </script>
@@ -235,6 +254,7 @@ body {
   max-width: 400px;
   white-space: normal;
   word-wrap: break-word;
+  word-break: break-word;
 }
 .table > :not(caption) > * > * {
   padding: 0.75rem 1.25rem;
@@ -283,5 +303,8 @@ input[type="text"]:focus {
 }
 .btn-group:active {
   border: none !important;
+}
+.dropdown-item:active {
+  background-color: #44b97c !important;
 }
 </style>

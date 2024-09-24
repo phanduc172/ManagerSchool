@@ -1,9 +1,8 @@
 <template>
   <div class="row p-3 m-3">
     <div class="col-2 mb-3 d-none d-md-block">
-      <b-button href="/manager/teachers" variant="outline-secondary">
+      <b-button href="/manager/teachers" variant="success">
         <i class="bx bx-arrow-back"></i>
-        Quay lại
       </b-button>
     </div>
     <div

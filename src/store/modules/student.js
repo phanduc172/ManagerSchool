@@ -19,21 +19,28 @@ const actions = {
     });
     return response;
   },
-  async CreateStudent(_, { id, body }) {
+  async getStudentById(_, id) {
     const response = await axios({
-      url: api.params("CreateStudent", { id }),
-      method: "POST",
-      data: body,
+      url: api.params("GetDetailUser", { id }),
+      method: "GET",
     });
-    return response;
+    return response.data;
   },
-  async UpdateStudent(_, { id, body }) {
+  // async CreateStudent(_, { id, body }) {
+  //   const response = await axios({
+  //     url: api.params("CreateStudent", { id }),
+  //     method: "POST",
+  //     data: body,
+  //   });
+  //   return response;
+  // },
+  async UpdateStudent(_, { id, data }) {
     const response = await axios({
       url: api.params("UpdateStudent", { id }),
-      method: "PUT",
-      data: body,
+      method: "PATCH",
+      data: data,
     });
-    return response;
+    return response.data;
   },
   async DeleteStudent(_, id) {
     const response = await axios({
@@ -45,7 +52,7 @@ const actions = {
 };
 
 const mutations = {
-  UpdateStudents(state, entries) {
+  UpdateStudent(state, entries) {
     state.entries = entries;
   },
 };

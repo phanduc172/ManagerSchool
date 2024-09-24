@@ -1,5 +1,5 @@
 <template>
-  <div class="form-container">
+  <div class="d-flex justify-content-center align-items-center vh-100">
     <b-card id="cardLogin" class="scale-in-bl p-3">
       <h3 class="text-center mb-3 text-success">Khôi phục mật khẩu</h3>
       <b-form @submit.prevent="onSubmit">
@@ -14,7 +14,7 @@
           <label for="newPassword" class="fw-bold mb-2">
             Nhập mật khẩu mới<span class="text-danger">*</span>
           </label>
-          <div class="input-group">
+          <div class="input-container">
             <b-form-input
               id="newPassword"
               v-model="form.newPassword"
@@ -40,7 +40,7 @@
           <label for="confirmPassword" class="fw-bold mb-2">
             Xác nhận mật khẩu<span class="text-danger">*</span>
           </label>
-          <div class="input-group">
+          <div class="input-container">
             <b-form-input
               id="confirmPassword"
               v-model="form.confirmPassword"
@@ -163,12 +163,13 @@ export default {
 };
 </script>
 
-<style scoped>
-.form-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+<style lang="scss">
+@import "../../assets/scss/animations.scss";
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/font.scss";
+
+#page-content-wrapper {
+  margin: 0;
   background: url(/src/assets/images/bg.jpg) no-repeat center center;
   background-size: cover;
 }
@@ -180,6 +181,10 @@ export default {
   padding: 2rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+.input-container {
+  position: relative;
+  width: 100%;
+}
 
 .eye-icon {
   position: absolute;
@@ -190,8 +195,7 @@ export default {
   background: transparent;
   cursor: pointer;
   font-size: 20px;
-  color: #5f5f5f;
-  z-index: 5;
+  color: $gray;
 }
 .eye-icon:hover {
   color: #37a571;

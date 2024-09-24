@@ -1,12 +1,9 @@
 <template>
   <div id="app" class="d-flex">
-    <SideBar v-if="!isSidebarCollapsed && !isAuthPage" />
+    <SideBar v-if="!isSidebarCollapsed" />
     <div
       id="page-content-wrapper"
-      :class="[
-        isSidebarCollapsed && !isAuthPage ? 'collapsed' : '',
-        isAuthPage ? 'auth-page' : '',
-      ]"
+      :class="[isSidebarCollapsed && !isAuthPage ? 'collapsed' : '']"
       class="flex-grow-1"
     >
       <NavBar v-if="!isAuthPage" @toggleSidebar="toggleSidebar" />
@@ -40,8 +37,8 @@ export default {
         "register",
         "recoverpassword",
         "confirmpassword",
-        "forgot-change-password",
         "changepassword",
+        "forgot-change-password",
         "usersCreate",
         "classesCreate",
         "subjectsCreate",
@@ -51,6 +48,10 @@ export default {
         "badpage",
         "teacherCreate",
         "teacherEdit",
+        "studentCreate",
+        "studentEdit",
+        "scheduleCreate",
+        "scheduleEdit",
       ].includes(to.name);
     },
   },
@@ -79,6 +80,10 @@ export default {
       "badpage",
       "teacherCreate",
       "teacherEdit",
+      "studentCreate",
+      "studentEdit",
+      "scheduleCreate",
+      "scheduleEdit",
     ].includes(this.$route.name);
   },
 };

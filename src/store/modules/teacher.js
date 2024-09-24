@@ -26,14 +26,14 @@ const actions = {
     });
     return response.data;
   },
-  async CreateTeacher(_, { id, body }) {
-    const response = await axios({
-      url: api.params("CreateTeacher", { id }),
-      method: "POST",
-      data: body,
-    });
-    return response;
-  },
+  // async CreateTeacher(_, { id, body }) {
+  //   const response = await axios({
+  //     url: api.params("CreateTeacher", { id }),
+  //     method: "POST",
+  //     data: body,
+  //   });
+  //   return response;
+  // },
   async UpdateTeacher(_, { id, data }) {
     const response = await axios({
       url: api.params("UpdateTeacher", { id }),
@@ -52,7 +52,7 @@ const actions = {
 };
 
 const mutations = {
-  UpdateTeachers(state, entries) {
+  UpdateTeacher(state, entries) {
     state.entries = entries;
   },
 };

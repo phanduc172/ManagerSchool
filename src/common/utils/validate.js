@@ -118,8 +118,6 @@ export function validateFormTeacher(form) {
       errors.email = "Email không hợp lệ";
     }
   }
-
-
   if (!form.phone) {
     errors.phone = "Số điện thoại không được để trống";
   } else if (!validatePhoneNumber(form.phone)) {
@@ -138,31 +136,36 @@ export function validateFormTeacher(form) {
 
 export function validateFormStudent(form) {
   const errors = {};
-
-  if (!form.id) {
-    errors.id = "Mã sinh viên không được để trống";
-  }
-
   if (!form.name) {
     errors.name = "Họ tên không được để trống";
   }
-
-  if (!form.gender) {
-    errors.gender = "Vui lòng chọn giới tính";
+  if (!form.email) {
+    errors.email = "Email không được để trống";
+  } else {
+    if (!emailPattern.test(form.email)) {
+      errors.email = "Email không hợp lệ";
+    }
   }
-
-  if (!form.birthdate) {
-    errors.birthdate = "Vui lòng chọn ngày sinh";
-  }
-
   if (!form.phone) {
     errors.phone = "Số điện thoại không được để trống";
   } else if (!validatePhoneNumber(form.phone)) {
     errors.phone = "Số điện thoại không hợp lệ";
   }
-
+  if (!form.password) {
+    errors.password = "Mật khẩu không được để trống";
+  } else if (form.password.length < 6) {
+    errors.password = "Mật khẩu phải có tối thiểu 6 ký tự";
+  } else if (form.password.length > 30) {
+    errors.password = "Mật khẩu không được vượt quá 30 ký tự";
+  }
   if (!form.address) {
     errors.address = "Địa chỉ không được để trống";
+  }
+  if (!form.birthdate) {
+    errors.birthdate = "Vui lòng chọn ngày sinh";
+  }
+  if (!form.gender) {
+    errors.gender = "Vui lòng chọn giới tính";
   }
 
   return errors;
@@ -237,6 +240,28 @@ export function validateFormTerm(form) {
     errors.academicYearStart = "Năm bắt đầu và kết thúc không được để trống";
   } else if (form.academicYearStart >= form.academicYearEnd) {
     errors.academicYearStart = "Năm bắt đầu phải nhỏ hơn năm kết thúc";
+  }
+
+
+  return errors;
+}
+
+export function validateFormSchedule(form) {
+  const errors = {}
+
+  if (!form.termSemester) {
+    errors.termSemester = "Học kì không được để trống";
+  }
+  if (!form.dayOfWeek) {
+    errors.dayOfWeek = "Thứ không được để trống";
+  }
+  if (!form.room) {
+    errors.room = "Phòng học không được để trống";
+  }
+  if (!form.lessonStart || !form.lessonEnd) {
+    errors.lessonStart = "Tiết học không được để trống";
+  } else if (form.lessonStart >= form.lessonEnd) {
+    errors.lessonStart = "Tiết học bắt đầu phải nhỏ hơn tiết học kết thúc"
   }
 
 

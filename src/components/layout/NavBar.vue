@@ -13,29 +13,36 @@
           </li>
         </ul>
         <ul v-if="!profile.token" class="navbar-nav ms-auto">
-          <img
-            :src="profile.avatar"
-            alt="Admin"
-            class="rounded-circle border"
-            style="
-              cursor: pointer;
-              width: 40px;
-              height: 40px;
-              object-fit: cover;
-            "
-            @error="handleImageError"
-          />
-          <b-dropdown
-            :text="profile ? profile.name : ''"
-            variant="transparent text-white fw-bold"
-          >
-            <b-dropdown-item to="/profile">Hồ sơ cá nhân</b-dropdown-item>
-            <b-dropdown-item href="changepassword"
-              >Đổi mật khẩu</b-dropdown-item
+          <li class="nav-item">
+            <b-dropdown
+              variant="transparent text-white fw-bold p-0 border-0"
+              right
             >
-            <b-dropdown-item @click="logout">Đăng xuất</b-dropdown-item>
-          </b-dropdown>
+              <template #button-content>
+                <img
+                  :src="profile.avatar"
+                  alt="Admin"
+                  class="rounded-circle border me-2"
+                  style="
+                    cursor: pointer;
+                    width: 40px;
+                    height: 40px;
+                    object-fit: cover;
+                  "
+                  @error="handleImageError"
+                />
+                {{ profile ? profile.name : "" }}
+              </template>
+
+              <b-dropdown-item to="/profile">Hồ sơ cá nhân</b-dropdown-item>
+              <b-dropdown-item href="/changepassword"
+                >Đổi mật khẩu</b-dropdown-item
+              >
+              <b-dropdown-item @click="logout">Đăng xuất</b-dropdown-item>
+            </b-dropdown>
+          </li>
         </ul>
+
         <ul v-else class="navbar-nav ms-auto">
           <li class="nav-item">
             <a class="nav-link btn btn-outline-primary" href="/login"
@@ -100,7 +107,7 @@ export default {
   width: 100%;
 }
 .nav-link {
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 1rem;
   color: #44b97c;
   font-weight: 500;
 }

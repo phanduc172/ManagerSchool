@@ -1,28 +1,17 @@
 <template>
   <div class="row p-3 m-3">
+    <div class="col-2 mb-3 d-none d-md-block">
+      <b-button href="/manager/students" variant="success">
+        <i class="bx bx-arrow-back"></i>
+      </b-button>
+    </div>
     <div
-      class="col-md-8 offset-md-2 col-lg-6 offset-lg-3 p-3 border rounded shadow-lg bg-white"
+      class="col-sm-8 offset-sm-2 col-md-6 offset-md-2 col-lg-5 offset-lg-2 p-4 border rounded shadow-lg bg-white"
     >
-      <h4 class="d-block text-center fw-bold text-success">Thêm học sinh</h4>
+      <h4 class="d-block text-center fw-bold text-success">
+        {{ isEdit ? "Cập nhật học sinh" : "Thêm học sinh" }}
+      </h4>
       <b-form @submit.prevent="onSubmit" @reset="onReset" v-if="show">
-        <b-form-group class="mb-2">
-          <label for="id"
-            >Mã sinh viên <span class="text-danger">*</span></label
-          >
-          <b-form-input
-            class="mt-2"
-            name="id"
-            type="text"
-            v-model="form.id"
-            placeholder="Nhập mã sinh viên"
-            @focus="clearError('id')"
-          ></b-form-input>
-          <div class="text-danger mb-2" v-if="errors.id">
-            *
-            {{ errors.id }}
-          </div>
-        </b-form-group>
-
         <b-form-group class="mb-2">
           <label for="name">Họ tên <span class="text-danger">*</span></label>
           <b-form-input
@@ -33,9 +22,42 @@
             placeholder="Nhập họ tên"
             @focus="clearError('name')"
           ></b-form-input>
-          <div class="text-danger mb-2" v-if="errors.name">
+          <div class="text-danger" v-if="errors.name">
             *
             {{ errors.name }}
+          </div>
+        </b-form-group>
+        <b-form-group id="input-group-2" label-for="email" class="mb-2">
+          <label for="email" class="mb-2">
+            Email<span class="text-danger fw-bold">*</span></label
+          >
+          <b-form-input
+            id="email"
+            class="input"
+            v-model="form.email"
+            placeholder="Email"
+            @focus="clearError('email')"
+          ></b-form-input>
+          <div class="text-danger mb-2" v-if="errors.email">
+            *
+            {{ errors.email }}
+          </div>
+        </b-form-group>
+        <b-form-group id="input-group-4" label-for="password" class="mb-2">
+          <label for="password" class="mb-2">
+            Mật khẩu<span class="text-danger fw-bold">*</span></label
+          >
+          <b-form-input
+            id="password"
+            class="input"
+            v-model="form.password"
+            type="password"
+            placeholder="Nhập mật khẩu..."
+            @focus="clearError('password')"
+          ></b-form-input>
+          <div class="text-danger mb-2" v-if="errors.password">
+            *
+            {{ errors.password }}
           </div>
         </b-form-group>
 
@@ -44,32 +66,32 @@
             >Giới tính<span class="text-danger">*</span></label
           >
           <b-form-select
+            class="mt-2"
             id="gender"
             v-model="form.gender"
             :options="optionsGender"
             @change="clearError('gender')"
           ></b-form-select>
-          <div class="text-danger mb-2" v-if="errors.gender">
+          <div class="text-danger" v-if="errors.gender">
             *
             {{ errors.gender }}
           </div>
         </b-form-group>
 
         <b-form-group class="mb-2">
-          <label for="birthdate"
-            >Ngày sinh <span class="text-danger">*</span></label
-          >
+          <label for="birthdate">
+            Ngày sinh <span class="text-danger">*</span>
+          </label>
           <b-form-input
             class="mt-2"
             name="birthdate"
-            v-model="form.birthdate"
+            v-model="formattedBirthdate"
             type="date"
             :max="maxDate"
             @change="clearError('birthdate')"
           ></b-form-input>
-          <div class="text-danger mb-2" v-if="errors.birthdate">
-            *
-            {{ errors.birthdate }}
+          <div class="text-danger" v-if="errors.birthdate">
+            * {{ errors.birthdate }}
           </div>
         </b-form-group>
 
@@ -82,9 +104,10 @@
             name="phone"
             v-model="form.phone"
             type="text"
+            placeholder="Nhập số điện thoại..."
             @focus="clearError('phone')"
           ></b-form-input>
-          <div class="text-danger mb-2" v-if="errors.phone">
+          <div class="text-danger" v-if="errors.phone">
             *
             {{ errors.phone }}
           </div>
@@ -102,28 +125,15 @@
             placeholder="Nhập địa chỉ"
             @focus="clearError('address')"
           ></b-form-input>
-          <div class="text-danger mb-2" v-if="errors.address">
+          <div class="text-danger" v-if="errors.address">
             *
             {{ errors.address }}
           </div>
         </b-form-group>
-        <div class="form-group mb-3">
-          <label for="classes" class="form-label">Lớp học</label>
-          <select id="deparclassestment" class="form-control">
-            <option selected disabled>Chọn lớp học...</option>
-            <option
-              v-for="classes in classesOptions"
-              :key="classes"
-              :value="classes"
-            >
-              {{ classes }}
-            </option>
-          </select>
-        </div>
-
         <b-form-group class="mt-4">
-          <b-button type="submit" variant="success me-3">Thêm</b-button>
-          <b-button type="reset" variant="outline-secondary">Làm mới</b-button>
+          <b-button type="submit" variant="success me-3 w-100">{{
+            isEdit ? "Cập nhật" : "Thêm"
+          }}</b-button>
         </b-form-group>
       </b-form>
     </div>
@@ -131,45 +141,103 @@
 </template>
 
 <script>
-import { getMaxDate, validateFormStudent } from "../../common/utils/validate";
+import { mapActions } from "vuex";
+import { getMaxDate } from "../../common/utils/validate";
+import { showSuccessMessage } from "../../common/utils/notifications";
+import { validateFormStudent } from "../../common/utils/validate";
+import moment from "moment";
 export default {
   data() {
     return {
+      optionsGender: [
+        { value: null, text: "Chọn giới tính", disabled: true },
+        { value: "1", text: "Nam" },
+        { value: "2", text: "Nữ" },
+        { value: "3", text: "Khác" },
+      ],
       form: {
         id: "",
         name: "",
+        email: "",
+        password: "",
+        birthdate: null,
         gender: null,
         phone: "",
         address: "",
-        classes: "",
-        checked: [],
       },
-      optionsGender: [
-        { value: null, text: "Chọn giới tính", disabled: true },
-        { value: "male", text: "Nam" },
-        { value: "female", text: "Nữ" },
-        { value: "other", text: "Khác" },
-      ],
       errors: {
         id: "",
         name: "",
+        email: "",
+        password: "",
+        birthdate: null,
         gender: "",
         phone: "",
         address: "",
-        classes: "",
       },
-      classesOptions: ["Lớp 1A", "Lớp 2B", "Lớp 3C"],
+
       show: true,
+      isEdit: false,
       maxDate: getMaxDate,
     };
   },
   methods: {
-    onSubmit() {
-      this.errors = validateFormStudent(this.form);
-      if (Object.keys(this.errors).length > 0) {
-        return;
+    ...mapActions("student", ["getStudentById", "UpdateStudent"]),
+    ...mapActions("user", ["CreateUser"]),
+    toVNTime(time) {
+      return moment(time).utc(7).format("DD-MM-YYYY");
+    },
+    async onSubmit() {
+      try {
+        this.errors = validateFormStudent(this.form);
+        if (Object.keys(this.errors).length > 0) {
+          return;
+        }
+        const data = {
+          name: this.form.name,
+          gender: this.form.gender,
+          email: this.form.email,
+          password: this.form.password,
+          phone: this.form.phone,
+          address: this.form.address,
+          role_type: "student",
+          avatar:
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNL_ZnOTpXSvhf1UaK7beHey2BX42U6solRA&s",
+        };
+        console.log("Payload", data);
+        console.log("isEdit:", this.isEdit);
+        if (this.isEdit) {
+          await this.UpdateStudent({ data, id: this.$route.params.id });
+          console.log("Cập nhật thành công");
+          showSuccessMessage();
+        } else {
+          await this.CreateUser(data);
+          console.log("Tạo thành công");
+          showSuccessMessage();
+        }
+        this.$router.push({ name: "students" });
+      } catch (error) {
+        this.errorMessage = error.response
+          ? error.response.data.message
+          : "Đã xảy ra lỗi trên máy chủ.";
       }
-      alert(JSON.stringify(this.form));
+    },
+    async getDetailStudent() {
+      const id = this.$route.params.id;
+      this.isEdit = true;
+      const response = await this.getStudentById(id);
+      this.setFormEdit(response.data);
+      console.log("Chi tiết học sinh: ", response.data);
+    },
+    setFormEdit(student) {
+      this.form.id = student.Id;
+      this.form.name = student.name;
+      this.form.email = student.email;
+      this.form.gender = student.gender;
+      this.form.birthdate = student.date_of_birth;
+      this.form.phone = student.phone;
+      this.form.address = student.address;
+      this.isEdit = true;
     },
     onReset(event) {
       event.preventDefault();
@@ -188,8 +256,23 @@ export default {
       this.$set(this.errors, field, "");
     },
   },
+  computed: {
+    formattedBirthdate: {
+      get() {
+        if (!this.form.birthdate) return "";
+        return moment(this.form.birthdate).format("YYYY-MM-DD");
+      },
+      set(value) {
+        this.form.birthdate = moment(value, "YYYY-MM-DD").toISOString();
+      },
+    },
+  },
   created() {
     this.maxDate = getMaxDate();
+    if (this.$route.params.id) {
+      this.isEdit = true;
+      this.getDetailStudent();
+    }
   },
 };
 </script>
@@ -214,5 +297,9 @@ select {
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+select:focus-visible {
+  border: none;
+  box-shadow: none;
 }
 </style>

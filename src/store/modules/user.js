@@ -1,5 +1,6 @@
 import axios from "@/core/axios";
 import api from "../../api";
+import { method } from "lodash";
 const state = {
   entries: [
     {
@@ -93,6 +94,13 @@ const actions = {
     const response = await axios({
       url: api.params("RestoreUser", { id }),
       method: "PATCH"
+    });
+    return response.data;
+  },
+  async SearchUser(_, keyword) {
+    const response = await axios({
+      url: api.params("SearchUser", { keyword }),
+      method: "GET",
     });
     return response.data;
   }

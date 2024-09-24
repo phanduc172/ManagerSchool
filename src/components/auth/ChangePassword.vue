@@ -5,7 +5,7 @@
         <i class="bx bx-arrow-back pill"></i>
       </b-button>
     </div>
-    <div class="col-12 col-sm-10 col-md-8 offset-sm-3 offset">
+    <div class="col-12 col-sm-10 col-md-8 offset-sm-1 offset-md-2">
       <div class="card p-3 shadow-sm">
         <h3 class="text-center mb-4">Thay đổi mật khẩu</h3>
         <form @submit.prevent="onSubmit">

@@ -82,6 +82,11 @@ const router = new VueRouter({
       name: "studentCreate",
       component: () => import('../resources/students/StudentForm.vue'),
     },
+    {
+      path: "/manager/student/edit/:id",
+      name: "studentEdit",
+      component: () => import('../resources/students/StudentForm.vue'),
+    },
 
     // Router User
     {
@@ -185,6 +190,23 @@ const router = new VueRouter({
       name: "profile",
       component: () => import("../resources/profile/UserProfile.vue"),
     },
+
+    // Schedule
+    {
+      path: "/manager/schedules",
+      name: "schedules",
+      component: () => import("../resources/schedule/ManagerSchedule.vue")
+    },
+    {
+      path: "/manager/schedule/create",
+      name: "scheduleCreate",
+      component: () => import("../resources/schedule/ScheduleForm.vue")
+    },
+    {
+      path: "/manager/schedule/edit/:id",
+      name: "scheduleEdit",
+      component: () => import("../resources/schedule/ScheduleForm.vue")
+    }
   ],
 });
 

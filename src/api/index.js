@@ -18,6 +18,7 @@ const api = {
   GetDetailUser: "/v1/user/{id}",
   AddUserExcel: "/v1/admin/excel/upload/user",
   RestoreUser: "/v1/admin/user/restore/{id}",
+  SearchUser: "/v1/admin/user/search?name={keyword}",
 
   ListTeachers: "v1/admin/user/teacher/all",
   CreateTeacher: "/api/teachers",
@@ -26,7 +27,7 @@ const api = {
 
   ListStudents: "/v1/admin/user/student/all",
   CreateStudent: "/api/students",
-  UpdateStudent: "/api/students/{id}",
+  UpdateStudent: "/v1/admin/update/{id}",
   DeleteStudent: "/api/students/{id}",
 
   ListClass: "/api/classes",
@@ -54,6 +55,11 @@ const api = {
 
   StaticsTerm: "/v1/admin/statistical/term",
 
+  ListSchedules: "/v1/admin/schedule/all",
+  CreateSchedule: "/v1/admin/schedule/add",
+  UpdateSchedule: "/v1/admin/schedule/{id}",
+  DeleteSchedule: "/v1/admin/schedule/{id}",
+  GetDetailSchedule: "/v1/admin/schedule/details/{id}",
 
   params(endpoint, params) {
     let url = this[endpoint];

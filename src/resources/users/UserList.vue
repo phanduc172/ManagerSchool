@@ -48,8 +48,8 @@
                   <th>Ngày sinh</th>
                   <th>Email</th>
                   <th>Số điện thoại</th>
-                  <th>Địa chỉ</th>
-                  <th>Phòng ban</th>
+                  <!-- <th>Địa chỉ</th>
+                  <th>Phòng ban</th> -->
                   <th style="min-width: 140px">Vai trò</th>
                   <th></th>
                 </tr>
@@ -85,8 +85,8 @@
                   </td>
                   <td class="text-start">{{ user.email }}</td>
                   <td class="text-center">{{ user.phone }}</td>
-                  <td class="text-start">{{ user.address }}</td>
-                  <td class="text-start">{{ user.department }}</td>
+                  <!-- <td class="text-start">{{ user.address }}</td>
+                  <td class="text-start">{{ user.department }}</td> -->
                   <td class="text-center">
                     {{
                       user.role_type == "admin"
@@ -171,12 +171,25 @@ export default {
     ...mapGetters("user", ["users"]),
   },
   methods: {
-    ...mapActions("user", ["ListAllAccount", "GetProfile", "DeleteUser"]),
+    ...mapActions("user", [
+      "ListAllAccount",
+      "GetProfile",
+      "DeleteUser",
+      "searchUser",
+    ]),
     toVNTime(time) {
       return moment(time).utc(7).format("DD-MM-YYYY");
     },
     handleImageError(event) {
       event.target.src = this.defaultAvatar;
+    },
+    async searchUser(searchQuery) {
+      const response = await this.SearchUser(searchQuery);
+      if (response?.status === 200) {
+        this.entries = response.data.data;
+      } else {
+        this.entries = [];
+      }
     },
     async getProfile() {
       const response = await this.GetProfile(this.$route.query);
@@ -221,24 +234,24 @@ export default {
       this.getListAllAccount(this.currentPage);
     },
   },
-  watch: {
-    searchQuery: {
-      handler(newQuery) {
-        if (newQuery.trim() === "") {
-          this.getListAllAccount();
-          this.isShowPagi = true;
-        } else {
-          this.isShowPagi = false;
-          this.entries = this.listEntry.filter(
-            (entry) =>
-              entry.name.toLowerCase().includes(newQuery.toLowerCase()) ||
-              entry.email.toLowerCase().includes(newQuery.toLowerCase())
-          );
-        }
-      },
-      deep: true,
-    },
-  },
+  // watch: {
+  //   searchQuery: {
+  //     handler(newQuery) {
+  //       if (newQuery.trim() === "") {
+  //         this.getListAllAccount();
+  //         this.isShowPagi = true;
+  //       } else {
+  //         this.isShowPagi = false;
+  //         this.entries = this.listEntry.filter(
+  //           (entry) =>
+  //             entry.name.toLowerCase().includes(newQuery.toLowerCase()) ||
+  //             entry.email.toLowerCase().includes(newQuery.toLowerCase())
+  //         );
+  //       }
+  //     },
+  //     deep: true,
+  //   },
+  // },
   created() {
     this.getListAllAccount();
   },

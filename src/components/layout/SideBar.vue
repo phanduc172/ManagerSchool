@@ -4,7 +4,7 @@
     <div class="list-group">
       <router-link
         class="list-group-item list-group-item-action"
-        :class="{ active: isActive('/profile') }"
+        :class="{ active: isActive('/dashboard') }"
         to="/dashboard"
       >
         <i class="bx bxs-dashboard me-2 fs-5"></i>Bảng điều khiển
@@ -71,6 +71,13 @@
           to="/manager/term"
         >
           Học kì
+        </router-link>
+        <router-link
+          class="list-group-item list-group-item-action"
+          :class="{ active: isActive('/manager/schedules') }"
+          to="/manager/schedules"
+        >
+          Lịch học
         </router-link>
       </div>
 

@@ -8,6 +8,7 @@ import classes from "./modules/classes";
 import subject from "./modules/subject";
 import major from "./modules/major";
 import term from "./modules/term";
+import schedule from "./modules/schedule";
 
 Vue.use(Vuex);
 
@@ -21,6 +22,7 @@ const store = new Vuex.Store({
     subject,
     major,
     term,
+    schedule,
   },
 });
 
