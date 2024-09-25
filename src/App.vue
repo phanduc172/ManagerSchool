@@ -1,9 +1,12 @@
 <template>
   <div id="app" class="d-flex">
-    <SideBar v-if="!isSidebarCollapsed" />
+    <SideBar v-if="!isSidebarCollapsed && !isAuthPage" />
     <div
       id="page-content-wrapper"
-      :class="[isSidebarCollapsed && !isAuthPage ? 'collapsed' : '']"
+      :class="[
+        isSidebarCollapsed && !isAuthPage ? 'collapsed' : '',
+        isAuthPage ? 'auth-page' : '',
+      ]"
       class="flex-grow-1"
     >
       <NavBar v-if="!isAuthPage" @toggleSidebar="toggleSidebar" />
@@ -52,6 +55,8 @@ export default {
         "studentEdit",
         "scheduleCreate",
         "scheduleEdit",
+        "termCreate",
+        "termEdit",
       ].includes(to.name);
     },
   },
@@ -63,6 +68,26 @@ export default {
         JSON.stringify(this.isSidebarCollapsed)
       );
     },
+    checkWindowSize() {
+      if (window.innerWidth < 375) {
+        this.isSidebarCollapsed = true;
+        localStorage.setItem("sb|sidebar-toggle", "true");
+      } else if (window.innerWidth < 768) {
+        this.isSidebarCollapsed = false;
+        localStorage.setItem("sb|sidebar-toggle", "false");
+      } else {
+        this.isSidebarCollapsed = JSON.parse(
+          localStorage.getItem("sb|sidebar-toggle") || "false"
+        );
+      }
+    },
+  },
+  mounted() {
+    this.checkWindowSize();
+    window.addEventListener("resize", this.checkWindowSize);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.checkWindowSize);
   },
   created() {
     this.isAuthPage = [
@@ -70,6 +95,7 @@ export default {
       "register",
       "recoverpassword",
       "confirmpassword",
+      "changepassword",
       "forgot-change-password",
       "usersCreate",
       "classesCreate",
@@ -84,14 +110,29 @@ export default {
       "studentEdit",
       "scheduleCreate",
       "scheduleEdit",
+      "term",
+      "termCreate",
+      "termEdit",
+      "major",
+      "majorCreate",
+      "majorEdit",
+      "subjects",
+      "subjectsCreate",
+      "subjectsEdit",
+      "classes",
+      "classesCreate",
+      "usersCreate",
+      "restoreuser",
+      "studentEdit",
+      "studentCreate",
     ].includes(this.$route.name);
   },
 };
 </script>
 
+
 <style>
 #app {
-  min-width: 375px;
   min-height: 100vh;
   display: flex;
   overflow: hidden;
@@ -118,7 +159,7 @@ export default {
   background: url(/src/assets/images/bg.jpg) no-repeat center center;
   background-size: cover;
 }
-@media screen and (max-width: 576px) {
+@media screen and (max-width: 375px) {
   #page-content-wrapper {
     margin-left: 0;
   }

@@ -9,13 +9,15 @@
       <div class="collapse navbar-collapse ms-3" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link text-white" href="/dashboard">Bảng điều khiển</a>
+            <a class="nav-link text-white text-nowrap mt-1" href="/dashboard"
+              >Bảng điều khiển</a
+            >
           </li>
         </ul>
         <ul v-if="!profile.token" class="navbar-nav ms-auto">
           <li class="nav-item">
             <b-dropdown
-              variant="transparent text-white fw-bold p-0 border-0"
+              variant="transparent text-white fw-bold p-0 border-0 d-flex align-items-center "
               right
             >
               <template #button-content>
@@ -31,7 +33,9 @@
                   "
                   @error="handleImageError"
                 />
-                {{ profile ? profile.name : "" }}
+                <span class="d-none d-md-block fw-bold">
+                  {{ profile ? profile.name : "" }}
+                </span>
               </template>
 
               <b-dropdown-item to="/profile">Hồ sơ cá nhân</b-dropdown-item>
@@ -72,6 +76,9 @@ export default {
         token: "",
       },
       defaultAvatar: "/avt.jpg",
+      isSidebarCollapsed: JSON.parse(
+        localStorage.getItem("sb|sidebar-toggle") || "false"
+      ),
     };
   },
   methods: {
@@ -89,12 +96,25 @@ export default {
     handleImageError(event) {
       event.target.src = this.defaultAvatar;
     },
+    checkWindowSize() {
+      if (window.innerWidth < 375) {
+        this.isSidebarCollapsed = true;
+      } else {
+        this.isSidebarCollapsed = false;
+      }
+    },
   },
   created() {
     this.GetProfile();
+    this.checkWindowSize();
+    window.addEventListener("resize", this.checkWindowSize);
+  },
+  beforeUnmount() {
+    window.removeEventListener("resize", this.checkWindowSize);
   },
 };
 </script>
+
 
 <style scoped>
 .chevron_color {

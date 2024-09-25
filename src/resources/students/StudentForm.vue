@@ -151,9 +151,9 @@ export default {
     return {
       optionsGender: [
         { value: null, text: "Chọn giới tính", disabled: true },
-        { value: "1", text: "Nam" },
-        { value: "2", text: "Nữ" },
-        { value: "3", text: "Khác" },
+        { value: 1, text: "Nam" },
+        { value: 2, text: "Nữ" },
+        { value: 3, text: "Khác" },
       ],
       form: {
         id: "",

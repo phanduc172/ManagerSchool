@@ -101,14 +101,14 @@ export default {
           return;
         }
 
-        await this.handleLogin({
+        const response = await this.handleLogin({
           account: this.form.email,
           password: this.form.password,
         });
         this.$router.go(0);
       } catch (error) {
         this.errors = {
-          login: error.response.data.message,
+          login: error.response.data.message || "Lỗi hệ thống",
         };
       }
     },

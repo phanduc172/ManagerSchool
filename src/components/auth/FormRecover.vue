@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
-    <b-card id="cardLogin" class="scale-in-bl w-50">
+    <b-card id="cardLogin" class="scale-in-bl">
       <b-form @submit.prevent="onSubmit" v-if="show" id="formLogin">
         <svg
           viewBox="0 0 200 200"

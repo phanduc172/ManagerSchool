@@ -43,6 +43,7 @@
                 </div>
               </div>
             </div>
+
             <div class="card-body">
               <div class="row mb-3 offset-1">
                 <div class="col-sm-3">
@@ -53,8 +54,11 @@
                     type="text"
                     class="form-control"
                     v-model="profile.name"
-                    disabled
+                    :disabled="!isEditing"
                   />
+                  <div class="text-danger mt-2" v-if="errors.name">
+                    * {{ errors.name }}
+                  </div>
                 </div>
               </div>
               <div class="row mb-3 offset-1">
@@ -63,11 +67,15 @@
                 </div>
                 <div class="col-sm-8 text-secondary">
                   <input
-                    :max="maxDate"
+                    type="date"
                     class="form-control"
-                    :value="toVNTime(profile.date_of_birth)"
-                    disabled
+                    v-model="profile.date_of_birth"
+                    :disabled="!isEditing"
+                    :max="maxDate"
                   />
+                  <div class="text-danger mt-2" v-if="errors.date_of_birth">
+                    * {{ errors.date_of_birth }}
+                  </div>
                 </div>
               </div>
               <div class="row mb-3 offset-1">
@@ -75,17 +83,18 @@
                   <h6 class="my-sm-2">Giới tính</h6>
                 </div>
                 <div class="col-sm-8 text-secondary">
-                  <input
-                    class="form-control"
-                    :value="
-                      profile.gender == 1
-                        ? 'Nam'
-                        : profile.gender == 2
-                        ? 'Nữ'
-                        : 'Khác'
-                    "
-                    disabled
-                  />
+                  <select
+                    class="form-select"
+                    v-model="profile.gender"
+                    :disabled="!isEditing"
+                  >
+                    <option value="1">Nam</option>
+                    <option value="2">Nữ</option>
+                    <option value="3">Khác</option>
+                  </select>
+                </div>
+                <div class="text-danger mt-2" v-if="errors.gender">
+                  * {{ errors.gender }}
                 </div>
               </div>
               <div class="row mb-3 offset-1">
@@ -94,11 +103,14 @@
                 </div>
                 <div class="col-sm-8 text-secondary">
                   <input
-                    type="text"
+                    type="email"
                     class="form-control"
                     v-model="profile.email"
-                    disabled
+                    :disabled="!isEditing"
                   />
+                  <div class="text-danger mt-2" v-if="errors.email">
+                    * {{ errors.email }}
+                  </div>
                 </div>
               </div>
               <div class="row mb-3 offset-1">
@@ -107,139 +119,42 @@
                 </div>
                 <div class="col-sm-8 text-secondary">
                   <input
-                    type="text"
+                    type="phone"
                     class="form-control"
                     v-model="profile.phone"
-                    disabled
+                    :disabled="!isEditing"
                   />
+                  <div class="text-danger mt-2" v-if="errors.phone">
+                    * {{ errors.phone }}
+                  </div>
                 </div>
               </div>
-              <div class="row mb-3 offset-1">
-                <div class="col-sm-3">
-                  <h6 class="my-sm-2">Vai trò</h6>
-                </div>
-                <div class="col-sm-8 text-secondary">
-                  <input
-                    type="text"
-                    class="form-control"
-                    :value="
-                      profile.role_type == 'admin'
-                        ? 'Quản trị viên'
-                        : profile.role_type == 'teacher'
-                        ? 'Giáo viên'
-                        : 'Học sinh'
-                    "
-                    disabled
-                  />
-                </div>
-                <div class="text-center mt-4">
-                  <b-button
-                    type="button"
-                    variant="success"
-                    @click="openUpdateModal"
-                    >Cập nhật thông tin</b-button
-                  >
-                </div>
+
+              <div class="text-center mt-4 d-flex justify-content-center">
+                <b-button
+                  v-if="!isEditing"
+                  variant="success"
+                  @click="isEditing = true"
+                  >Cập nhật thông tin
+                </b-button>
+                <b-button
+                  v-else
+                  variant="outline-secondary me-4"
+                  @click="cancelEditing"
+                  >Hủy</b-button
+                >
+                <b-button
+                  v-if="isEditing"
+                  variant="success"
+                  @click="updateUserProfile"
+                  >Lưu thay đổi</b-button
+                >
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <b-modal
-      id="update-profile-modal"
-      title="Cập nhật thông tin"
-      @ok="updateUserProfile"
-      @hide="resetModal"
-      size="md"
-      scrollable
-      class="custom-modal"
-      hide-header
-    >
-      <form>
-        <div class="row mb-3">
-          <label for="name" class="col-sm-4 col-form-label"
-            >Họ tên <span class="text-danger">*</span></label
-          >
-          <div class="col-sm-8">
-            <input
-              type="text"
-              class="form-control"
-              id="name"
-              v-model="profile.name"
-            />
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <label for="gender" class="col-sm-4 col-form-label">Giới tính </label>
-          <div class="col-sm-8">
-            <select class="form-select" id="gender" v-model="profile.gender">
-              <option value="undefined" disabled>Chọn giới tính</option>
-              <option :value="1">Nam</option>
-              <option :value="2">Nữ</option>
-              <option :value="3">Khác</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <label for="birthdate" class="col-sm-4 col-form-label"
-            >Ngày sinh</label
-          >
-          <div class="col-sm-8">
-            <input
-              type="date"
-              class="form-control"
-              id="birthdate"
-              :max="maxDate"
-              :value="toVNTime(profile.date_of_birth)"
-            />
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <label for="email" class="col-sm-4 col-form-label"
-            >Email <span class="text-danger">*</span></label
-          >
-          <div class="col-sm-8">
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              v-model="profile.email"
-            />
-          </div>
-          <div class="text-danger mb-2" v-if="errors.email">
-            * {{ errors.email }}
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <label for="phone" class="col-sm-4 col-form-label"
-            >Số điện thoại <span class="text-danger">*</span></label
-          >
-          <div class="col-sm-8">
-            <input
-              type="tel"
-              class="form-control"
-              id="phone"
-              v-model="profile.phone"
-            />
-            <div class="text-danger mb-2" v-if="errors.phone">
-              * {{ errors.phone }}
-            </div>
-          </div>
-        </div>
-      </form>
-
-      <template v-slot:modal-footer>
-        <b-button variant="outline-secondary" @click="resetModal">Hủy</b-button>
-        <b-button variant="success" @click="updateUserProfile"
-          >Cập nhật</b-button
-        >
-      </template>
-    </b-modal>
     <b-modal
       id="image-preview-modal"
       hide-header
@@ -268,7 +183,7 @@
 <script>
 import axios from "axios";
 import moment from "moment";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import { getMaxDate, validateUpdateMeForm } from "../../common/utils/validate";
 import { showSuccessMessage } from "../../common/utils/notifications";
 
@@ -293,6 +208,7 @@ export default {
       uploadedImage: null,
       fileToUpload: null,
       defaultAvatar: "/avt.jpg",
+      isEditing: false,
     };
   },
   methods: {
@@ -309,31 +225,44 @@ export default {
       const response = await this.getProfile();
       if (response?.status === 200) {
         this.profile = response.data.data;
+        this.profile.date_of_birth = this.toVNTime(this.profile.date_of_birth);
       }
     },
 
     async updateUserProfile() {
-      // this.errors = validateUpdateMeForm(this.form);
-      // if (Object.keys(this.errors).length > 0) {
-      //   return;
-      // }
+      console.log("Submit");
+      this.errors = validateUpdateMeForm(this.profile);
+      if (Object.keys(this.errors).length > 0) {
+        return;
+      }
+
       const userData = {
         name: this.profile.name,
         email: this.profile.email,
         gender: this.profile.gender,
         birthdate: moment(this.profile.date_of_birth)
-          .zone(7)
+          .utcOffset(7)
           .format("YYYY-MM-DDTHH:mm:ssZ"),
         phone: this.profile.phone,
         address: this.profile.address,
       };
-      await this.UpdateProfile(userData);
-      showSuccessMessage();
-      this.resetModal();
-      this.GetProfile();
+
+      try {
+        const response = await this.UpdateProfile(userData);
+        console.log("Update: ", response);
+        showSuccessMessage();
+        this.isEditing = false;
+        this.resetModal();
+        this.GetProfile();
+      } catch (error) {
+        console.log("Lỗi cập nhật hồ sơ:", error);
+      }
     },
     resetModal() {
       this.$bvModal.hide("update-profile-modal");
+    },
+    saveProfile() {
+      this.updateUserProfile();
     },
     async handleFileUpload() {
       if (this.fileToUpload) {
@@ -344,7 +273,7 @@ export default {
         const token = sessionStorage.getItem("token");
         if (!token) return;
         const response = await axios.post(
-          "http://localhost:3000/v1/upload/image",
+          "http://localhost:3000/v1/api/upload/image",
           formData,
           {
             headers: {
@@ -386,6 +315,17 @@ export default {
       this.fileToUpload = null;
       this.$bvModal.hide("image-preview-modal");
     },
+    cancelEditing() {
+      this.isEditing = false;
+      this.errors = {
+        name: "",
+        email: "",
+        birthdate: "",
+        gender: "",
+        phone: "",
+      };
+      this.GetProfile();
+    },
   },
   created() {
     this.GetProfile();
@@ -395,9 +335,6 @@ export default {
 </script>
 
 <style scoped>
-h6 {
-  text-wrap: inherit;
-}
 body {
   background: #f7f7ff;
   margin-top: 20px;
@@ -406,9 +343,7 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  min-width: 300px;
   word-wrap: break-word;
-  /* background-color: #fff; */
   background-color: #ffffffed;
   background-clip: border-box;
   border: 0 solid transparent;

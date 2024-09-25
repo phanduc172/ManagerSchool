@@ -2,14 +2,15 @@
   <div class="container mt-3">
     <div class="row justify-content-md-center p-3">
       <div
-        class="col-lg-5 mb-3 mb-lg-5 border border-2 rounded p-3 bg-light mx-4"
+        class="col-lg-5 mb-3 mb-lg-5 border border-2 rounded p-3 bg-light mx-md-4"
       >
-        <apexchart type="bar" :options="chartOptions" :series="chartSeries" />
+        <apexchart type="bar" :options="chartOptions1" :series="chartSeries1" />
       </div>
+
       <div
-        class="col-lg-5 mb-3 mb-lg-5 border border-2 rounded p-3 bg-light mx-4"
+        class="col-lg-5 mb-3 mb-lg-5 border border-2 rounded p-3 bg-light mx-md-4"
       >
-        <apexchart type="bar" :options="chartOptions" :series="chartSeries" />
+        <apexchart type="bar" :options="chartOptions2" :series="chartSeries2" />
       </div>
     </div>
   </div>
@@ -22,7 +23,7 @@ export default {
   },
   data() {
     return {
-      chartOptions: {
+      chartOptions1: {
         chart: {
           type: "bar",
           height: 50,
@@ -58,10 +59,53 @@ export default {
           colors: ["transparent"],
         },
       },
-      chartSeries: [
+      chartSeries1: [
         {
           name: "Tổng số tín chỉ",
           data: [4, 6, 3],
+        },
+      ],
+
+      chartOptions2: {
+        chart: {
+          type: "bar",
+          height: 50,
+        },
+        xaxis: {
+          categories: ["Tháng 1", "Tháng 2", "Tháng 3"],
+          title: {
+            text: "Tháng",
+          },
+        },
+        yaxis: {
+          title: {
+            text: "Tổng số sinh viên",
+          },
+        },
+        title: {
+          text: "Thống kê sinh viên theo tháng",
+          align: "left",
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: "55%",
+            endingShape: "rounded",
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ["transparent"],
+        },
+      },
+      chartSeries2: [
+        {
+          name: "Tổng số sinh viên",
+          data: [50, 75, 100],
         },
       ],
     };

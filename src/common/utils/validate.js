@@ -321,23 +321,25 @@ export function validateUpdateMeForm(form) {
     errors.gender = "Vui lòng chọn giới tính";
   }
 
-  if (!form.birthdate) {
-    errors.birthdate = "Vui lòng chọn ngày sinh";
+  if (!form.date_of_birth) {
+    errors.date_of_birth = "Vui lòng chọn ngày sinh";
   }
+
   if (!form.email) {
     errors.email = "Email không được để trống";
-  } else {
-    if (!emailPattern.test(form.email)) {
-      errors.email = "Email không hợp lệ";
-    }
+  } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+    errors.email = "Email không hợp lệ";
   }
+
   if (!form.phone) {
     errors.phone = "Số điện thoại không được để trống";
-  } else if (!validatePhoneNumber(form.phone)) {
+  } else if (!/^\d{10,11}$/.test(form.phone)) {
     errors.phone = "Số điện thoại không hợp lệ";
   }
+
   return errors;
 }
+
 
 export function validateChangePasswordForm(form) {
   const errors = {};

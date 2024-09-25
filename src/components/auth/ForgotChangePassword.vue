@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-content-center align-items-center vh-100">
+  <div class="d-flex justify-content-center align-items-center vh-100 p-3">
     <b-card id="cardLogin" class="scale-in-bl p-3">
       <h3 class="text-center mb-3 text-success">Khôi phục mật khẩu</h3>
       <b-form @submit.prevent="onSubmit">

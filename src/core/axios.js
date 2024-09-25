@@ -15,7 +15,7 @@ instance.interceptors.response.use(
   },
   (error) => {
     console.error("API error:", error.response ? error.response.data : error.message);
-    if (error.response && error.response.status === 401 || error.response && error.response.status === 500) {
+    if (error.response && error.response.status === 401) {
       sessionStorage.removeItem("token");
       router.push("/login");
     }
@@ -23,6 +23,6 @@ instance.interceptors.response.use(
   }
 );
 
-//
+//|| error.response && error.response.status === 500
 
 export default instance;

@@ -1,5 +1,5 @@
 <template>
-  <div :class="['sidebar d-none d-sm-block', { collapsed: collapsed }]">
+  <div :class="['sidebar', { collapsed: collapsed }]">
     <div class="sidebar-heading bg-success text-white">Quản lý Trường học</div>
     <div class="list-group">
       <router-link
@@ -37,20 +37,20 @@
         >
           Học sinh
         </router-link>
-        <router-link
+        <!-- <router-link
           class="list-group-item list-group-item-action"
           :class="{ active: isActive('/manager/users') }"
           to="/manager/users"
         >
           Người dùng
-        </router-link>
-        <router-link
+        </router-link> -->
+        <!-- <router-link
           class="list-group-item list-group-item-action"
           :class="{ active: isActive('/manager/restoreuser') }"
           to="/manager/restoreuser"
         >
           Khôi phục người dùng
-        </router-link>
+        </router-link> -->
         <router-link
           class="list-group-item list-group-item-action"
           :class="{ active: isActive('/manager/subjects') }"
